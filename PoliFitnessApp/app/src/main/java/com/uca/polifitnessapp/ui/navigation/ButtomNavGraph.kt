@@ -5,14 +5,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
-import com.uca.polifitnessapp.ui.navigation.NavItems.*
+import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
 
 @Composable
-fun NavigationHost(navController: NavHostController) {
-
+fun NavigationHost(
+    navController: NavHostController
+) {
     NavHost(
         navController = navController,
-        startDestination = NavItems.Home.rute
+        startDestination = ButtomNavItems.Home.rute
     ) {
         composable(Home.rute) {
             // HomeScreen()

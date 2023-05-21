@@ -2,32 +2,31 @@ package com.uca.polifitnessapp.ui.navigation
 
 import com.uca.polifitnessapp.R
 
-sealed class NavItems(
+sealed class ButtomNavItems(
     val icon: Int,
     val title: String,
     val rute: String,
     val iconFocus : Int
 ) {
-
-    object Home : NavItems(
+    object Home : ButtomNavItems(
         icon = R.drawable.homeicon,
         title = "Home",
         rute = "home",
         iconFocus = R.drawable.homefocus
     )
-    object News: NavItems(
+    object News: ButtomNavItems(
         icon = R.drawable.newsicon,
         title = "News",
         rute = "news",
         iconFocus = R.drawable.newsfocus
     )
-    object Rutine : NavItems(
+    object Rutine : ButtomNavItems(
         icon = R.drawable.rutinesicon,
         title = "Rutine",
         rute = "rutine",
         iconFocus = R.drawable.rutinesfocus
     )
-    object Profile: NavItems(
+    object Profile: ButtomNavItems(
         icon = R.drawable.profileicon,
         title = "Profile",
         rute = "profile",
