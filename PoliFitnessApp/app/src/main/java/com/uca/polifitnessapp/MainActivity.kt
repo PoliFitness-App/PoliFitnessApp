@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.uca.polifitnessapp.ui.navigation.BottomNav
+import com.uca.polifitnessapp.ui.navigation.NavigationHost
 import com.uca.polifitnessapp.ui.theme.PoliFitnessAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,9 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // MANDAMOS A LLAMAR EL LOGIN SCREEN
-                    //LoginScreen(LoginViewModel())
-                    BottomNav()
+                    NavigationHost()
                 }
             }
         }

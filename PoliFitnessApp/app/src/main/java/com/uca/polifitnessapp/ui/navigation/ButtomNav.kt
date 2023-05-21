@@ -54,7 +54,7 @@ fun BottomNav() {
         }
     ) {
         LoginScreen(viewModel = LoginViewModel())
-        NavigationHost(navController = navController)
+        NavigationHost()
     }
 }
 
