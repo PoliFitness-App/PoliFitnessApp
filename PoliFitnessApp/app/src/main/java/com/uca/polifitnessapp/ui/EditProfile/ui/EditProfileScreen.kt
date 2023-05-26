@@ -53,7 +53,7 @@ fun EditProfileScreen(){
                 colorResource(id = R.color.white)
             )
             .padding(25.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HeaderImage()
         EditProfileText()
