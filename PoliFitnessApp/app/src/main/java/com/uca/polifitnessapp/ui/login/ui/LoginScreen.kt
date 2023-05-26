@@ -62,7 +62,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        LoginView(Modifier.align(Alignment.Center), viewModel) // Para aliniar todo al centro
+        LoginView(Modifier.align(Alignment.Center), viewModel) // Para aliniar to do al centro
     }
 
 }
@@ -358,7 +358,7 @@ fun LoginButton(modifier: Modifier, loginEnable: Boolean, onLoginSelected: () ->
 
 // GOOGLE LOGIN BUTTON
 
-// ------------custom terminal for ubuntu
+// ------------
 
 @Composable
 fun GoogleLogin(modifier: Modifier) {

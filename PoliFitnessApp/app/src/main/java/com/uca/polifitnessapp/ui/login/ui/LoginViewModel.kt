@@ -39,16 +39,15 @@ class LoginViewModel : ViewModel() {
     fun onLoginChanged(email: String, password: String) {
         _email.value = email.trimEnd()
         _password.value = password.trim()
-        _loginEnable.value =
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                if (isValidEmail(email) && isValidPassword(password)) {
-                    _isWrongInput.value = false
-                }
-                true
-            } else {
-                _isWrongInput.value = true
-                false
-            }
+
+        // TODO -- isValidLogin
+        _loginEnable.value = isValidEmail(email)
+
+        /*
+        Add validation for input (email)
+         */
+
+        _isWrongInput.value = !isValidEmail(email)
     }
 
     // IS VALID PASSWORD
