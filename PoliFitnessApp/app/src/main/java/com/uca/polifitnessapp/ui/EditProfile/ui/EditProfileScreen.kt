@@ -16,6 +16,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -280,7 +284,7 @@ fun kgicon(){
             .height(74.dp)
             .size(80.dp)
             .padding(10.dp),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(10.dp),colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -288,7 +292,7 @@ fun kgicon(){
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(text = "KG", color = Color("#2E5DA8".toColorInt()))
+            Text(text = "KG", color = Color.White)
 
         }
 
@@ -303,6 +307,7 @@ fun cmicon(){
             .size(80.dp)
             .padding(10.dp),
         shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -310,7 +315,7 @@ fun cmicon(){
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(text = "CM", color = Color("#2E5DA8".toColorInt()))
+            Text(text = "CM", color = Color.White)
 
         }
 
@@ -350,9 +355,46 @@ fun combine(){
         }
 
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically,) {
+
+            SaveButton(modifier = Modifier.align(Alignment.CenterVertically))
+
+        }
+
+
         
     }
 
+}
+
+
+@Composable
+fun SaveButton(modifier: Modifier) {
+    Button(
+        onClick = { "/*TODO*/ "},
+        shape = RoundedCornerShape(10.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 20.dp,
+            pressedElevation = 10.dp,
+            disabledElevation = 0.dp
+        ),
+        modifier = modifier
+            .width(315.dp)
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF034189)
+        ),
+
+    )
+    {
+        Text(
+            text = "Guardar",
+            fontSize = 16.sp,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 
