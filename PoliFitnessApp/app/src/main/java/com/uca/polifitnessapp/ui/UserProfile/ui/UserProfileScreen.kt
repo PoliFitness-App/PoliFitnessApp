@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +42,7 @@ fun ProfileScreen(){
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         UserCard()
+        generalInfoUser()
     }
 }
 
@@ -78,4 +81,69 @@ fun UserCard(
         }
 
     }
+}
+
+@Composable
+fun generalInfoUser(){
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround) {
+
+        ElevatedCard(
+            modifier = Modifier
+                .padding(10.dp)
+                .size(80.dp),
+            shape = RoundedCornerShape(10.dp),
+        ){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                Text(text = "180cm", color = Color("#2E5DA8".toColorInt()))
+
+                Text(text = "Altura", textAlign = TextAlign.Center)
+            }
+
+        }
+
+        ElevatedCard(
+            modifier = Modifier
+                .padding(10.dp)
+                .size(80.dp),
+            shape = RoundedCornerShape(10.dp),
+        ){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                Text(text = "65 kg", color = Color("#2E5DA8".toColorInt()))
+                Text(text = "Peso")
+            }
+
+        }
+
+        ElevatedCard(
+            modifier = Modifier
+                .padding(10.dp)
+                .size(80.dp),
+            shape = RoundedCornerShape(10.dp),
+        ){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "22 años", color = Color("#2E5DA8".toColorInt()))
+                Text(text = "Edad")
+            }
+
+        }
+    }
+
 }
