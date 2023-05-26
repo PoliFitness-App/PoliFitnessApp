@@ -5,14 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,6 +47,7 @@ fun ProfileScreen(){
         UserCard()
         generalInfoUser()
         specificlInfoUser()
+        contactCard()
     }
 }
 
@@ -204,4 +208,74 @@ fun specificlInfoUser(){
 
     }
 
+}
+
+
+@Composable
+fun contactCard() {
+
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.padding(20.dp)
+
+        ) {
+            Text(text = "Otros", fontWeight = FontWeight.Bold, fontSize = 20.sp,)
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.mail),
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp)
+                )
+
+                // gap between icon and text
+                Spacer(modifier = Modifier.width(width = 10.dp))
+
+                Text(
+                    text = "Contáctanos",
+                    fontSize = 10.sp
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = null,
+
+                    )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.admin_panel_settings),
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp)
+                )
+
+                // gap between icon and text
+                Spacer(modifier = Modifier.width(width = 6.dp))
+
+                Text(
+                    text = "Política de privacidad",
+                    fontSize = 10.sp
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = null,
+
+                    )
+            }
+
+
+        }
+
+    }
 }
