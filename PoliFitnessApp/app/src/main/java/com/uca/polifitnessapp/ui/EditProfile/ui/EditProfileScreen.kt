@@ -8,18 +8,35 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 import com.uca.polifitnessapp.R
 
 @Preview
@@ -36,6 +53,8 @@ fun EditProfileScreen(){
     ) {
         HeaderImage()
         EditProfileText()
+        combine()
+
 
     }
 }
@@ -93,3 +112,252 @@ fun EditProfileText(){
 
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun weightField(
+    modifier: Modifier
+){
+    val textSate = remember { mutableStateOf("") }
+
+    TextField(value = textSate.value,
+        onValueChange = { textSate.value = it },
+        shape = MaterialTheme.shapes.small,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.MailOutline,
+                contentDescription = "null",
+                tint = Color(0xFF565E71)
+            )
+        },
+        label = {
+            Text(
+                text = "Peso",
+                color = Color(0xFF565E71),
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        modifier = modifier
+            .width(260.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF565E71),
+            unfocusedBorderColor = Color.Transparent,
+            containerColor = Color(0xFFD7E2FF)
+        
+        )
+    )
+    
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun heightField(
+    modifier: Modifier
+){
+    val textSate = remember { mutableStateOf("") }
+
+    TextField(value = textSate.value,
+        onValueChange = { textSate.value = it },
+        shape = MaterialTheme.shapes.small,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.MailOutline,
+                contentDescription = "null",
+                tint = Color(0xFF565E71)
+            )
+        },
+        label = {
+            Text(
+                text = "Altura",
+                color = Color(0xFF565E71),
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        modifier = modifier
+            .width(260.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF565E71),
+            unfocusedBorderColor = Color.Transparent,
+            containerColor = Color(0xFFD7E2FF)
+
+        )
+    )
+
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun waistField(
+    modifier: Modifier
+){
+    val textSate = remember { mutableStateOf("") }
+
+    TextField(value = textSate.value,
+        onValueChange = { textSate.value = it },
+        shape = MaterialTheme.shapes.small,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.MailOutline,
+                contentDescription = "null",
+                tint = Color(0xFF565E71)
+            )
+        },
+        label = {
+            Text(
+                text = "Perimetro de cintura",
+                color = Color(0xFF565E71),
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        modifier = modifier
+            .width(260.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF565E71),
+            unfocusedBorderColor = Color.Transparent,
+            containerColor = Color(0xFFD7E2FF)
+
+        )
+    )
+
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun hipField(
+    modifier: Modifier
+){
+    val textSate = remember { mutableStateOf("") }
+
+    TextField(value = textSate.value,
+        onValueChange = { textSate.value = it },
+        shape = MaterialTheme.shapes.small,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.MailOutline,
+                contentDescription = "null",
+                tint = Color(0xFF565E71)
+            )
+        },
+        label = {
+            Text(
+                text = "Perimetro de cadera",
+                color = Color(0xFF565E71),
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        modifier = modifier
+            .width(260.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF565E71),
+            unfocusedBorderColor = Color.Transparent,
+            containerColor = Color(0xFFD7E2FF)
+
+        )
+    )
+
+}
+
+@Composable
+fun kgicon(){
+    ElevatedCard(
+        modifier = Modifier
+            .height(74.dp)
+            .size(80.dp)
+            .padding(10.dp),
+        shape = RoundedCornerShape(10.dp),
+    ){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            Text(text = "KG", color = Color("#2E5DA8".toColorInt()))
+
+        }
+
+    }
+}
+
+@Composable
+fun cmicon(){
+    ElevatedCard(
+        modifier = Modifier
+            .height(74.dp)
+            .size(80.dp)
+            .padding(10.dp),
+        shape = RoundedCornerShape(10.dp),
+    ){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            Text(text = "CM", color = Color("#2E5DA8".toColorInt()))
+
+        }
+
+    }
+}
+
+@Composable()
+fun combine(){
+    Column() {
+
+        Row(verticalAlignment = Alignment.CenterVertically,) {
+
+            weightField(modifier = Modifier.align(Alignment.CenterVertically))
+            kgicon()
+
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically,) {
+
+            heightField(modifier = Modifier.align(Alignment.CenterVertically))
+            cmicon()
+
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically,) {
+
+            waistField(modifier = Modifier.align(Alignment.CenterVertically))
+            cmicon()
+
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically,) {
+
+            hipField(modifier = Modifier.align(Alignment.CenterVertically))
+            cmicon()
+
+        }
+
+
+        
+    }
+
+}
+
+
+
+
+
+
+
