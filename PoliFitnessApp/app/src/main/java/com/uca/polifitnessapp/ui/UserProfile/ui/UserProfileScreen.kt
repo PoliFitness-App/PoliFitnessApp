@@ -43,6 +43,7 @@ fun ProfileScreen(){
     ) {
         UserCard()
         generalInfoUser()
+        specificlInfoUser()
     }
 }
 
@@ -144,6 +145,63 @@ fun generalInfoUser(){
             }
 
         }
+    }
+
+}
+
+@Composable
+fun specificlInfoUser(){
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
+    ) {
+
+        ElevatedCard(
+            modifier = Modifier
+                .padding(20.dp)
+                .size(120.dp),
+            shape = RoundedCornerShape(10.dp),
+        ){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                Text(text = "20.1", color = Color("#2E5DA8".toColorInt()))
+                Text(text = "Normal", color = Color("#2E5DA8".toColorInt()))
+                Text(text = "IMC (Indice de masa corporal)",
+                    fontSize = 10.sp,
+                    textAlign = TextAlign.Center)
+            }
+
+        }
+
+        ElevatedCard(
+            modifier = Modifier
+                .size(120.dp),
+            shape = RoundedCornerShape(10.dp),
+        ){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                Text(text = "19.3 ", color = Color("#2E5DA8".toColorInt()))
+                Text(text = "Normal", color = Color("#2E5DA8".toColorInt()))
+                Text(text = "ICC (Indice cindtura-cadera)",
+                    fontSize = 10.sp,
+                    textAlign = TextAlign.Center
+                )
+
+            }
+
+        }
+
+
     }
 
 }
