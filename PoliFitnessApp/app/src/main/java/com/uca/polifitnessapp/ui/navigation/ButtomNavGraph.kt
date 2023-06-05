@@ -7,11 +7,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.uca.polifitnessapp.ui.LoadingScreen.ui.AnimatedSplashScreen
+import com.uca.polifitnessapp.ui.loadingscreen.onboardscreen.ui.MainFunction
+import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
 import com.uca.polifitnessapp.ui.login.ui.LoginScreen
 import com.uca.polifitnessapp.ui.login.ui.LoginViewModel
 
@@ -24,7 +24,7 @@ fun NavigationHost() {
 
     NavHost(
         navController = navController,
-        startDestination = "splash_screen"
+        startDestination = "onboard_screen"
     ) {
         composable(Home.rute) {
             // HomeScreen()
@@ -38,6 +38,9 @@ fun NavigationHost() {
         composable(Profile.rute) {
             // ProfileScreen()
         }
+        composable("onboard_screen"){
+            MainFunction(navController= navController)
+        }
         composable("splash_screen"){
             AnimatedSplashScreen(navController= navController)
         }
@@ -45,10 +48,6 @@ fun NavigationHost() {
             LoginScreen(viewModel = LoginViewModel())
         }
         composable("home_screen"){
-
-            // SOLO DE PRUEBA POR EL MOMENTO
-
-            // TODO : CAMBIAR POR EL HOME SCREEN
 
             Column(
                 modifier = Modifier.fillMaxSize(),
