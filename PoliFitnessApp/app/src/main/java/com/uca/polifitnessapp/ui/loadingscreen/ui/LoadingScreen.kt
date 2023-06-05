@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.LoadingScreen.ui
+package com.uca.polifitnessapp.ui.loadingscreen.ui
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -48,7 +48,7 @@ fun AnimatedSplashScreen(navController: NavHostController) {
         startAnimation = true
         delay(4000)
         navController.popBackStack()
-        navController.navigate("login_screen")
+        navController.navigate("onboard_screen")
     }
 
     Splash(alpha = alphaAnim.value)
