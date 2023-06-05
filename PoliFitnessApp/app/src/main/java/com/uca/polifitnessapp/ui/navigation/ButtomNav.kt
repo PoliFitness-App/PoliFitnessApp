@@ -41,23 +41,6 @@ import androidx.navigation.compose.rememberNavController
 import com.uca.polifitnessapp.ui.login.ui.LoginScreen
 import com.uca.polifitnessapp.ui.login.ui.LoginViewModel
 
-// BOTTOM NAV
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Composable
-fun BottomNav() {
-    val navController = rememberNavController()
-
-    Scaffold(
-        bottomBar = {
-            BottomBar(navController = navController)
-        }
-    ) {
-        LoginScreen(viewModel = LoginViewModel())
-        NavigationHost()
-    }
-}
-
 // BOTTOM BAR
 
 @Composable

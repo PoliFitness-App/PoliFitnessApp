@@ -177,7 +177,7 @@ fun NextPageButton(
             coroutineScope.launch {
                 if (pagerState.currentPage == item.size - 1) {
                     navController.popBackStack()
-                    navController.navigate("login_screen")
+                    navController.navigate("home")
                 } else {
                     // Call scroll to on pagerState
                     pagerState.animateScrollToPage(pagerState.currentPage + 1)

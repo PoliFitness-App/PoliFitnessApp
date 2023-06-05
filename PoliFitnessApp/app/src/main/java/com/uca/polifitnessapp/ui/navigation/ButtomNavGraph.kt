@@ -1,9 +1,11 @@
 package com.uca.polifitnessapp.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +19,7 @@ import com.uca.polifitnessapp.ui.login.ui.LoginViewModel
 
 import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavigationHost() {
 
@@ -27,16 +30,40 @@ fun NavigationHost() {
         startDestination = "onboard_screen"
     ) {
         composable(Home.rute) {
-            // HomeScreen()
+            Scaffold(
+                bottomBar = {
+                    BottomBar(navController = navController)
+                }
+            ) {
+                PreviewScreens(greeting = "Home Screen")
+            }
         }
         composable(News.rute) {
-            // NewsScreen()
+            Scaffold(
+                bottomBar = {
+                    BottomBar(navController = navController)
+                }
+            ) {
+                PreviewScreens(greeting = "News Screen")
+            }
         }
         composable(Rutine.rute) {
-            // RutineScreen()
+            Scaffold(
+                bottomBar = {
+                    BottomBar(navController = navController)
+                }
+            ) {
+                PreviewScreens(greeting = "Routine Screen")
+            }
         }
         composable(Profile.rute) {
-            // ProfileScreen()
+            Scaffold(
+                bottomBar = {
+                    BottomBar(navController = navController)
+                }
+            ) {
+                PreviewScreens(greeting = "Profile Screen")
+            }
         }
         composable("onboard_screen"){
             MainFunction(navController= navController)
@@ -47,15 +74,18 @@ fun NavigationHost() {
         composable("login_screen"){
             LoginScreen(viewModel = LoginViewModel())
         }
-        composable("home_screen"){
+    }
+}
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text ="Home Screen")
-            }
-        }
+@Composable
+fun PreviewScreens(
+    greeting:String
+){
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = greeting)
     }
 }
