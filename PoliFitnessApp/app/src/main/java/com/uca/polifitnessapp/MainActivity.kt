@@ -28,19 +28,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //NavigationHost()
-                    UserNavigation()
+                   NavigationHost()
+
+
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview(){
 
-        UserNavigation()
-
-}
 

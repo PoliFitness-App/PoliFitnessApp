@@ -1,7 +1,6 @@
 package com.uca.polifitnessapp.ui.UserProfile.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -21,40 +21,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.data.models.UserModel
 import com.uca.polifitnessapp.ui.navigation.UserScreens
 
 
 @Composable
-fun ProfileScreen(navController: NavController){
+fun ProfileScreen(navController: NavController, user: UserModel){
+
     Column(
+
+
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                colorResource(id = R.color.white)
-            )
             .padding(25.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        UserCard(navController)
-        generalInfoUser()
+        UserCard(navController, user)
+        generalInfoUser(user)
         specificlInfoUser()
         contactCard()
     }
 }
 
 @Composable
-fun UserCard( navController: NavController) {
+fun UserCard( navController: NavController, user: UserModel) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier.fillMaxWidth(),
@@ -68,7 +67,7 @@ fun UserCard( navController: NavController) {
                 )
         )
         Column(){
-            Text(text= "Pamela Gómez")
+            Text(text= user.name)
 
             Text(text = "Programa de perder grasa",
                 fontSize = 10.sp,
@@ -90,7 +89,7 @@ fun UserCard( navController: NavController) {
 }
 
 @Composable
-fun generalInfoUser(){
+fun generalInfoUser(user: UserModel){
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -101,6 +100,7 @@ fun generalInfoUser(){
             modifier = Modifier
                 .padding(10.dp)
                 .size(80.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
             Column(
@@ -109,7 +109,7 @@ fun generalInfoUser(){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "180cm", color = Color("#2E5DA8".toColorInt()))
+                Text(text = user.height.toString(), color = Color("#2E5DA8".toColorInt()))
 
                 Text(text = "Altura", textAlign = TextAlign.Center)
             }
@@ -120,6 +120,7 @@ fun generalInfoUser(){
             modifier = Modifier
                 .padding(10.dp)
                 .size(80.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
             Column(
@@ -128,7 +129,7 @@ fun generalInfoUser(){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "65 kg", color = Color("#2E5DA8".toColorInt()))
+                Text(text = user.weight.toString() +"kg", color = Color("#2E5DA8".toColorInt()))
                 Text(text = "Peso")
             }
 
@@ -138,6 +139,7 @@ fun generalInfoUser(){
             modifier = Modifier
                 .padding(10.dp)
                 .size(80.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
             Column(
@@ -145,7 +147,7 @@ fun generalInfoUser(){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "22 años", color = Color("#2E5DA8".toColorInt()))
+                Text(text = user.age.toString()+"años", color = Color("#2E5DA8".toColorInt()))
                 Text(text = "Edad")
             }
 
@@ -167,6 +169,7 @@ fun specificlInfoUser(){
             modifier = Modifier
                 .padding(20.dp)
                 .size(120.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
             Column(
@@ -187,6 +190,7 @@ fun specificlInfoUser(){
         ElevatedCard(
             modifier = Modifier
                 .size(120.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
             Column(
@@ -217,6 +221,7 @@ fun contactCard() {
 
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp),
     ) {
         Column(
