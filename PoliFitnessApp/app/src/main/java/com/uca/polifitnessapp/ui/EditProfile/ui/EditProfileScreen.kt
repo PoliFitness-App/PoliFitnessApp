@@ -53,7 +53,8 @@ fun EditProfileScreen(){
                 colorResource(id = R.color.white)
             )
             .padding(25.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HeaderImage()
         EditProfileText()
@@ -324,30 +325,36 @@ fun cmicon(){
 
 @Composable()
 fun combine(){
-    Column() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        Row(verticalAlignment = Alignment.CenterVertically,) {
+        Row(horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,) {
 
             weightField(modifier = Modifier.align(Alignment.CenterVertically))
             kgicon()
 
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically,) {
+        Row(horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,) {
 
             heightField(modifier = Modifier.align(Alignment.CenterVertically))
             cmicon()
 
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically,) {
+        Row(horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,) {
 
             waistField(modifier = Modifier.align(Alignment.CenterVertically))
             cmicon()
 
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically,) {
+        Row(horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,) {
 
             hipField(modifier = Modifier.align(Alignment.CenterVertically))
             cmicon()
@@ -355,7 +362,7 @@ fun combine(){
         }
 
 
-        Row(
+        Row( horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
 
             SaveButton(modifier = Modifier.align(Alignment.CenterVertically))
@@ -396,6 +403,7 @@ fun SaveButton(modifier: Modifier) {
         )
     }
 }
+
 
 
 

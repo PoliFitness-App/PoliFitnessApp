@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.uca.polifitnessapp.ui.UserProfile.ui.ProfileScreen
 import com.uca.polifitnessapp.ui.navigation.BottomNav
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
+import com.uca.polifitnessapp.ui.navigation.UserNavigation
 import com.uca.polifitnessapp.ui.theme.PoliFitnessAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,11 +28,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationHost()
+                    //NavigationHost()
+                    UserNavigation()
                 }
             }
         }
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview(){
+
+        UserNavigation()
+
+}
 

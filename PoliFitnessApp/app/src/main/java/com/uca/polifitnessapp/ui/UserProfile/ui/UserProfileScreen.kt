@@ -30,11 +30,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.navigation.UserScreens
 
-@Preview
+
 @Composable
-fun ProfileScreen(){
+fun ProfileScreen(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +46,7 @@ fun ProfileScreen(){
             .padding(25.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        UserCard()
+        UserCard(navController)
         generalInfoUser()
         specificlInfoUser()
         contactCard()
@@ -52,8 +54,7 @@ fun ProfileScreen(){
 }
 
 @Composable
-fun UserCard(
-) {
+fun UserCard( navController: NavController) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier.fillMaxWidth(),
@@ -79,7 +80,7 @@ fun UserCard(
         Button(
             colors = ButtonDefaults.buttonColors(Color("#2E5DA8".toColorInt())),
             shape = RoundedCornerShape(20.dp),
-            onClick = { "/*TODO*/ "}) {
+            onClick = { navController.navigate(route = UserScreens.EditProfileScreen.route)}) {
 
             Text(text = "Editar", fontSize = 12.sp)
 
