@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.uca.polifitnessapp.data.models.UserModel
+import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.EditProfile.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.UserProfile.ui.ProfileScreen
 

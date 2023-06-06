@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.data.models
+package com.uca.polifitnessapp.data.db.models
 
 data class UserModel(
     var name:String,
