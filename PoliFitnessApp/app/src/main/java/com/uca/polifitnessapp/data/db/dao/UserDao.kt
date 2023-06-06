@@ -33,10 +33,15 @@ interface UserDao {
     @Update
     suspend fun updateUser(user: UserModel)
 
+
     //Funcion para eliminar un usuario
     @Transaction
     @Delete
     suspend fun deleteUser(user: UserModel)
+
+    //Funcion para actualizar IMC
+    @Query("UPDATE user_table SET imc = :imc WHERE userId = :userId")
+    suspend fun updateImcUser(userId: Int, imc: Float)
 
 
 }
