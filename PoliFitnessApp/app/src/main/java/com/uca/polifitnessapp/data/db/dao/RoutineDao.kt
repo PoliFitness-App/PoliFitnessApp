@@ -32,6 +32,13 @@ interface RoutineDao {
     @Transaction
     @Delete
     suspend fun deleteRoutine(routine: RoutineModel)
+    //funcion toggle para ocultar rutina por id
+
+    /*
+    * //funcion toggle para ocultar rutina por id
+    @Query("UPDATE routine_table SET hidden = :hidden WHERE routineId = :routineId")
+    suspend fun toggleRoutine(routineId: Int, hidden: Boolean)
+    * */
 
     //funcion para obtener rutinas por enfoque
     @Query("SELECT * FROM routine_table WHERE approach = :approach")
