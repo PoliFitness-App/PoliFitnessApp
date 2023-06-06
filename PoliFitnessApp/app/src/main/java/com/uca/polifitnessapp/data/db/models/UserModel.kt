@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "user_table")
 data class UserModel(
 
-    @PrimaryKey(autoGenerate = true) var actorId: Long = 0L,
+    @PrimaryKey(autoGenerate = true) var userId: Long = 0L,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "email") val email: String,
     @ColumnInfo(name = "height") val height: Int,
@@ -23,3 +23,4 @@ data class UserModel(
     constructor(name: String, email: String, height: Int, weight: Int, age:Int ):
             this(0, name, email, height, weight, age)
 }
+
