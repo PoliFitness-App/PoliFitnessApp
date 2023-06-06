@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.data.models.UserModel
+import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.navigation.UserScreens
 
 
