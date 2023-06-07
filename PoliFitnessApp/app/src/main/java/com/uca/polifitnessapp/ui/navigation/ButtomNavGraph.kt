@@ -18,6 +18,7 @@ import com.uca.polifitnessapp.ui.login.ui.LoginScreen
 import com.uca.polifitnessapp.ui.login.ui.LoginViewModel
 
 import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
+import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -27,7 +28,7 @@ fun NavigationHost() {
 
     NavHost(
         navController = navController,
-        startDestination = "onboard_screen"
+        startDestination = News.rute
     ) {
         composable(Home.rute) {
             Scaffold(
@@ -44,7 +45,7 @@ fun NavigationHost() {
                     BottomBar(navController = navController)
                 }
             ) {
-                PreviewScreens(greeting = "News Screen")
+                NewsListScreen()
             }
         }
         composable(Rutine.rute) {
