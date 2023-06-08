@@ -27,18 +27,24 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -179,7 +185,7 @@ fun DateBirthField(
                 fontSize = 12.sp
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         modifier = modifier
             .padding(10.dp)
             .width(335.dp),
@@ -407,7 +413,9 @@ fun Combine(){
         Row(horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,) {
 
-            GenderField(modifier = Modifier.align(Alignment.Top))
+            /* GenderField(modifier = Modifier.align(Alignment.Top)) */
+
+            MyScreen()
 
         }
 
@@ -492,7 +500,86 @@ fun SaveButton(modifier: Modifier) {
             fontWeight = FontWeight.Bold
         )
     }
+
+
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyScreen() {
+
+
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var gender by remember {
+        mutableStateOf("")
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = { isExpanded = it}
+    ) {
+        TextField(
+            value = gender,
+            onValueChange = {},
+            shape = MaterialTheme.shapes.small,
+            readOnly = true,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Male,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+                //containerColor = Color(0xFFD7E2FF)
+
+            ),
+            modifier = Modifier
+                .menuAnchor()
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color(0xFFD7E2FF))
+                .width(335.dp)
+        )
+
+
+
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = {isExpanded = false}
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "Femenino")},
+                onClick = {
+                    gender = "Femenino"
+                    isExpanded = false
+
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text(text = "Masculino")},
+                onClick = {
+                    gender = "Masculino"
+                    isExpanded = false
+
+                }
+            )
+            
+        }
+        
+    }
+
+}
+
 
 
 
