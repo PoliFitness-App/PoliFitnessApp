@@ -53,12 +53,15 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.signup.ui.validation.UiEvent
+import com.uca.polifitnessapp.ui.signup.ui.viewmodel.SignUpViewModel
 
 
-@Preview
+
 @Composable
-fun SignUpScreen(){
+fun SignUpScreen(signUpViewModel: SignUpViewModel){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -110,14 +113,18 @@ fun SignUpHeaderText(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameField(
-    modifier: Modifier
+    modifier: Modifier,
+    errorStatus: Boolean,
+    signUpViewModel: SignUpViewModel,
+    onTextSelected: (String) -> Unit
 ){
     val textSate = remember { mutableStateOf("") }
 
     TextField(
         value = textSate.value,
-        onValueChange = { textSate.value = it },
+        onValueChange = { onTextSelected(it)},
         shape = MaterialTheme.shapes.small,
+        errorStatus = signUpViewModel.signUpUiState.value.nameError,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Outlined.AccountCircle,
@@ -151,7 +158,10 @@ fun NameField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LastNameField(
-    modifier: Modifier
+    modifier: Modifier,
+    errorStatus: Boolean
+
+
 ){
     val textSate = remember { mutableStateOf("") }
 
@@ -191,7 +201,8 @@ fun LastNameField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailField(
-    modifier: Modifier
+    modifier: Modifier,
+    errorStatus: Boolean
 ){
     val textSate = remember { mutableStateOf("") }
 
@@ -232,7 +243,8 @@ fun EmailField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordField(
-    modifier: Modifier
+    modifier: Modifier,
+    errorStatus: Boolean
 ){
     val password = remember { mutableStateOf("") }
 
@@ -356,9 +368,11 @@ fun combine(){
 
 
 @Composable
-fun SignUpButton(modifier: Modifier) {
+fun SignUpButton(modifier: Modifier
+    signUpViewModel: SignUpViewModel
+) {
     Button(
-        onClick = { "/*TODO*/ "},
+        onClick = { signUpViewModel.onEvent(UiEvent.SignUpButtonClicked)},
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
