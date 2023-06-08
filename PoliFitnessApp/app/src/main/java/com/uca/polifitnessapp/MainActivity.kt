@@ -12,7 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
-import com.uca.polifitnessapp.ui.navigation.UserNavigation
+import com.uca.polifitnessapp.ui.signup.ui.SignUpScreen
 import com.uca.polifitnessapp.ui.theme.PoliFitnessAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +25,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   NavigationHost()
+                   //NavigationHost()
+                    SignUpScreen()
 
 
                 }

@@ -11,11 +11,11 @@ data class UserModel(
     @PrimaryKey(autoGenerate = true) var userId: Long = 0L,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "email") val email: String,
-    @ColumnInfo(name = "height") val height: Float,
-    @ColumnInfo(name = "weight") val weight: Float,
+    @ColumnInfo(name = "height") val height: Double,
+    @ColumnInfo(name = "weight") val weight: Double,
     @ColumnInfo(name = "age") val age: Int,
-    @ColumnInfo(name = "imc") val imc: Float,
-    @ColumnInfo(name = "icc") val icc: Float,
+    @ColumnInfo(name = "imc") val imc: Double,
+    @ColumnInfo(name = "icc") val icc: Double,
 
 
 
@@ -23,7 +23,7 @@ data class UserModel(
     )
 
 {
-    constructor(name: String, email: String, height: Float, weight: Float, age:Int, imc: Float, icc: Float):
+    constructor(name: String, email: String, height: Double, weight: Double, age:Int, imc: Double, icc: Double):
             this(0, name, email, height, weight, age, imc, icc)
 }
 

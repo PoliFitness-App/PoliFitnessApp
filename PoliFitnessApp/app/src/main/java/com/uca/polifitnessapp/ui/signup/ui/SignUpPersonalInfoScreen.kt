@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.EditProfile.ui
+package com.uca.polifitnessapp.ui.signup.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,11 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Height
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.Male
 import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Straight
 import androidx.compose.material.icons.outlined.Straighten
+import androidx.compose.material.icons.outlined.Transgender
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
@@ -41,15 +44,17 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import com.uca.polifitnessapp.R
+import java.time.format.DateTimeFormatter
 
 @Preview
 @Composable
-fun EditProfileScreen(){
+fun SignUpPersonalInfoSCreen(){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +67,7 @@ fun EditProfileScreen(){
     ) {
         HeaderImage()
         EditProfileText()
-        combine()
+        Combine()
 
 
     }
@@ -80,7 +85,7 @@ fun EditProfileScreen(){
 fun HeaderImage(){
     Box(
         modifier = Modifier
-            .size(250.dp)
+            .size(200.dp)
     ){
         Image(painter = painterResource(id = R.drawable.editprofileimg),
             modifier = Modifier.fillMaxSize(),
@@ -103,23 +108,90 @@ fun EditProfileText(){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Hey!")
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-
-        ) {
-            Text(text = "¿Es hora de un cambio?",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Image(painter = painterResource(id = R.drawable.fireimg),
-                contentDescription = "Imagen fuego" )
-        }
 
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GenderField(
+    modifier: Modifier
+){
+    val textSate = remember { mutableStateOf("") }
+
+    TextField(
+        value = textSate.value,
+        onValueChange = { textSate.value = it },
+        shape = MaterialTheme.shapes.small,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Male,
+                contentDescription = "null",
+                tint = Color(0xFF565E71)
+            )
+        },
+        label = {
+            Text(
+                text = "Escoge tu genero",
+                color = Color(0xFF565E71),
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        modifier = modifier
+            .padding(10.dp)
+            .width(335.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF565E71),
+            unfocusedBorderColor = Color.Transparent,
+            containerColor = Color(0xFFD7E2FF)
+
+        )
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateBirthField(
+    modifier: Modifier
+){
+    val textSate = remember { mutableStateOf("") }
+
+    TextField(value = textSate.value,
+        onValueChange = { textSate.value = it },
+        shape = MaterialTheme.shapes.small,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.CalendarMonth,
+                contentDescription = "null",
+                tint = Color(0xFF565E71)
+            )
+        },
+        label = {
+            Text(
+                text = "Fecha de nacimiento",
+                color = Color(0xFF565E71),
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        modifier = modifier
+            .padding(10.dp)
+            .width(335.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF565E71),
+            unfocusedBorderColor = Color.Transparent,
+            containerColor = Color(0xFFD7E2FF)
+
+        )
+    )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,10 +227,10 @@ fun weightField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-        
+
         )
     )
-    
+
 }
 
 
@@ -327,11 +399,24 @@ fun cmicon(){
     }
 }
 
-@Composable()
-fun combine(){
+@Composable
+fun Combine(){
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.Start
     ) {
+        Row(horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,) {
+
+            GenderField(modifier = Modifier.align(Alignment.Top))
+
+        }
+
+        Row(horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,) {
+
+            DateBirthField(modifier = Modifier.align(Alignment.CenterVertically))
+
+        }
 
         Row(horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
@@ -366,7 +451,7 @@ fun combine(){
         }
 
 
-        Row(modifier = Modifier.padding(40.dp),
+        Row(modifier = Modifier.padding(25.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
 
@@ -375,7 +460,7 @@ fun combine(){
         }
 
 
-        
+
     }
 
 }
@@ -398,7 +483,7 @@ fun SaveButton(modifier: Modifier) {
             containerColor = Color(0xFF034189)
         ),
 
-    )
+        )
     {
         Text(
             text = "Guardar",
@@ -408,10 +493,6 @@ fun SaveButton(modifier: Modifier) {
         )
     }
 }
-
-
-
-
 
 
 
