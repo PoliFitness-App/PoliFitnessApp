@@ -1,7 +1,7 @@
 package com.uca.polifitnessapp.ui.theme
 import androidx.compose.ui.graphics.Color
 
-val md_theme_light_primary = Color(0xFF2E5DA8)
+val md_theme_light_primary = Color(0xFF034189)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFD7E2FF)
 val md_theme_light_onPrimaryContainer = Color(0xFF001A40)
@@ -32,7 +32,7 @@ val md_theme_light_surfaceTint = Color(0xFF2E5DA8)
 val md_theme_light_outlineVariant = Color(0xFFC4C6D0)
 val md_theme_light_scrim = Color(0xFF000000)
 
-val md_theme_dark_primary = Color(0xFFACC7FF)
+val md_theme_dark_primary = Color(0xFF034189)
 val md_theme_dark_onPrimary = Color(0xFF002F67)
 val md_theme_dark_primaryContainer = Color(0xFF08458E)
 val md_theme_dark_onPrimaryContainer = Color(0xFFD7E2FF)

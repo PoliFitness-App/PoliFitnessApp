@@ -1,5 +1,6 @@
 package com.uca.polifitnessapp.ui.news.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material3.Card
@@ -24,27 +24,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.news.data.News
 import com.uca.polifitnessapp.ui.news.data.newsList
-import com.uca.polifitnessapp.ui.theme.*
 
 // ----
 // News List Screen
 // ------
 
+// category filter state and index size for filter
+var category by mutableStateOf("")
+var indexsize by mutableStateOf(0)
+
 @Composable
-fun NewsListScreen(){
+fun NewsListScreen() {
 
     Column(
         modifier = Modifier
@@ -53,9 +57,6 @@ fun NewsListScreen(){
         //Center items horizontally in the column
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // header (News filter)
-        HeaderSection()
-
         // news list
         NewsList()
     }
@@ -67,7 +68,7 @@ fun NewsListScreen(){
 // ------
 
 data class FilterData(
-    val image: Int , //svg
+    val image: Int, //svg
     val title: String,
 )
 
@@ -79,7 +80,11 @@ data class FilterData(
 fun HeaderSection() {
 
     // List of icons
-    val icon = listOf<FilterData>(
+    val icon = listOf(
+        FilterData(
+            image = R.drawable.homeicon,
+            title = "General"
+        ),
         FilterData(
             image = R.drawable.sports_soccer,
             title = "Futbol"
@@ -111,13 +116,17 @@ fun HeaderSection() {
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(16.dp, 8.dp, 16.dp, 8.dp)
                 .align(Alignment.Start),
-            )
+        )
 
         // States for filter
         var selectedIndex by remember { mutableStateOf(0) }
-        val onItemClick = { index: Int -> selectedIndex = index}
+        val onItemClick = { index: Int ->
+            selectedIndex = index
+            // filter news
+            newsFilter(index)
+        }
 
         // Filter items
         LazyRow(
@@ -126,7 +135,7 @@ fun HeaderSection() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            items(icon.size){index ->
+            items(icon.size) { index ->
 
                 // Filter item
                 FilterItem(
@@ -138,7 +147,38 @@ fun HeaderSection() {
 
             }
         }
-        
+
+    }
+}
+
+// function for filter news
+fun newsFilter(index: Int) {
+    //when index
+    when (index) {
+        0 -> {
+            // filter news by category "General"
+            category = ""
+        }
+
+        1 -> {
+            // filter news by category "Futbol"
+            category = "Futbol"
+        }
+
+        2 -> {
+            // filter news by category "Basketball"
+            category = "Basketball"
+        }
+
+        3 -> {
+            // filter news by category "Volleyball"
+            category = "Volleyball"
+        }
+
+        4 -> {
+            // filter news by category "Actividades"
+            category = "Actividades"
+        }
     }
 }
 
@@ -159,11 +199,10 @@ fun FilterItem(
         modifier = Modifier
             .padding(16.dp)
             .width(105.dp)
-            .height(96.dp)
-        ,
+            .height(96.dp),
         // Card colors
         colors = CardDefaults.cardColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.onPrimary  else Color.White,
+            containerColor = if (selected) MaterialTheme.colorScheme.primary else Color.White,
             contentColor = if (selected) Color.White else MaterialTheme.colorScheme.outline
         ),
     ) {
@@ -174,13 +213,12 @@ fun FilterItem(
                     onClick.invoke(index)
                 }
                 .fillMaxSize()
-                .padding(8.dp)
-            ,
+                .padding(8.dp),
             verticalArrangement = Arrangement.Center,
         ) {
             // Icon
             Icon(
-                painterResource(id = icon.image) ,
+                painterResource(id = icon.image),
                 contentDescription = "Filter",
                 modifier = Modifier
                     .size(50.dp)
@@ -206,7 +244,8 @@ fun FilterItem(
 // ------
 
 @Composable
-fun NewsList() {
+fun NewsList(
+) {
     // Container
     Column(
         modifier = Modifier
@@ -218,19 +257,36 @@ fun NewsList() {
 
         // States for news list
         var selectedIndex by remember { mutableStateOf(0) }
-        val onItemClick = { index: Int -> selectedIndex = index}
+        val onItemClick = { index: Int ->
+            selectedIndex = index
+        }
+
+        if (category.isBlank())
+        // index size for news list
+            indexsize = newsList.size
+        else
+        // index size for filter list
+            indexsize = newsList.filter { it.category == category }.size
 
         // News items
         LazyColumn(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(0.dp, 0.dp, 0.dp, 64.dp)
         ) {
-            items(newsList.size){ index ->
+            item {
+                // header (News filter)
+                HeaderSection()
+            }
+            items(indexsize) { index ->
                 // Filter item
                 NewItem(
-                    new = newsList[index],
+                    new = if (category.isBlank())
+                        newsList[index]
+                    else
+                        newsList.filter { it.category == category }[index],
                     index = index,
                     selected = selectedIndex == index,
                     onClick = onItemClick
@@ -259,8 +315,7 @@ fun NewItem(
         modifier = Modifier
             .padding(16.dp)
             .width(350.dp)
-            .height(285.dp)
-        ,
+            .height(285.dp),
         // Card colors
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
@@ -287,8 +342,7 @@ fun NewItem(
                     onClick.invoke(index)
                 }
                 .fillMaxSize()
-                .padding(12.dp)
-            ,
+                .padding(12.dp),
             verticalArrangement = Arrangement.Center,
         ) {
             // Title
@@ -332,6 +386,6 @@ fun NewItem(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewNewsListScreen(){
+fun PreviewNewsListScreen() {
     NewsListScreen()
 }
