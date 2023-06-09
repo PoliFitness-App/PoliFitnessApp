@@ -1,11 +1,18 @@
 package com.uca.polifitnessapp.ui.signup.ui.viewmodel
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.uca.polifitnessapp.ui.signup.ui.validation.SignUpUiState
 import com.uca.polifitnessapp.ui.signup.ui.validation.UiEvent
 import com.uca.polifitnessapp.ui.signup.ui.validation.Validator
+
 
 class SignUpViewModel: ViewModel() {
     private val TAG = SignUpViewModel::class.simpleName
@@ -72,6 +79,9 @@ class SignUpViewModel: ViewModel() {
         val passwordResult = Validator.validatePassword(
             password = signUpUiState.value.password
         )
+
+        Log.d(TAG, "inside_ValidateData")
+        Log.d(TAG, "nameResult = $nameResult")
 
         signUpUiState.value = signUpUiState.value.copy(
             nameError = nameResult.status,
