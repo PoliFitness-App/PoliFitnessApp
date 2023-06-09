@@ -11,9 +11,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.uca.polifitnessapp.ui.navigation.NavigationHost
 import com.uca.polifitnessapp.ui.navigation.UserNavigation
 import com.uca.polifitnessapp.ui.theme.PoliFitnessAppTheme
+import com.uca.polifitnessapp.ui.navigation.NavigationHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
