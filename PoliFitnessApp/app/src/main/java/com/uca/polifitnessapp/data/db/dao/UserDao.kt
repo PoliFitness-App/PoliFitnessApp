@@ -14,7 +14,7 @@ interface UserDao {
 
     //Funcion para obtener todos los usuarios
     @Query("SELECT * FROM user_table")
-    suspend fun getAllUser(): List<UserModel>
+    suspend fun getAllUsers(): List<UserModel>
 
     //Funcion para insertar un usuario
     @Transaction
@@ -41,7 +41,7 @@ interface UserDao {
 
     //Funcion para actualizar IMC e ICC
     @Query("UPDATE user_table SET imc = :imc, icc = :icc WHERE userId = :userId")
-    suspend fun updateImcUser(userId: Int, imc: Float, icc: Float)
+    suspend fun updateImcIccUser(userId: Int, imc: Float, icc: Float)
     
 
 
