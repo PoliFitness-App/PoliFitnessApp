@@ -11,9 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.UserProfile.ui.ProfileScreen
 import com.uca.polifitnessapp.ui.navigation.UserNavigation
 import com.uca.polifitnessapp.ui.theme.PoliFitnessAppTheme
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
+import com.uca.polifitnessapp.ui.navigation.UserScreens
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +29,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   NavigationHost()
+                   //NavigationHost()
+
+                    ProfileScreen()
 
 
                 }
