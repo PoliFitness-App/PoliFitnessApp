@@ -21,17 +21,31 @@ fun MainScalfold() {
 
     // Bottom bar state
     when (navBackStackEntry.value?.destination?.route) {
-        // Main flow
-        "main_flow" -> {
-            bottomBarState.value = true
-        }
-        // Auth flow
-        "auth_flow" -> {
-            bottomBarState.value = false
-        }
         // New user flow
         "new_user_flow" -> {
             bottomBarState.value = false
+        }
+
+        // Onboarding flow
+        "onboard_screen" -> {
+            bottomBarState.value = false
+        }
+        "splash_screen" -> {
+            bottomBarState.value = false
+        }
+
+        // Login screen
+        "login_screen" -> {
+            bottomBarState.value = false
+        }
+
+        // Register screen
+        "register_screen" -> {
+            bottomBarState.value = false
+        }
+        // default
+        else -> {
+            bottomBarState.value = true
         }
     }
 

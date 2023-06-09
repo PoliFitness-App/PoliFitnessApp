@@ -147,18 +147,26 @@ fun CalculatorButton() {
 }
 
 @Composable
+// AddItem function, this function is used to add the items to the bottom bar
 fun RowScope.AddItem(
+    // Screen
     screen: ButtomNavItems,
+    // Current destination
     currentDestination: NavDestination?,
     navController: NavHostController
 ) {
+    // Selected state of the item
     val selected = currentDestination?.hierarchy?.any { it.route == screen.rute } == true
+
+    // Box with the item
     Box(
         modifier = Modifier
             .height(48.dp)
             .width(54.dp)
             .clip(shape = RoundedCornerShape(60.dp))
             .clickable {
+                // Navigate to the screen when the item is clicked, and pop up to the start destination
+                // of the graph to avoid building up a large stack of destinations on the back stack as users select items
                 navController.navigate(screen.rute) {
                     popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true
@@ -176,6 +184,7 @@ fun RowScope.AddItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
+            // If the item is selected, the background color is blue, if not, the background color is white
             AnimatedVisibility(
                 visible = selected,
                 enter = scaleIn(

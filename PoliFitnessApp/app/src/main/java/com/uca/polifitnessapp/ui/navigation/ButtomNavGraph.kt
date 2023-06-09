@@ -38,7 +38,7 @@ fun NavigationHost(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = "auth_flow"
+        startDestination = "new_user_flow"
     ) {
 
         // ---
@@ -107,16 +107,6 @@ fun NavigationHost(navController: NavHostController) {
         }
     }
 }
-
-@Composable
-inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
-    val navGraphRoute = destination.parent?.route ?: return viewModel()
-    val parentEntry = remember(this) {
-        navController.getBackStackEntry(navGraphRoute)
-    }
-    return viewModel(parentEntry)
-}
-
 
 @Composable
 fun PreviewScreens(
