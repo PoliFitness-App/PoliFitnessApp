@@ -236,7 +236,7 @@ fun specificlInfoUser(
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
 
         ElevatedCard(
