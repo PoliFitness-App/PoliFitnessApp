@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
 import com.uca.polifitnessapp.ui.signup.ui.SignUpScreen
+import com.uca.polifitnessapp.ui.signup.ui.viewmodel.SignUpViewModel
 import com.uca.polifitnessapp.ui.theme.PoliFitnessAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                    //NavigationHost()
-                    SignUpScreen()
+                    SignUpScreen(viewModel = SignUpViewModel())
 
 
                 }

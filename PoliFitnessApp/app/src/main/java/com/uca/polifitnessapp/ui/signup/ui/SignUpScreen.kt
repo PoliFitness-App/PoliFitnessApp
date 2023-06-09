@@ -46,6 +46,7 @@ import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -60,8 +61,9 @@ import com.uca.polifitnessapp.ui.signup.ui.viewmodel.SignUpViewModel
 
 
 
+
 @Composable
-fun SignUpScreen(signUpViewModel: SignUpViewModel){
+fun SignUpScreen(viewModel: SignUpViewModel){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +75,7 @@ fun SignUpScreen(signUpViewModel: SignUpViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SignUpHeaderText()
-        combine()
+        combine(viewModel)
         GoogleLogin(modifier = Modifier.align(Alignment.CenterHorizontally))
 
 
@@ -115,16 +117,17 @@ fun SignUpHeaderText(
 fun NameField(
     modifier: Modifier,
     errorStatus: Boolean,
-    signUpViewModel: SignUpViewModel,
     onTextSelected: (String) -> Unit
 ){
     val textSate = remember { mutableStateOf("") }
 
     TextField(
         value = textSate.value,
-        onValueChange = { onTextSelected(it)},
+        onValueChange = {
+            textSate.value = it
+            onTextSelected(it)
+        },
         shape = MaterialTheme.shapes.small,
-        errorStatus = signUpViewModel.signUpUiState.value.nameError,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Outlined.AccountCircle,
@@ -140,7 +143,7 @@ fun NameField(
                 fontSize = 12.sp
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         modifier = modifier
             .width(315.dp),
         singleLine = true,
@@ -149,7 +152,8 @@ fun NameField(
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
 
-        )
+        ),
+        isError = !errorStatus
     )
 
 }
@@ -159,14 +163,16 @@ fun NameField(
 @Composable
 fun LastNameField(
     modifier: Modifier,
-    errorStatus: Boolean
-
+    errorStatus: Boolean,
+    onTextSelected: (String) -> Unit
 
 ){
     val textSate = remember { mutableStateOf("") }
 
     TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
+        onValueChange = {
+            textSate.value = it
+            onTextSelected(it)   },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -192,7 +198,8 @@ fun LastNameField(
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
 
-        )
+        ),
+        isError = !errorStatus
     )
 
 }
@@ -202,12 +209,16 @@ fun LastNameField(
 @Composable
 fun EmailField(
     modifier: Modifier,
-    errorStatus: Boolean
+    errorStatus: Boolean,
+    onTextSelected: (String) -> Unit
 ){
     val textSate = remember { mutableStateOf("") }
 
     TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
+        onValueChange = {
+            textSate.value = it
+            onTextSelected(it)},
+
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -233,7 +244,8 @@ fun EmailField(
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
 
-        )
+        ),
+        isError = !errorStatus
     )
 
 }
@@ -244,7 +256,8 @@ fun EmailField(
 @Composable
 fun PasswordField(
     modifier: Modifier,
-    errorStatus: Boolean
+    errorStatus: Boolean,
+    onTextSelected: (String) -> Unit
 ){
     val password = remember { mutableStateOf("") }
 
@@ -253,7 +266,9 @@ fun PasswordField(
     }
 
     TextField(value = password.value,
-        onValueChange = { password.value = it },
+        onValueChange = {
+            password.value = it
+            onTextSelected(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -299,7 +314,9 @@ fun PasswordField(
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
 
-        )
+        ),
+        isError = !errorStatus
+
     )
 
 }
@@ -308,7 +325,9 @@ fun PasswordField(
 
 
 @Composable()
-fun combine(){
+fun combine( signUpViewModel: SignUpViewModel){
+
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -317,7 +336,11 @@ fun combine(){
         Row(horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
 
-            NameField(modifier = Modifier.align(Alignment.CenterVertically))
+            NameField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                errorStatus = signUpViewModel.signUpUiState.value.nameError,
+                onTextSelected = {signUpViewModel.onEvent(UiEvent.NameChanged(it))}
+            )
 
 
         }
@@ -325,7 +348,12 @@ fun combine(){
         Row(horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
 
-            LastNameField(modifier = Modifier.align(Alignment.CenterVertically))
+            LastNameField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                errorStatus = signUpViewModel.signUpUiState.value.lastnameError,
+                onTextSelected = {signUpViewModel.onEvent(UiEvent.Lastnamehanged(it))}
+
+            )
 
 
         }
@@ -333,7 +361,12 @@ fun combine(){
         Row(horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
 
-            EmailField(modifier = Modifier.align(Alignment.CenterVertically))
+            EmailField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                errorStatus = signUpViewModel.signUpUiState.value.emailError,
+                onTextSelected = {signUpViewModel.onEvent(UiEvent.EmailChanged(it))}
+
+            )
 
 
         }
@@ -341,7 +374,11 @@ fun combine(){
         Row(horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
 
-            PasswordField(modifier = Modifier.align(Alignment.CenterVertically))
+            PasswordField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                errorStatus = signUpViewModel.signUpUiState.value.passwordError,
+                onTextSelected = {signUpViewModel.onEvent(UiEvent.PasswordChanged(it))}
+            )
 
         }
 
@@ -355,7 +392,10 @@ fun combine(){
         Row( horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
 
-            SignUpButton(modifier = Modifier.align(Alignment.CenterVertically))
+            SignUpButton(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                signUpViewModel
+            )
 
         }
 
@@ -368,7 +408,7 @@ fun combine(){
 
 
 @Composable
-fun SignUpButton(modifier: Modifier
+fun SignUpButton(modifier: Modifier,
     signUpViewModel: SignUpViewModel
 ) {
     Button(

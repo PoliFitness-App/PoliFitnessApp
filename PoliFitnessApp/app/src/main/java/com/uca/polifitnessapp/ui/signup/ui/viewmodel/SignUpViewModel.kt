@@ -13,6 +13,7 @@ class SignUpViewModel: ViewModel() {
     var signUpUiState = mutableStateOf(SignUpUiState())
 
     fun onEvent( event: UiEvent){
+        validateData()
         when( event){
             is UiEvent.NameChanged ->{
                 signUpUiState.value = signUpUiState.value.copy(
@@ -37,7 +38,7 @@ class SignUpViewModel: ViewModel() {
 
             is UiEvent.PasswordChanged ->{
                 signUpUiState.value = signUpUiState.value.copy(
-                    email = event.password)
+                    password = event.password)
 
                 printState()
             }
