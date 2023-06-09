@@ -113,8 +113,7 @@ fun OnBoardingPager(
             ) { page ->
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.Start
                 ) {
                     //Image
@@ -177,7 +176,7 @@ fun NextPageButton(
             coroutineScope.launch {
                 if (pagerState.currentPage == item.size - 1) {
                     navController.popBackStack()
-                    navController.navigate("home")
+                    navController.navigate("main_flow")
                 } else {
                     // Call scroll to on pagerState
                     pagerState.animateScrollToPage(pagerState.currentPage + 1)

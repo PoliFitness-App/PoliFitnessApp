@@ -16,10 +16,6 @@ data class UserModel(
     @ColumnInfo(name = "age") val age: Int,
     @ColumnInfo(name = "imc") val imc: Float,
     @ColumnInfo(name = "icc") val icc: Float,
-
-
-
-
     )
 
 {

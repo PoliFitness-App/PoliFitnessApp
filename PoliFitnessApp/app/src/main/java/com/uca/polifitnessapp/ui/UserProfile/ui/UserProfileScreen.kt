@@ -38,8 +38,6 @@ import com.uca.polifitnessapp.ui.navigation.UserScreens
 fun ProfileScreen(navController: NavController, user: UserModel){
 
     Column(
-
-
         modifier = Modifier
             .fillMaxSize()
             .padding(25.dp),
@@ -62,8 +60,6 @@ fun UserCard( navController: NavController, user: UserModel) {
             modifier = Modifier.size(50.dp),
             contentDescription = stringResource(
                 id = R.string.description,
-
-
                 )
         )
         Column(){
@@ -73,8 +69,6 @@ fun UserCard( navController: NavController, user: UserModel) {
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Light
             )
-
-
         }
         Button(
             colors = ButtonDefaults.buttonColors(Color("#2E5DA8".toColorInt())),

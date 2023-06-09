@@ -3,7 +3,13 @@ package com.uca.polifitnessapp.ui.navigation
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +31,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +51,10 @@ import com.uca.polifitnessapp.ui.login.ui.LoginViewModel
 // BOTTOM BAR
 
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(
+    navController: NavHostController,
+    bottomBarState: MutableState<Boolean>,
+) {
     val screens = listOf(
         ButtomNavItems.Home,
         ButtomNavItems.News,
@@ -52,54 +62,65 @@ fun BottomBar(navController: NavHostController) {
         ButtomNavItems.Profile
     )
 
+    // Current back stack entry
     val navStackbacEntry by navController.currentBackStackEntryAsState()
+
+    // CurrentDestination
     val currentDestination = navStackbacEntry?.destination
 
-    Row(
-        modifier = Modifier
-            .padding(10.dp, 10.dp, 10.dp)
-            .background(Color.White, RoundedCornerShape(20.dp, 20.dp))
-            .fillMaxWidth()
-            .height(70.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    // Bottom bar, if bottomBarState is true, the bottom bar is visible
+    AnimatedVisibility(
+        visible = bottomBarState.value
     ) {
 
-        // HOME
+        // Row with the bottom bar items
+        Row(
+            modifier = Modifier
+                .padding(10.dp, 10.dp, 10.dp)
+                .background(Color.White, RoundedCornerShape(20.dp, 20.dp))
+                .fillMaxWidth()
+                .height(70.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-        AddItem(
-            screen = screens[0],
-            currentDestination = currentDestination,
-            navController = navController
-        )
+            // HOME
 
-        // NEWS
+            AddItem(
+                screen = screens[0],
+                currentDestination = currentDestination,
+                navController = navController
+            )
 
-        AddItem(
-            screen = screens[1],
-            currentDestination = currentDestination,
-            navController = navController
-        )
+            // NEWS
 
-        // CALCULATOR
+            AddItem(
+                screen = screens[1],
+                currentDestination = currentDestination,
+                navController = navController
+            )
 
-        CalculatorButton()
+            // CALCULATOR
 
-        // RUTINE
+            CalculatorButton()
 
-        AddItem(
-            screen = screens[2],
-            currentDestination = currentDestination,
-            navController = navController
-        )
+            // RUTINE
 
-        // PROFILE
+            AddItem(
+                screen = screens[2],
+                currentDestination = currentDestination,
+                navController = navController
+            )
 
-        AddItem(
-            screen = screens[3],
-            currentDestination = currentDestination,
-            navController = navController
-        )
+            // PROFILE
+
+            AddItem(
+                screen = screens[3],
+                currentDestination = currentDestination,
+                navController = navController
+            )
+
+        }
 
     }
 }
@@ -113,7 +134,9 @@ fun CalculatorButton() {
             .width(60.dp)
             .height(60.dp)
             .offset(y = (-10).dp),
-        onClick = {},
+        onClick = {
+
+        },
         containerColor = Color(0xFF034189),
         contentColor = Color.White,
         shape = RoundedCornerShape(50.dp),
@@ -133,7 +156,8 @@ fun RowScope.AddItem(
     Box(
         modifier = Modifier
             .height(48.dp)
-            .clip(CircleShape)
+            .width(54.dp)
+            .clip(shape = RoundedCornerShape(60.dp))
             .clickable {
                 navController.navigate(screen.rute) {
                     popUpTo(navController.graph.findStartDestination().id) {
@@ -152,24 +176,43 @@ fun RowScope.AddItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-
-            AnimatedVisibility(visible = selected, enter = fadeIn()) {
+            AnimatedVisibility(
+                visible = selected,
+                enter = scaleIn(
+                    animationSpec = tween(300, 100, LinearOutSlowInEasing),
+                    initialScale = 0.8f
+                ),
+                exit = scaleOut(
+                    animationSpec = tween(300, 300, LinearOutSlowInEasing),
+                    targetScale = 0.8f
+                ),
+                modifier = Modifier.animateContentSize()
+            ) {
                 Icon(
                     painter = painterResource(id = screen.iconFocus),
                     contentDescription = "",
                     tint = Color(0xFF034189),
                     modifier = Modifier
                         .sizeIn(48.dp)
-                        .animateContentSize()
                 )
             }
-            AnimatedVisibility(visible = !selected, enter = fadeIn()) {
+            AnimatedVisibility(
+                visible = !selected,
+                enter = scaleIn(
+                    animationSpec = tween(300, 100, LinearOutSlowInEasing),
+                    initialScale = 0.8f
+                ),
+                exit = scaleOut(
+                    animationSpec = tween(300, 300, LinearOutSlowInEasing),
+                    targetScale = 0.8f
+                ),
+                modifier = Modifier.animateContentSize()
+            ) {
                 Icon(
                     painter = painterResource(id = screen.icon),
                     contentDescription = "",
                     modifier = Modifier
                         .sizeIn(48.dp)
-                        .animateContentSize()
                 )
             }
         }
