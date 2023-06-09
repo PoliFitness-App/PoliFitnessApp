@@ -34,6 +34,8 @@ import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.UserProfile.ui.data.User
+import com.uca.polifitnessapp.ui.UserProfile.ui.data.userTest
 import com.uca.polifitnessapp.ui.navigation.UserScreens
 
 
@@ -51,9 +53,9 @@ fun ProfileScreen( ){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        UserCard()
-        generalInfoUser()
-        specificlInfoUser()
+        UserCard(user = userTest.value)
+        generalInfoUser(user = userTest.value)
+        specificlInfoUser(user = userTest.value)
         contactCard()
     }
 }
@@ -61,10 +63,12 @@ fun ProfileScreen( ){
 
 
 @Composable
-fun UserCard( ) {
+fun UserCard( user: User ) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp, 20.dp, 0.dp, 0.dp),
     ) {
         Image(painter = painterResource(id = R.drawable.profilepic),
             modifier = Modifier.size(50.dp),
@@ -75,7 +79,7 @@ fun UserCard( ) {
                 )
         )
         Column(){
-            Text(text= "name",
+            Text(text= user.name,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.scrim,
                 style = MaterialTheme.typography.labelSmall,
@@ -110,7 +114,7 @@ fun UserCard( ) {
 }
 
 @Composable
-fun generalInfoUser(){
+fun generalInfoUser(user: User){
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -132,7 +136,7 @@ fun generalInfoUser(){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "180"+" cm",
+                Text(text = user.height.toString() +" cm",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -167,7 +171,7 @@ fun generalInfoUser(){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "50"+" kg",
+                Text(text = user.weight.toString() + " kg",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -200,7 +204,7 @@ fun generalInfoUser(){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "22"+" años",
+                Text(text = user.age.toString() + " años",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -223,9 +227,11 @@ fun generalInfoUser(){
 }
 
 
-@Preview
+
 @Composable
-fun specificlInfoUser(){
+fun specificlInfoUser(
+    user: User
+){
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -248,7 +254,7 @@ fun specificlInfoUser(){
                 horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
-                Text(text = "20.1",
+                Text(text = user.imc.toString(),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -294,7 +300,7 @@ fun specificlInfoUser(){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "19.3",
+                Text(text = user.icc.toString(),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -359,7 +365,8 @@ fun contactCard() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+
 
             ) {
                 Icon(
@@ -409,7 +416,7 @@ fun contactCard() {
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
 
                 Spacer(modifier = Modifier.width(width = 80.dp))
@@ -417,7 +424,6 @@ fun contactCard() {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
                     contentDescription = null,
-
 
                     )
             }
