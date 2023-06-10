@@ -1,7 +1,6 @@
-package com.uca.polifitnessapp.ui.login.ui
+package com.uca.polifitnessapp.ui.login.viewmodel
 
 import android.util.Patterns
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -1,6 +1,5 @@
 package com.uca.polifitnessapp.ui.news.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,8 +31,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.news.data.News
 import com.uca.polifitnessapp.ui.news.data.newsList
@@ -46,6 +42,7 @@ import com.uca.polifitnessapp.ui.news.data.newsList
 // category filter state and index size for filter
 var category by mutableStateOf("")
 var indexsize by mutableStateOf(0)
+var indexsizefilter by mutableStateOf(0)
 
 @Composable
 fun NewsListScreen() {
