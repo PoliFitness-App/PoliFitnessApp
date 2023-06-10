@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.uca.polifitnessapp.ui.loadingscreen.onboardscreen.ui
+package com.uca.polifitnessapp.ui.onboardscreen.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.loadingscreen.onboardscreen.data.OnboardData
+import com.uca.polifitnessapp.ui.onboardscreen.data.OnboardData
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,40 +38,40 @@ fun MainFunction(navController: NavController) {
     // Add item 1
     items.add(
         OnboardData(
-            image = R.drawable.screen1,
+            image = R.drawable.on_board_screen_4,
             tittle = "Sigue tu meta",
             desc = "No te preocupes si tienes dificultad en recordar por cual parte de la rutina te quedaste, nosotros hacemos ese trabajo por ti!",
-            button = R.drawable.button1
+            button = R.drawable.on_board_screen_button_1
         )
     )
 
     // Add item 2
     items.add(
         OnboardData(
-            image = R.drawable.screen5,
+            image = R.drawable.on_board_screen_3,
             tittle = "Quema calorias",
             desc = "Vamos a seguir ardiendo, para alcanzar tus metas, duele sólo temporalmente, si te rindes ahora estarás en el dolor para siempre.",
-            button = R.drawable.button2
+            button = R.drawable.on_board_screen_button_2
         )
     )
 
     // Add item 3
     items.add(
         OnboardData(
-            image = R.drawable.screen4,
+            image = R.drawable.on_board_screen_2,
             tittle = "Aliméntate bien",
             desc = "Comencemos un estilo de vida saludable con nosotros, podemos determinar su dieta todos los días. comer sano es divertido.",
-            button = R.drawable.button3
+            button = R.drawable.on_board_screen_button_3
         )
     )
 
     // Add item 4
     items.add(
         OnboardData(
-            image = R.drawable.screen2,
+            image = R.drawable.on_board_screen_1,
             tittle = "Mejorar la calidad del sueño",
             desc = "Un sueño de buena calidad puede traer un buen estado de ánimo por la mañana.",
-            button = R.drawable.button4
+            button = R.drawable.on_board_screen_button_4
         )
     )
 

@@ -125,12 +125,12 @@ fun RoutinesList(
             item {
                 // Tittle
                 Text(
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(16.dp, 8.dp, 16.dp, 8.dp),
                     text = "Rutinas",
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier
-                        .padding(16.dp, 8.dp, 16.dp, 8.dp)
-                        .align(Alignment.Start),
+                    style = MaterialTheme.typography.headlineSmall
                 )
             }
 
@@ -203,7 +203,8 @@ fun RoutineItem(
         modifier = Modifier
             .padding(16.dp)
             .width(350.dp)
-            .height(155.dp),
+            .height(155.dp)
+        ,
         // Card colors
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary,

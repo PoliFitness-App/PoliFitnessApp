@@ -15,7 +15,7 @@ import androidx.navigation.compose.navigation
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.EditProfile.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.UserProfile.ui.ProfileScreen
-import com.uca.polifitnessapp.ui.loadingscreen.onboardscreen.ui.MainFunction
+import com.uca.polifitnessapp.ui.onboardscreen.ui.MainFunction
 import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
 import com.uca.polifitnessapp.ui.login.ui.LoginScreen
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
@@ -32,7 +32,7 @@ fun NavigationHost(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = "main_flow"
+        startDestination = "auth_flow"
     ) {
 
         // ---
@@ -50,7 +50,7 @@ fun NavigationHost(navController: NavHostController) {
                 MainFunction(navController = navController)
             }
             composable("register_screen") {
-                LoginScreen(viewModel = LoginViewModel())
+                LoginScreen(viewModel = LoginViewModel(), navController = navController)
             }
         }
 
@@ -66,7 +66,7 @@ fun NavigationHost(navController: NavHostController) {
                 AnimatedSplashScreen(navController = navController)
             }
             composable("login_screen") {
-                LoginScreen(viewModel = LoginViewModel())
+                LoginScreen(viewModel = LoginViewModel(), navController = navController)
             }
         }
 

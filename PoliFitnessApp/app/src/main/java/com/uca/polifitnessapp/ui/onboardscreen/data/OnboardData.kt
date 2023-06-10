@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.loadingscreen.onboardscreen.data
+package com.uca.polifitnessapp.ui.onboardscreen.data
 
 data class OnboardData(
     val image: Int,

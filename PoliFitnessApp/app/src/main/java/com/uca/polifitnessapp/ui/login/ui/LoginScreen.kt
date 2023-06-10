@@ -50,20 +50,28 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(
+    viewModel: LoginViewModel,
+    navController: NavHostController
+) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        LoginView(Modifier.align(Alignment.Center), viewModel) // Para aliniar to do al centro
+        LoginView(
+            Modifier.align(Alignment.Center),
+            viewModel,
+            navController
+        ) // Para aliniar to do al centro
     }
 
 }
@@ -81,7 +89,7 @@ fun LoadingView() {
 }
 
 @Composable
-fun LoginView(modifier: Modifier, viewModel: LoginViewModel) {
+fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
 
     // CREAR NUESTRAS VARIABLES DE ESTADO PARA EL EMAIL Y PASSWORD
 
@@ -128,6 +136,7 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel) {
                 loginEnable
             ) {
                 coroutineScope.launch {
+                    navController.navigate("main_flow")
                     viewModel.onLoginSelected()
                 }
             }
@@ -330,9 +339,15 @@ fun ForgotPassword(modifier: Modifier) {
 // ------------
 
 @Composable
-fun LoginButton(modifier: Modifier, loginEnable: Boolean, onLoginSelected: () -> Unit) {
+fun LoginButton(
+    modifier: Modifier,
+    loginEnable: Boolean,
+    onLoginSelected: () -> Unit
+) {
     Button(
-        onClick = { onLoginSelected() },
+        onClick = {
+            onLoginSelected()
+                  },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
