@@ -1,5 +1,6 @@
 package com.uca.polifitnessapp.network.retrofit
 
+import com.uca.polifitnessapp.network.service.AuthService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
