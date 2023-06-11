@@ -44,7 +44,12 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     val status: MutableLiveData<LoginUiStatus>
         get() = _status
 
+    // is loading?
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: MutableLiveData<Boolean>
+        get() = _isLoading
 
+    // LogIn
     private fun login(email: String, password: String) {
 
         viewModelScope.launch {
@@ -56,11 +61,13 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
                 }
             )
         }
-
+        isLoading.value = false
     }
 
+    // On Login
     fun onLogin() {
 
+        isLoading.value = true
         if (!validateData()) {
             _status.value = LoginUiStatus.ErrorWithMessage("Invalid credentials email or password")
             return
@@ -73,6 +80,7 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
         login(email.value!!, password.value!!)
     }
 
+    // On Login Changed
     fun onLoginChanged(emailU: String, passwordU: String) {
         // verify if the email fortmat is correct
         _isValidEmail.value = !isValidEmail(email.value!!)
@@ -83,6 +91,8 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
 
         _isLoginEnable.value = isValidEmail(emailU) && isValidPassword(passwordU)
     }
+
+    // Validate data
     private fun validateData(): Boolean {
         when {
             email.value.isNullOrEmpty() -> return false

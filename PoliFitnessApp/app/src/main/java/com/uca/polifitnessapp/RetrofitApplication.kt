@@ -9,7 +9,7 @@ import com.uca.polifitnessapp.repositories.CredentialsRepository
 class RetrofitApplication : Application() {
 
     private val prefs: SharedPreferences by lazy {
-        getSharedPreferences("Retrofit", Context.MODE_PRIVATE)
+        getSharedPreferences("application", Context.MODE_PRIVATE)
     }
 
     private fun getAPIService() = with(RetrofitInstance){
