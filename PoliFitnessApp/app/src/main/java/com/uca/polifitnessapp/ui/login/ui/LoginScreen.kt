@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -54,6 +55,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.Navigation.findNavController
 import com.uca.polifitnessapp.R
@@ -81,9 +83,7 @@ fun LoginScreen(
 
 }
 
-val app = RetrofitApplication()
 
-/*
 @Composable
 fun LoadingView() {
     Box(
@@ -95,7 +95,6 @@ fun LoadingView() {
         CircularProgressIndicator(Modifier.align(Alignment.Center))
     }
 }
-*/
 
 @Composable
 fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
@@ -114,10 +113,16 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavH
     // Is wrong password? (password is not empty but is not a valid password)
     val isWrongPassword: Boolean by viewModel.isValidPassword.observeAsState(initial = false)
 
+    val isLoginLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
 
     // Status
     val status: LoginUiStatus? by viewModel.status.observeAsState(initial = null)
+
+    // Application Instance
+    val app: RetrofitApplication = LocalContext.current.applicationContext as RetrofitApplication
+    // Context and LifecycleOwner
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     // Handle status changes
     fun handleUiStatus(status: LoginUiStatus) {
@@ -132,7 +137,9 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavH
             is LoginUiStatus.Success -> {
                 viewModel.clearStatus()
                 viewModel.clearData()
-                app.saveAuthToken(status.token)
+                app.saveAuthToken(token = status.token)
+                Toast.makeText(context, "Inicio de sesion correcto", Toast.LENGTH_SHORT).show()
+                navController.navigate("main_flow")
             }
 
             else -> {}
@@ -141,57 +148,60 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavH
 
     val coroutineScope = rememberCoroutineScope()
 
-    Column(modifier = modifier) {
+    if (isLoginLoading){
+        LoadingView()
+    } else {
+        Column(modifier = modifier) {
 
-        // HEADER
+            // HEADER
 
-        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.padding(16.dp))
+            HeaderImage(Modifier.align(Alignment.CenterHorizontally))
+            Spacer(modifier = Modifier.padding(16.dp))
 
-        // LOGIN FORM
+            // LOGIN FORM
 
-        EmailField(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            email,
-            isWrongEmail
-        ) {
-            viewModel.onLoginChanged(it, password)
-        }
-        Spacer(modifier = Modifier.padding(8.dp))
+            EmailField(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                email,
+                isWrongEmail
+            ) {
+                viewModel.onLoginChanged(it, password)
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
 
-        PasswordField(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            password,
-            isWrongPassword
-        ) {
-            viewModel.onLoginChanged(email, it)
-        }
-        Spacer(modifier = Modifier.padding(8.dp))
+            PasswordField(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                password,
+                isWrongPassword
+            ) {
+                viewModel.onLoginChanged(email, it)
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
 
-        ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.padding(8.dp))
+            ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
+            Spacer(modifier = Modifier.padding(8.dp))
 
-        LoginButton(
-            Modifier.align(Alignment.CenterHorizontally),
-            loginEnable
-        ) {
-            coroutineScope.launch {
-                handleUiStatus(status!!)
-                viewModel.onLogin()
-                if (status is LoginUiStatus.Resume) {
-                    navController.navigate("main_flow")
+            LoginButton(
+                Modifier.align(Alignment.CenterHorizontally),
+                loginEnable
+            ) {
+                coroutineScope.launch {
+                    viewModel.status.observe(lifecycleOwner) { status ->
+                        handleUiStatus(status)
+                    }
+                    viewModel.onLogin()
                 }
             }
+
+            Spacer(modifier = Modifier.padding(16.dp))
+
+            // GOOGLE LOGIN
+
+            GoogleLogin(
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
         }
-
-        Spacer(modifier = Modifier.padding(16.dp))
-
-        // GOOGLE LOGIN
-
-        GoogleLogin(
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
     }
 }
 
