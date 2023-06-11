@@ -17,11 +17,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -37,8 +39,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +55,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,12 +64,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.signup.ui.validation.UiEvent
 import com.uca.polifitnessapp.ui.signup.ui.viewmodel.SignUpViewModel
+import kotlinx.coroutines.launch
 
 
 
-
+@Preview
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel){
+fun SignUpScreen(){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,13 +81,93 @@ fun SignUpScreen(viewModel: SignUpViewModel){
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SignUpHeaderText()
-        combine(viewModel)
-        GoogleLogin(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+        SignUpView(Modifier.align(Alignment.CenterHorizontally),
+            viewModel = viewModel())
 
 
     }
 }
+
+@Composable
+fun SignUpView(modifier: Modifier, viewModel: SignUpViewModel){
+
+    // CREAR NUESTRAS VARIABLES DE ESTADO PARA EL NOMBRE, APELLIDO, EMAIL, CONTRASEÑA Y CONFIRMACION DE CONTRASEÑA
+
+    val name: String by viewModel.name.observeAsState(initial = "")
+    val lastname: String by viewModel.lastname.observeAsState(initial = "")
+    val email: String by viewModel.email.observeAsState(initial = "")
+    val password: String by viewModel.password.observeAsState(initial = "")
+    val checkbox: Boolean by viewModel.checkbox.observeAsState(initial = false)
+    val signupenable: Boolean by viewModel.signupEnable.observeAsState(initial = false)
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val isWrongInputName: Boolean by viewModel.isWrongInputName.observeAsState(initial = false)
+    val isWrongInputLastName: Boolean by viewModel.isWrongInputLastname.observeAsState(initial = false)
+    val isWrongInputEmail: Boolean by viewModel.isWrongInputEmail.observeAsState(initial = false)
+    val isWrongInputPassword: Boolean by viewModel.isWrongInputPassword.observeAsState(initial = false)
+    val isWrongInputCheckbox: Boolean by viewModel.isWrongInputChecked.observeAsState(initial = false)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+
+        SignUpHeaderText()
+
+        NameField(modifier = Modifier.align(Alignment.CenterHorizontally),
+            name,
+            isWrongInputName,
+            ) { viewModel.onSignupChanged(it, lastname, email, password, checkbox) }
+
+
+        LastNameField(modifier = Modifier.align(Alignment.CenterHorizontally),
+            lastname,
+            isWrongInputLastName,
+        ) { viewModel.onSignupChanged(name, it, email, password, checkbox) }
+
+
+        EmailField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            email,
+            isWrongInputEmail
+        ) { viewModel.onSignupChanged(name, lastname,it, password, checkbox) }
+
+
+        PasswordField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            isWrongInputPassword
+        ) { viewModel.onSignupChanged(name, lastname,email, it, checkbox) }
+
+
+        TermsAndConditionText(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                isWrongInputCheckbox
+            ){ viewModel.onSignupChanged(name, lastname,email, password,it)}
+
+
+            SignUpButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                signupenable
+            ) {
+                coroutineScope.launch {
+                    viewModel.onSingupSelected()
+                }
+            }
+
+        GoogleLogin(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+
+
+
+
+
+    }
+
+}
+
 
 
 
@@ -97,7 +184,7 @@ fun SignUpHeaderText(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(50.dp),
+            .padding(40.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -112,21 +199,21 @@ fun SignUpHeaderText(
     }
 }
 
+
+// NAME FIELD
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameField(
     modifier: Modifier,
-    errorStatus: Boolean,
-    onTextSelected: (String) -> Unit
+    name: String,
+    isWrongInput: Boolean,
+    onTextFieldChanged: (String) -> Unit
 ){
-    val textSate = remember { mutableStateOf("") }
 
     TextField(
-        value = textSate.value,
-        onValueChange = {
-            textSate.value = it
-            onTextSelected(it)
-        },
+        value = name,
+        onValueChange = { onTextFieldChanged(it)},
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -144,6 +231,26 @@ fun NameField(
             )
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        isError = isWrongInput,
+        supportingText = {
+            if (isWrongInput) {
+                Text(
+                    text = "Formato incorrecto",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            }
+        },
+        trailingIcon = {
+            if (isWrongInput) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Error Icon"
+                )
+            }
+        },
+
         modifier = modifier
             .width(315.dp),
         singleLine = true,
@@ -151,9 +258,7 @@ fun NameField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
-        ),
-        isError = !errorStatus
+        )
     )
 
 }
@@ -163,16 +268,15 @@ fun NameField(
 @Composable
 fun LastNameField(
     modifier: Modifier,
-    errorStatus: Boolean,
-    onTextSelected: (String) -> Unit
+    lastname: String,
+    isWrongInput: Boolean,
+    onTextFieldChanged: (String) -> Unit
 
 ){
-    val textSate = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
-        onValueChange = {
-            textSate.value = it
-            onTextSelected(it)   },
+    TextField(
+        value = lastname,
+        onValueChange = { onTextFieldChanged(it)  },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -189,7 +293,27 @@ fun LastNameField(
                 fontSize = 12.sp
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        isError = isWrongInput,
+        supportingText = {
+            if (isWrongInput) {
+                Text(
+                    text = "Formato incorrecto",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            }
+        },
+        trailingIcon = {
+            if (isWrongInput) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Error Icon"
+                )
+            }
+        },
+
         modifier = modifier
             .width(315.dp),
         singleLine = true,
@@ -197,9 +321,7 @@ fun LastNameField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
-        ),
-        isError = !errorStatus
+        )
     )
 
 }
@@ -209,16 +331,14 @@ fun LastNameField(
 @Composable
 fun EmailField(
     modifier: Modifier,
-    errorStatus: Boolean,
-    onTextSelected: (String) -> Unit
+    email: String,
+    isWrongInput: Boolean,
+    onTextFieldChanged: (String) -> Unit
 ){
-    val textSate = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
-        onValueChange = {
-            textSate.value = it
-            onTextSelected(it)},
-
+    TextField(
+        value = email,
+        onValueChange = { onTextFieldChanged(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -236,6 +356,26 @@ fun EmailField(
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        isError = isWrongInput,
+        supportingText = {
+            if (isWrongInput) {
+                Text(
+                    text = "Formato incorrecto (example@gmail.com)",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            }
+        },
+        trailingIcon = {
+            if (isWrongInput) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Error Icon"
+                )
+            }
+        },
+
         modifier = modifier
             .width(315.dp),
         singleLine = true,
@@ -243,9 +383,7 @@ fun EmailField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
-        ),
-        isError = !errorStatus
+        )
     )
 
 }
@@ -256,7 +394,7 @@ fun EmailField(
 @Composable
 fun PasswordField(
     modifier: Modifier,
-    errorStatus: Boolean,
+    isWrongInput: Boolean,
     onTextSelected: (String) -> Unit
 ){
     val password = remember { mutableStateOf("") }
@@ -286,6 +424,7 @@ fun PasswordField(
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        isError = isWrongInput,
         trailingIcon = {
             val iconImage = if (passwordVisible.value){
                 Icons.Outlined.Visibility
@@ -315,7 +454,7 @@ fun PasswordField(
             containerColor = Color(0xFFD7E2FF)
 
         ),
-        isError = !errorStatus
+
 
     )
 
@@ -324,95 +463,16 @@ fun PasswordField(
 
 
 
-@Composable()
-fun combine( signUpViewModel: SignUpViewModel){
 
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            NameField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                errorStatus = signUpViewModel.signUpUiState.value.nameError,
-                onTextSelected = {signUpViewModel.onEvent(UiEvent.NameChanged(it))}
-            )
-
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            LastNameField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                errorStatus = signUpViewModel.signUpUiState.value.lastnameError,
-                onTextSelected = {signUpViewModel.onEvent(UiEvent.Lastnamehanged(it))}
-
-            )
-
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            EmailField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                errorStatus = signUpViewModel.signUpUiState.value.emailError,
-                onTextSelected = {signUpViewModel.onEvent(UiEvent.EmailChanged(it))}
-
-            )
-
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            PasswordField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                errorStatus = signUpViewModel.signUpUiState.value.passwordError,
-                onTextSelected = {signUpViewModel.onEvent(UiEvent.PasswordChanged(it))}
-            )
-
-        }
-
-
-        Row( horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            TermsAndConditionText()
-        }
-
-        Row( horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            SignUpButton(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                signUpViewModel
-            )
-
-        }
-
-
-
-
-    }
-
-}
 
 
 @Composable
 fun SignUpButton(modifier: Modifier,
-    signUpViewModel: SignUpViewModel
+                 signupEnabled: Boolean,
+                 onSignupSelected: () -> Unit
 ) {
     Button(
-        onClick = { signUpViewModel.onEvent(UiEvent.SignUpButtonClicked)},
+        onClick = { onSignupSelected() },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
@@ -425,7 +485,7 @@ fun SignUpButton(modifier: Modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
         ),
-
+        enabled = signupEnabled,
         )
     {
         Text(
@@ -438,18 +498,25 @@ fun SignUpButton(modifier: Modifier,
 }
 
 @Composable
-fun TermsAndConditionText() {
+fun TermsAndConditionText(
+    modifier: Modifier,
+    isWrongInput: Boolean,
+    onCheckedChanged: (Boolean) -> Unit,
+) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(10.dp, 10.dp, 0.dp, 0.dp)
     ) {
 
         val checkedState = remember { mutableStateOf(false) }
         Checkbox(
             checked = checkedState.value,
-            onCheckedChange = { checkedState.value = !checkedState.value },
-            colors = CheckboxDefaults.colors(Color.Black)
+            onCheckedChange = { checkedState.value = it
+                              onCheckedChanged(it) },
+            colors = CheckboxDefaults.colors(Color.DarkGray),
         )
+
 
         Text(
             text = "Si continúa navegando, consideramos que acepta nuestra Politica de Privacidad y Terminos de Uso.",

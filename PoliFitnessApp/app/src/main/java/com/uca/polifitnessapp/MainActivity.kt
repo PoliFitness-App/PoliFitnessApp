@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                    //NavigationHost()
-                    SignUpScreen(viewModel = SignUpViewModel())
+                    SignUpScreen()
 
 
                 }

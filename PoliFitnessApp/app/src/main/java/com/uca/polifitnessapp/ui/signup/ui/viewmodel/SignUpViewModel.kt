@@ -1,99 +1,136 @@
 package com.uca.polifitnessapp.ui.signup.ui.viewmodel
 
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.currentCompositionLocalContext
-import androidx.compose.runtime.mutableStateOf
+import android.util.Patterns
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.uca.polifitnessapp.ui.signup.ui.validation.SignUpUiState
 import com.uca.polifitnessapp.ui.signup.ui.validation.UiEvent
-import com.uca.polifitnessapp.ui.signup.ui.validation.Validator
+import kotlinx.coroutines.delay
 
 
 class SignUpViewModel: ViewModel() {
-    private val TAG = SignUpViewModel::class.simpleName
 
-    var signUpUiState = mutableStateOf(SignUpUiState())
 
-    fun onEvent( event: UiEvent){
-        validateData()
-        when( event){
-            is UiEvent.NameChanged ->{
-                signUpUiState.value = signUpUiState.value.copy(
-                name = event.name)
+    // EMAIL
+    private val _email = MutableLiveData("")
+    val email: LiveData<String> = _email
 
-                printState()
-            }
+    // PASSWORD
+    private val _password = MutableLiveData("")
+    val password: LiveData<String> = _password
 
-            is UiEvent.Lastnamehanged ->{
-                signUpUiState.value = signUpUiState.value.copy(
-                    lastname = event.lastname)
+    // NAME
+    private val _name = MutableLiveData("")
+    val name: LiveData<String> = _name
 
-                printState()
-            }
+    // LASTNAME
+    private val _lastname = MutableLiveData("")
+    val lastname: LiveData<String> = _lastname
 
-            is UiEvent.EmailChanged ->{
-                signUpUiState.value = signUpUiState.value.copy(
-                    email = event.email)
+    // CHECKBOX
+    private val _checkbox = MutableLiveData<Boolean>()
+    val checkbox: LiveData<Boolean> = _checkbox
 
-                printState()
-            }
 
-            is UiEvent.PasswordChanged ->{
-                signUpUiState.value = signUpUiState.value.copy(
-                    password = event.password)
+    // SIGNUP ENABLE
 
-                printState()
-            }
+    private val _signupEnable = MutableLiveData<Boolean>()
+    val signupEnable: LiveData<Boolean> = _signupEnable
 
-            is UiEvent.SignUpButtonClicked -> {
-                signUp()
-            }
-        }
+    // IS LOADING
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    // ON WRONG INPUT
+
+    private val _isWrongInputEmail = MutableLiveData<Boolean>()
+    val isWrongInputEmail: LiveData<Boolean> = _isWrongInputEmail
+
+    private val _isWrongInputName = MutableLiveData<Boolean>()
+    val isWrongInputName: LiveData<Boolean> = _isWrongInputName
+
+    private val _isWrongInputLastname = MutableLiveData<Boolean>()
+    val isWrongInputLastname: LiveData<Boolean> = _isWrongInputLastname
+
+    private val _isWrongInputPassword = MutableLiveData<Boolean>()
+    val isWrongInputPassword: LiveData<Boolean> = _isWrongInputPassword
+
+    private val _isWrongInputChecked = MutableLiveData<Boolean>()
+    val isWrongInputChecked: LiveData<Boolean> = _isWrongInputChecked
+
+
+
+
+    // ON LOGIN CHANGED
+
+
+    fun onSignupChanged(name: String, lastname: String, email: String, password: String, checkbox: Boolean) {
+        _name.value = name.trim()
+        _lastname.value = lastname.trim()
+        _email.value = email.trimEnd()
+        _password.value = password.trim()
+        _checkbox.value = checkbox
+
+
+
+        _signupEnable.value = validateName(name)
+        _signupEnable.value = validateLastName(lastname)
+        _signupEnable.value = isValidEmail(email)
+        _signupEnable.value = isValidPassword(password)
+        _signupEnable.value = validateCheckbox(checkbox)
+
+
+        /*
+        Validations for inputs
+         */
+
+        _isWrongInputEmail.value = !isValidEmail(email)
+        _isWrongInputName.value = !validateName(name)
+        _isWrongInputLastname.value = !validateLastName(lastname)
+        _isWrongInputPassword.value = !isValidPassword(password)
+        _isWrongInputChecked.value = !validateCheckbox(checkbox)
+
 
     }
 
-    private fun signUp(){
-        Log.d(TAG, "Inside_signUp")
-        printState()
+    // IS VALID PASSWORD
+    private fun isValidPassword(password: String): Boolean = (!password.isNullOrEmpty() && password.length >= 8)
 
-        validateData()
+
+
+    // IS VALID EMAIL
+
+    private fun isValidEmail(email: String): Boolean =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+    fun validateEmail(email: String): Boolean = (!email.isNullOrEmpty())
+
+    //VALIDATE NAME
+
+    fun validateName(name: String): Boolean = (!name.isNullOrEmpty() && name.length >= 6)
+
+
+
+    //VALIDATE LASTNAME
+    fun validateLastName(lastname: String): Boolean = (!lastname.isNullOrEmpty() && lastname.length >= 6)
+
+    //VALIDATE CHECKBOX
+    fun validateCheckbox(isChecked: Boolean): Boolean = (isChecked)
+
+
+
+    suspend fun onSingupSelected() {
+        _isLoading.value = true
+        delay(4000)
+
+        _isLoading.value = false
     }
 
-    private fun validateData() {
-        val nameResult = Validator.validateName(
-            name = signUpUiState.value.name
-        )
-
-        val lastnameResult = Validator.validateLastName(
-            lastname = signUpUiState.value.lastname
-        )
-
-        val emailResult = Validator.validateEmail(
-            email = signUpUiState.value.email
-        )
-        val passwordResult = Validator.validatePassword(
-            password = signUpUiState.value.password
-        )
-
-        Log.d(TAG, "inside_ValidateData")
-        Log.d(TAG, "nameResult = $nameResult")
-
-        signUpUiState.value = signUpUiState.value.copy(
-            nameError = nameResult.status,
-            lastnameError = lastnameResult.status,
-            emailError = emailResult.status,
-            passwordError = passwordResult.status,
-        )
-
-    }
-
-    private fun printState(){
-        Log.d(TAG, "inside_printState")
-        Log.d(TAG, signUpUiState.value.toString())
-    }
 }
+
+
