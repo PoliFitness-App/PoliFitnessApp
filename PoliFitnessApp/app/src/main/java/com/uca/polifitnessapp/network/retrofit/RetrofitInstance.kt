@@ -9,7 +9,6 @@ const val BASE_URL = "https://www.deportivouca.tech/"
 object RetrofitInstance {
 
     private var token = ""
-
     fun setToken(token: String) {
         this.token = token
     }

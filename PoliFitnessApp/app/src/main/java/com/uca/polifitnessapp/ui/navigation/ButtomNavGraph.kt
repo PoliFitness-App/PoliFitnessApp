@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,9 +31,14 @@ fun NavigationHost(navController: NavHostController) {
 
     val user = UserModel("Fitness app", "ucafitnessapp@uca.edu.sv", 162F, 50F, 21, 0.3F, 0.2f)
 
+    // login view model
+    val loginViewModel: LoginViewModel = viewModel(
+    factory = LoginViewModel.Factory
+    )
+
     NavHost(
         navController = navController,
-        startDestination = "auth_flow"
+        startDestination = "login_screen"
     ) {
 
         // ---
@@ -50,8 +56,12 @@ fun NavigationHost(navController: NavHostController) {
                 MainFunction(navController = navController)
             }
             composable("register_screen") {
-                LoginScreen(viewModel = LoginViewModel(), navController = navController)
+                LoginScreen(viewModel = loginViewModel, navController = navController)
             }
+        }
+
+        composable("login_screen") {
+            LoginScreen(viewModel = loginViewModel, navController = navController)
         }
 
         // ---
@@ -66,7 +76,7 @@ fun NavigationHost(navController: NavHostController) {
                 AnimatedSplashScreen(navController = navController)
             }
             composable("login_screen") {
-                LoginScreen(viewModel = LoginViewModel(), navController = navController)
+                LoginScreen(viewModel = loginViewModel, navController = navController)
             }
         }
 
