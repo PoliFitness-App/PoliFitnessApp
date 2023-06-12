@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
 
 package com.uca.polifitnessapp
 
@@ -9,14 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
-import com.uca.polifitnessapp.ui.signup.ui.CarouselCard
-import com.uca.polifitnessapp.ui.signup.ui.SignUpGoalScreen
-import com.uca.polifitnessapp.ui.signup.ui.SignUpPersonalInfoSCreen
-import com.uca.polifitnessapp.ui.signup.ui.SignUpScreen
-import com.uca.polifitnessapp.ui.signup.ui.viewmodel.SignUpViewModel
 import com.uca.polifitnessapp.ui.theme.PoliFitnessAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,10 +23,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   //NavigationHost()
-                    //SignUpScreen()
-                    //SignUpPersonalInfoSCreen()
-                    SignUpGoalScreen()
+                   NavigationHost()
+
 
 
                 }
