@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.uca.polifitnessapp
+package com.uca.polifitnessapp.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
