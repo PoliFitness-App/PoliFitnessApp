@@ -12,7 +12,7 @@ import retrofit2.http.Query
 interface NewsService {
     //funcion para obtener todos los post
     @GET("post")
-    suspend fun getPosts(): List<NewsResponse>
+    suspend fun getPosts(): List<NewsResponse>//TODO habria q cambiarla para recibir por bloques
 
     //funcion para crear una noticia, recibe un mensaje de respuesta y se le mandan los datos de la noticia
     @POST("post/createPost")
@@ -29,5 +29,7 @@ interface NewsService {
     //funcion para ocultar una noticia por id
     @PATCH("post/deletePost/{id}")
     suspend fun hidePostById(@Query("id") id: String): NewsResponseMsg
+
+    //TODO agregar nuevas rutas para usar el pagination
 
 }

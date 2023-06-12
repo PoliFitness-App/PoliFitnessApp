@@ -1,5 +1,6 @@
 package com.uca.polifitnessapp.data.db.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -10,8 +11,13 @@ import com.uca.polifitnessapp.data.db.models.NoticeModel
 interface NoticeDao {
 
     //Funcion para obtener todas las noticias
-    @Query("SELECT * FROM notice_table")
+    @Query("SELECT * FROM notice_table")//cambiar por el de pagination
     suspend fun getAllNotices(): List<NoticeModel>
+
+    //funcion para obtener todas las noticias por bloques
+    @Query("SELECT * FROM notice_table")
+    fun pagingSource(): PagingSource<Int, NoticeModel>
+
 
     //Funcion para insertar una noticia
     @Transaction
