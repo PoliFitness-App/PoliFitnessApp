@@ -14,6 +14,10 @@ interface NewsService {
     @GET("post")
     suspend fun getPosts(): List<NewsResponse>//TODO habria q cambiarla para recibir por bloques
 
+    //funcion para obtener los post por bloques
+    @GET("post")
+    suspend fun getPostsByBlocks(@Query("page") page: Int, @Query("limit") limit: Int): List<NewsResponse>
+
     //funcion para crear una noticia, recibe un mensaje de respuesta y se le mandan los datos de la noticia
     @POST("post/createPost")
     suspend fun createPost(@Body newsData: NewsRequest): NewsResponseMsg

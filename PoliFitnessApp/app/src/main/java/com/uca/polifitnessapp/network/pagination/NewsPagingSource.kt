@@ -2,14 +2,15 @@ package com.uca.polifitnessapp.network.pagination
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.network.service.NewsService
 import com.uca.polifitnessapp.ui.news.data.News
 import retrofit2.HttpException
 import java.io.IOException
 
-class NewsPagingSource(private val service: NewsService): PagingSource<Int, News>(){
+class NewsPagingSource(private val service: NewsService): PagingSource<Int, NoticeModel>(){
 
-    override fun getRefreshKey(state: PagingState<Int, News>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, NoticeModel>): Int? {
         val pageSize = state.config.pageSize
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -18,16 +19,29 @@ class NewsPagingSource(private val service: NewsService): PagingSource<Int, News
     }
 
     override suspend fun load(params: LoadParams<Int>):
-            LoadResult<Int, News> {
+            LoadResult<Int, NoticeModel> {
         return try {
             val nextPage = params.key ?: 1
             val pageSize = params.loadSize
-            val newsResult = service//agregar en base la peticion desde la api, agregado en la interfaz del servicio
-                .getPokemons(pageSize, nextPage)
+            val newsResult = service
+                .getPostsByBlocks(nextPage, pageSize)//page, limit
+
+            //cambiar a newsModel
+            val newsResultModel: List<NoticeModel> = newsResult.map {new ->
+                NoticeModel(
+                    new.tittle,
+                    new.description,
+                    new.image,
+                    new.category,
+                    new.hidden
+                )
+            }
+
+
             LoadResult.Page(
-                data = newsResult.results,
-                nextKey = if (newsResult.next != null) nextPage + pageSize else null,
-                prevKey = if (newsResult.previous != null) nextPage - pageSize else null
+                data = newsResultModel,
+                nextKey = null,//solo hacia adelante
+                prevKey = nextPage
             )
         } catch (e: IOException) {
             LoadResult.Error(e)
@@ -58,5 +72,5 @@ class NewsPagingSource(private val service: NewsService): PagingSource<Int, News
     }
     }
      */
-    /
+
 }

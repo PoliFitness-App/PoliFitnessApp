@@ -1,11 +1,18 @@
 package com.uca.polifitnessapp.repositories
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
 import com.uca.polifitnessapp.data.db.dao.NoticeDao
 import com.uca.polifitnessapp.data.db.models.NoticeModel
+import com.uca.polifitnessapp.network.pagination.mediators.NewsMediator
 import com.uca.polifitnessapp.network.retrofit.RetrofitInstance
 import com.uca.polifitnessapp.network.service.NewsService
 
-class NoticeRepository(private val noticeDao: NoticeDao, private val retrofitInstance: NewsService) {
+class NoticeRepository(private val database: PoliFitnessDatabase, private val retrofitInstance: NewsService) {
+    private val noticeDao = database.noticeDao()
+
     //Obtener todas las funciones provenientes del dao
     // TODO: implementar la funcion de obtener todas las noticias con el pagination
     //suspend fun getAllNotices() = noticeDao.getAllNotices()
@@ -20,4 +27,15 @@ class NoticeRepository(private val noticeDao: NoticeDao, private val retrofitIns
 
     //TODO: agregar pagination
     //TODO cambiar en la api las rutas para agregar pagination
+
+    @ExperimentalPagingApi
+    fun getNewsPage(pageSize: Int) = Pager(
+        config = PagingConfig(
+            pageSize = pageSize,
+            prefetchDistance = (0.10 * pageSize).toInt()
+        ),
+        remoteMediator = NewsMediator(database, retrofitInstance)
+    ) {
+        noticeDao.pagingSource()
+    }.flow
 }
