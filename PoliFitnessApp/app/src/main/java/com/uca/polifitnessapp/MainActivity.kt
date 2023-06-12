@@ -12,6 +12,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
+import com.uca.polifitnessapp.ui.signup.ui.CarouselCard
+import com.uca.polifitnessapp.ui.signup.ui.SignUpGoalScreen
 import com.uca.polifitnessapp.ui.signup.ui.SignUpPersonalInfoSCreen
 import com.uca.polifitnessapp.ui.signup.ui.SignUpScreen
 import com.uca.polifitnessapp.ui.signup.ui.viewmodel.SignUpViewModel
@@ -29,7 +31,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                    //NavigationHost()
                     //SignUpScreen()
-                    SignUpPersonalInfoSCreen()
+                    //SignUpPersonalInfoSCreen()
+                    SignUpGoalScreen()
 
 
                 }

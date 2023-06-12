@@ -1,5 +1,6 @@
 package com.uca.polifitnessapp.ui.signup.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerColors
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
@@ -45,8 +48,10 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -66,6 +71,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uca.polifitnessapp.R
+import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -77,13 +84,13 @@ fun SignUpPersonalInfoSCreen(){
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(30.dp, 0.dp, 30.dp, 0.dp),
+            .padding(50.dp, 0.dp, 30.dp, 0.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         HeaderImage(modifier = Modifier.fillMaxWidth())
-        SignUpPersonalInfoView()
+        SignUpPersonalInfoView(viewModel = SignUpPersonalInfoViewModel())
 
 
     }
@@ -91,22 +98,42 @@ fun SignUpPersonalInfoSCreen(){
 
 
 @Composable
-fun SignUpPersonalInfoView(){
+fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
+
+    val gender: String by viewModel.gender.observeAsState(initial = "")
+    val birthdate: String by viewModel.birthdate.observeAsState(initial = "")
+    val weight: String by viewModel.weight.observeAsState(initial = "")
+    val height: String by viewModel.height.observeAsState(initial = "")
+    val waist: String by viewModel.waist.observeAsState(initial = "")
+    val hip: String by viewModel.hip.observeAsState(initial = "")
+
+    val signupenable: Boolean by viewModel.signupEnable.observeAsState(initial = false)
+
+
+    val coroutineScope = rememberCoroutineScope()
+
+
+
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
 
 
-        GenderField()
+        GenderField(
+            gender,
+        ){ viewModel.onRegisterChange()}
 
-        BirthdayField(dateCalendar = "", onDateChange = {})
+        BirthdayField(birthdate, onDateChange = {})
 
 
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            weightField(modifier = Modifier.align(Alignment.CenterVertically))
+            weightField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                weight
+            ){ viewModel.onRegisterChange()}
             kgicon()
 
         }
@@ -114,7 +141,10 @@ fun SignUpPersonalInfoView(){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            heightField(modifier = Modifier.align(Alignment.CenterVertically))
+            heightField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                height
+            ){ viewModel.onRegisterChange()}
             cmicon()
 
         }
@@ -122,7 +152,10 @@ fun SignUpPersonalInfoView(){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            waistField(modifier = Modifier.align(Alignment.CenterVertically))
+            waistField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                waist
+            ){ viewModel.onRegisterChange()}
             cmicon()
 
         }
@@ -130,14 +163,24 @@ fun SignUpPersonalInfoView(){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            hipField(modifier = Modifier.align(Alignment.CenterVertically))
+            hipField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                hip
+            ){ viewModel.onRegisterChange()}
 
             cmicon()
 
         }
         Spacer(modifier = Modifier.height(1.dp))
 
-        SaveButton(modifier = Modifier.align(Alignment.CenterHorizontally))
+        SaveButton(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            signupenable,
+        ){
+            coroutineScope.launch {
+                viewModel.onSingupSelected()
+            }
+        }
 
 
 
@@ -183,12 +226,16 @@ fun HeaderImage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun weightField(
-    modifier: Modifier
+    modifier: Modifier,
+    weight: String,
+    onWeightChange: (Number) -> Unit
 ){
-    val textSate = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
+    val weight = remember { mutableStateOf("") }
+
+    TextField(
+        value = weight.value,
+        onValueChange = { weight.value = it },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -223,12 +270,15 @@ fun weightField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun heightField(
-    modifier: Modifier
+    modifier: Modifier,
+    height: String,
+    onHeightChange: (String) -> Unit
 ){
-    val textSate = remember { mutableStateOf("") }
+    val height = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
+    TextField(
+        value = height.value,
+        onValueChange = { height.value = it},
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -263,12 +313,14 @@ fun heightField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun waistField(
-    modifier: Modifier
+    modifier: Modifier,
+    waist: String,
+    onWaistChange: (String) -> Unit
 ){
-    val textSate = remember { mutableStateOf("") }
-
-    TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
+    val waist = remember { mutableStateOf("") }
+    TextField(
+        value = waist.value,
+        onValueChange = { waist.value = it},
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -304,12 +356,14 @@ fun waistField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun hipField(
-    modifier: Modifier
+    modifier: Modifier,
+    hip: String,
+    onHipChange: (String) -> Unit
 ){
-    val textSate = remember { mutableStateOf("") }
-
-    TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
+    val hip = remember { mutableStateOf("") }
+    TextField(
+        value = hip.value,
+        onValueChange = { hip.value = it},
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -386,9 +440,13 @@ fun cmicon(){
 
 
 @Composable
-fun SaveButton(modifier: Modifier) {
+fun SaveButton(
+    modifier: Modifier,
+    signupEnabled: Boolean,
+    onSignupSelected: () -> Unit
+) {
     Button(
-        onClick = { "/*TODO*/ "},
+        onClick = { onSignupSelected()},
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
@@ -401,7 +459,7 @@ fun SaveButton(modifier: Modifier) {
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
         ),
-
+        enabled = signupEnabled
         )
     {
         Text(
@@ -419,7 +477,10 @@ fun SaveButton(modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GenderField() {
+fun GenderField(
+    gender: String,
+    onGenderChange: (String) -> Unit
+) {
 
 
     var isExpanded by remember {
@@ -436,7 +497,7 @@ fun GenderField() {
     ) {
         TextField(
             value = gender,
-            onValueChange = {},
+            onValueChange = {onGenderChange(it)},
             shape = MaterialTheme.shapes.small,
             readOnly = true,
             leadingIcon = {
@@ -503,7 +564,9 @@ fun GenderField() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BirthdayField( dateCalendar: String, onDateChange: (String) -> Unit) {
+fun BirthdayField(
+    dateCalendar: String,
+    onDateChange: (String) -> Unit) {
 
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(dateCalendar) }
@@ -520,7 +583,10 @@ fun BirthdayField( dateCalendar: String, onDateChange: (String) -> Unit) {
                             .toString()
                     },
                 ) {
-                    Text(text = "Aceptar")
+                    Text(
+                        text = "Aceptar",
+                        color = Color(0xFF034189)
+                    )
                 }
             },
             dismissButton = {
@@ -529,11 +595,20 @@ fun BirthdayField( dateCalendar: String, onDateChange: (String) -> Unit) {
                         openDialog.value = false
                     }
                 ) {
-                    Text(text = "Cancelar")
+                    Text(
+                        text = "Cancelar",
+                        color = Color(0xFF034189)
+                    )
                 }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    selectedDayContainerColor = Color(0xFF034189),
+                    todayDateBorderColor = Color(0xFF034189),
+                )
+            )
 
         }
 
