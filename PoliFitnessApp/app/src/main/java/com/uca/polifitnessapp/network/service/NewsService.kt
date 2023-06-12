@@ -1,5 +1,8 @@
 package com.uca.polifitnessapp.network.service
 
+import com.uca.polifitnessapp.network.dto.news.NewsRequest
+import com.uca.polifitnessapp.network.dto.news.NewsResponse
+import com.uca.polifitnessapp.network.dto.news.NewsResponseMsg
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -26,4 +29,5 @@ interface NewsService {
     //funcion para ocultar una noticia por id
     @PATCH("post/deletePost/{id}")
     suspend fun hidePostById(@Query("id") id: String): NewsResponseMsg
+
 }
