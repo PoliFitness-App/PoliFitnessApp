@@ -1,6 +1,7 @@
 package com.uca.polifitnessapp.network.retrofit
 
 import com.uca.polifitnessapp.network.service.AuthService
+import com.uca.polifitnessapp.network.service.NewsService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -19,5 +20,8 @@ object RetrofitInstance {
         .build()
 
     fun getLoginService(): AuthService = retrofit.create(AuthService::class.java)
+
+    //instancia de noticias-----------------------------------------------------------------------------
+    fun getPoliFitnessAPINews(): NewsService = retrofit.create(NewsService::class.java)
 
 }

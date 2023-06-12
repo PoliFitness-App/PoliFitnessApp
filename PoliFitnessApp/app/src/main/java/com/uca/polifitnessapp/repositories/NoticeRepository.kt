@@ -3,8 +3,9 @@ package com.uca.polifitnessapp.repositories
 import com.uca.polifitnessapp.data.db.dao.NoticeDao
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.network.retrofit.RetrofitInstance
+import com.uca.polifitnessapp.network.service.NewsService
 
-class NoticeRepository(private val noticeDao: NoticeDao, private val retrofitInstance: RetrofitInstance) {
+class NoticeRepository(private val noticeDao: NoticeDao, private val retrofitInstance: NewsService) {
     //Obtener todas las funciones provenientes del dao
     suspend fun getAllNotices() = noticeDao.getAllNotices()
 
@@ -16,5 +17,6 @@ class NoticeRepository(private val noticeDao: NoticeDao, private val retrofitIns
 
     suspend fun toggleNotice(noticeId: Int, hidden: Boolean) = noticeDao.toggleNotice(noticeId, hidden)
 
-    //TODO: agregar el repositorio al application luego de tener la base de datos creada
+    //TODO: agregar pagination
+
 }

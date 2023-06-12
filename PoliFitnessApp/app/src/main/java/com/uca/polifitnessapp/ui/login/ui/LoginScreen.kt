@@ -10,7 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -26,7 +25,6 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,11 +51,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation.findNavController
+import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.RetrofitApplication
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
@@ -81,7 +77,7 @@ fun LoginScreen(
 
 }
 
-val app = RetrofitApplication()
+val app = PoliFitnessApplication()
 
 /*
 @Composable
