@@ -1,9 +1,9 @@
 package com.uca.polifitnessapp.ui.signup.ui
 
-import android.icu.util.Calendar
-import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,13 +23,11 @@ import androidx.compose.material.icons.outlined.Height
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Male
 import androidx.compose.material.icons.outlined.MonitorWeight
-import androidx.compose.material.icons.outlined.Straight
 import androidx.compose.material.icons.outlined.Straighten
-import androidx.compose.material.icons.outlined.Transgender
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
@@ -38,36 +36,39 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 import com.uca.polifitnessapp.R
-import java.time.format.DateTimeFormatter
-import java.util.Date
+import java.text.SimpleDateFormat
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SignUpPersonalInfoSCreen(){
     Column(
@@ -76,17 +77,75 @@ fun SignUpPersonalInfoSCreen(){
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(25.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+            .padding(30.dp, 0.dp, 30.dp, 0.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderImage()
-        EditProfileText()
-        Combine()
+
+        HeaderImage(modifier = Modifier.fillMaxWidth())
+        SignUpPersonalInfoView()
 
 
     }
 }
+
+
+@Composable
+fun SignUpPersonalInfoView(){
+    Column(
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+
+
+        GenderField()
+
+        BirthdayField(dateCalendar = "", onDateChange = {})
+
+
+        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.CenterVertically,) {
+
+            weightField(modifier = Modifier.align(Alignment.CenterVertically))
+            kgicon()
+
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.CenterVertically,) {
+
+            heightField(modifier = Modifier.align(Alignment.CenterVertically))
+            cmicon()
+
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.CenterVertically,) {
+
+            waistField(modifier = Modifier.align(Alignment.CenterVertically))
+            cmicon()
+
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.CenterVertically,) {
+
+            hipField(modifier = Modifier.align(Alignment.CenterVertically))
+
+            cmicon()
+
+        }
+        Spacer(modifier = Modifier.height(1.dp))
+
+        SaveButton(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+
+
+
+    }
+
+}
+
 
 
 // -----------
@@ -97,7 +156,9 @@ fun SignUpPersonalInfoSCreen(){
 
 
 @Composable
-fun HeaderImage(){
+fun HeaderImage(
+    modifier: Modifier
+){
     Box(
         modifier = Modifier
             .size(200.dp)
@@ -116,98 +177,8 @@ fun HeaderImage(){
 
 // ------------
 
-@Composable
-fun EditProfileText(){
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
 
 
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun GenderField(
-    modifier: Modifier
-){
-    val textSate = remember { mutableStateOf("") }
-
-    TextField(
-        value = textSate.value,
-        onValueChange = { textSate.value = it },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Male,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Escoge tu genero",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .padding(10.dp)
-            .width(335.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DateBirthField(
-    modifier: Modifier
-){
-    val textSate = remember { mutableStateOf("") }
-
-    TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.CalendarMonth,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Fecha de nacimiento",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-        modifier = modifier
-            .padding(10.dp)
-            .width(335.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -236,7 +207,7 @@ fun weightField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
-            .width(260.dp),
+            .width(240.dp),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color(0xFF565E71),
@@ -276,7 +247,7 @@ fun heightField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
-            .width(260.dp),
+            .width(240.dp),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color(0xFF565E71),
@@ -316,7 +287,7 @@ fun waistField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
-            .width(260.dp),
+            .width(240.dp),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color(0xFF565E71),
@@ -357,7 +328,7 @@ fun hipField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
-            .width(260.dp),
+            .width(240.dp),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color(0xFF565E71),
@@ -373,9 +344,8 @@ fun hipField(
 fun kgicon(){
     ElevatedCard(
         modifier = Modifier
-            .height(74.dp)
-            .size(80.dp)
-            .padding(10.dp),
+            .height(56.dp)
+            .width(48.dp),
         shape = RoundedCornerShape(10.dp),colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
         Column(
@@ -395,9 +365,8 @@ fun kgicon(){
 fun cmicon(){
     ElevatedCard(
         modifier = Modifier
-            .height(74.dp)
-            .size(80.dp)
-            .padding(10.dp),
+            .height(56.dp)
+            .width(48.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
@@ -414,73 +383,6 @@ fun cmicon(){
     }
 }
 
-@Composable
-fun Combine(){
-    Column(
-        horizontalAlignment = Alignment.Start
-    ) {
-        Row(horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            /* GenderField(modifier = Modifier.align(Alignment.Top)) */
-
-            MyScreen()
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            DateBirthField(modifier = Modifier.align(Alignment.CenterVertically))
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            weightField(modifier = Modifier.align(Alignment.CenterVertically))
-            kgicon()
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            heightField(modifier = Modifier.align(Alignment.CenterVertically))
-            cmicon()
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            waistField(modifier = Modifier.align(Alignment.CenterVertically))
-            cmicon()
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            hipField(modifier = Modifier.align(Alignment.CenterVertically))
-            cmicon()
-
-        }
-
-
-        Row(modifier = Modifier.padding(25.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            SaveButton(modifier = Modifier.align(Alignment.CenterVertically))
-
-        }
-
-
-
-    }
-
-}
 
 
 @Composable
@@ -503,7 +405,7 @@ fun SaveButton(modifier: Modifier) {
         )
     {
         Text(
-            text = "Guardar",
+            text = "SIguiente >",
             fontSize = 16.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
@@ -517,7 +419,7 @@ fun SaveButton(modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyScreen() {
+fun GenderField() {
 
 
     var isExpanded by remember {
@@ -544,6 +446,14 @@ fun MyScreen() {
                     tint = Color(0xFF565E71)
                 )
             },
+            label = {
+                Text(
+                    text = "Escoge tu genero",
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
             },
@@ -557,14 +467,14 @@ fun MyScreen() {
                 .menuAnchor()
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color(0xFFD7E2FF))
-                .width(335.dp)
+                .width(300.dp)
         )
 
 
 
-        ExposedDropdownMenuBox(
+        ExposedDropdownMenu(
             expanded = isExpanded,
-            onExpandedChange = {isExpanded = false}
+            onDismissRequest = { isExpanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(text = "Femenino")},
@@ -589,6 +499,99 @@ fun MyScreen() {
     }
 
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BirthdayField( dateCalendar: String, onDateChange: (String) -> Unit) {
+
+    val openDialog = remember { mutableStateOf(false) }
+    var date by remember { mutableStateOf(dateCalendar) }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+
+    if(openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = { openDialog.value = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        date = SimpleDateFormat("yyyy/MM/dd").format(datePickerState.selectedDateMillis)
+                            .toString()
+                    },
+                ) {
+                    Text(text = "Aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text(text = "Cancelar")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+
+        }
+
+    }
+    LaunchedEffect(date){
+        onDateChange(date)
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { openDialog.value = true },
+    ){
+        TextField(
+            value = date,
+            onValueChange = {},
+            shape = MaterialTheme.shapes.small,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.CalendarMonth,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            label = {
+                Text(
+                    text = "Fecha de nacimiento",
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
+            modifier = Modifier
+                .pointerInput(Unit) {}
+                .width(300.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) { openDialog.value = true },
+            readOnly = true,
+            enabled = false,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+                containerColor = Color(0xFFD7E2FF)
+
+            )
+        )
+    }
+
+
+
+}
+
+
+
+
+
+
 
 
 
