@@ -4,11 +4,13 @@
 
 package com.uca.polifitnessapp.ui.login.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -42,6 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,22 +54,35 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavHostController
+import androidx.navigation.Navigation.findNavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.RetrofitApplication
+import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(
+    viewModel: LoginViewModel,
+    navController: NavHostController
+) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        LoginView(Modifier.align(Alignment.Center), viewModel) // Para aliniar to do al centro
+        LoginView(
+            Modifier.align(Alignment.Center),
+            viewModel,
+            navController
+        ) // Para aliniar to do al centro
     }
 
 }
+
 
 @Composable
 fun LoadingView() {
@@ -80,20 +97,58 @@ fun LoadingView() {
 }
 
 @Composable
-fun LoginView(modifier: Modifier, viewModel: LoginViewModel) {
+fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
 
-    // CREAR NUESTRAS VARIABLES DE ESTADO PARA EL EMAIL Y PASSWORD
-
+    // State variables
+    // email and password
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
-    val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
+
+    // Is login enable? (email and password are not empty)
+    val loginEnable: Boolean by viewModel.isLoginEnable.observeAsState(initial = false)
+
+    // Is wrong email? (email is not empty but is not a valid email)
+    val isWrongEmail: Boolean by viewModel.isValidEmail.observeAsState(initial = false)
+
+    // Is wrong password? (password is not empty but is not a valid password)
+    val isWrongPassword: Boolean by viewModel.isValidPassword.observeAsState(initial = false)
+
+    val isLoginLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+
+    // Status
+    val status: LoginUiStatus? by viewModel.status.observeAsState(initial = null)
+
+    // Application Instance
+    val app: RetrofitApplication = LocalContext.current.applicationContext as RetrofitApplication
+    // Context and LifecycleOwner
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    // Handle status changes
+    fun handleUiStatus(status: LoginUiStatus) {
+
+        when(status) {
+            is LoginUiStatus.Error -> {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+            is LoginUiStatus.ErrorWithMessage -> {
+                Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
+            }
+            is LoginUiStatus.Success -> {
+                viewModel.clearStatus()
+                viewModel.clearData()
+                app.saveAuthToken(token = status.token)
+                Toast.makeText(context, "Inicio de sesion correcto", Toast.LENGTH_SHORT).show()
+                navController.navigate("main_flow")
+            }
+
+            else -> {}
+        }
+    }
 
     val coroutineScope = rememberCoroutineScope()
 
-    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
-    val isWrongInput: Boolean by viewModel.isWrongInput.observeAsState(initial = false)
-
-    if (isLoading) {
+    if (isLoginLoading){
         LoadingView()
     } else {
         Column(modifier = modifier) {
@@ -108,15 +163,19 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel) {
             EmailField(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 email,
-                isWrongInput
-            ) { viewModel.onLoginChanged(it, password) }
+                isWrongEmail
+            ) {
+                viewModel.onLoginChanged(it, password)
+            }
             Spacer(modifier = Modifier.padding(8.dp))
 
             PasswordField(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 password,
-                isWrongInput
-            ) { viewModel.onLoginChanged(email, it) }
+                isWrongPassword
+            ) {
+                viewModel.onLoginChanged(email, it)
+            }
             Spacer(modifier = Modifier.padding(8.dp))
 
             ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
@@ -127,7 +186,10 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel) {
                 loginEnable
             ) {
                 coroutineScope.launch {
-                    viewModel.onLoginSelected()
+                    viewModel.status.observe(lifecycleOwner) { status ->
+                        handleUiStatus(status)
+                    }
+                    viewModel.onLogin()
                 }
             }
 
@@ -277,6 +339,7 @@ fun PasswordField(
             )
         },
 
+
         visualTransformation = if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
 
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -284,12 +347,13 @@ fun PasswordField(
         trailingIcon = {
             IconButton(onClick = { passwordHidden = !passwordHidden }) {
                 val visibilityIcon =
-                        if (passwordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                    if (passwordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                 // Please provide localized description for accessibility services
                 val description = if (passwordHidden) "Show password" else "Hide password"
                 Icon(
                     imageVector = visibilityIcon,
-                    contentDescription = description)
+                    contentDescription = description
+                )
             }
         },
 
@@ -329,9 +393,15 @@ fun ForgotPassword(modifier: Modifier) {
 // ------------
 
 @Composable
-fun LoginButton(modifier: Modifier, loginEnable: Boolean, onLoginSelected: () -> Unit) {
+fun LoginButton(
+    modifier: Modifier,
+    loginEnable: Boolean,
+    onLoginSelected: () -> Unit
+) {
     Button(
-        onClick = { onLoginSelected() },
+        onClick = {
+            onLoginSelected()
+        },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,

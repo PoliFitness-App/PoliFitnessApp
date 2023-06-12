@@ -17,9 +17,6 @@ data class UserModel(
     @ColumnInfo(name = "imc") val imc: Double,
     @ColumnInfo(name = "icc") val icc: Double,
 
-
-
-
     )
 
 {
