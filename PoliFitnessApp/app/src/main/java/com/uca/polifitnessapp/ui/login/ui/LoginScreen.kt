@@ -58,14 +58,16 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.Navigation.findNavController
+import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.RetrofitApplication
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
+import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
+    userViewModel: UserViewModel,
     navController: NavHostController
 ) {
     Box(
@@ -77,8 +79,9 @@ fun LoginScreen(
         LoginView(
             Modifier.align(Alignment.Center),
             viewModel,
+            userViewModel,
             navController
-        ) // Para aliniar to do al centro
+        )
     }
 
 }
@@ -97,7 +100,12 @@ fun LoadingView() {
 }
 
 @Composable
-fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
+fun LoginView(
+    modifier: Modifier,
+    viewModel: LoginViewModel,
+    userViewModel: UserViewModel,
+    navController: NavHostController
+) {
 
     // State variables
     // email and password
@@ -119,7 +127,7 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavH
     val status: LoginUiStatus? by viewModel.status.observeAsState(initial = null)
 
     // Application Instance
-    val app: RetrofitApplication = LocalContext.current.applicationContext as RetrofitApplication
+    val app: PoliFitnessApplication = LocalContext.current.applicationContext as PoliFitnessApplication
     // Context and LifecycleOwner
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -135,13 +143,22 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavH
                 Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
             }
             is LoginUiStatus.Success -> {
+                // login view model action -> clear status, and clear datao
                 viewModel.clearStatus()
                 viewModel.clearData()
+                // then we save the token
                 app.saveAuthToken(token = status.token)
+                // information about the state
                 Toast.makeText(context, "Inicio de sesion correcto", Toast.LENGTH_SHORT).show()
+
+                // we call the method viewmodel.getUset to get the information about the user
+                // using the repository.whoami that returns that information
+
+                userViewModel.getUser()
+
+                // we nagivate to "main_flow"
                 navController.navigate("main_flow")
             }
-
             else -> {}
         }
     }
@@ -190,6 +207,7 @@ fun LoginView(modifier: Modifier, viewModel: LoginViewModel, navController: NavH
                         handleUiStatus(status)
                     }
                     viewModel.onLogin()
+                    viewModel.token.value = app.getToken()
                 }
             }
 

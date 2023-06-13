@@ -32,10 +32,18 @@ import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.navigation.UserScreens
+import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 
 
 @Composable
-fun ProfileScreen(navController: NavController, user: UserModel){
+fun ProfileScreen(
+    navController: NavController,
+    // we need to get the view model as a parameter
+    userViewModel: UserViewModel
+){
+
+    // get the user from the view model
+    val user = userViewModel.user.value!!
 
     Column(
         modifier = Modifier
@@ -63,7 +71,7 @@ fun UserCard( navController: NavController, user: UserModel) {
                 )
         )
         Column(){
-            Text(text= user.name)
+            Text(text= user.username)
 
             Text(text = "Programa de perder grasa",
                 fontSize = 10.sp,
@@ -141,7 +149,7 @@ fun generalInfoUser(user: UserModel){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = user.age.toString()+"años", color = Color("#2E5DA8".toColorInt()))
+                //Text(text = user.age.toString()+"años", color = Color("#2E5DA8".toColorInt()))
                 Text(text = "Edad")
             }
 
