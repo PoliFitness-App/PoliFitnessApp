@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.uca.polifitnessapp.RetrofitApplication
+import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
 import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
@@ -23,6 +23,8 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
 
     // password
     var password = MutableLiveData("")
+
+    var token = MutableLiveData("")
 
     // login enable
     private val _isLoginEnable = MutableLiveData(false)
@@ -123,7 +125,7 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val app =
-                    this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as RetrofitApplication
+                    this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as PoliFitnessApplication
                 LoginViewModel(app.credentialRepository)
             }
         }

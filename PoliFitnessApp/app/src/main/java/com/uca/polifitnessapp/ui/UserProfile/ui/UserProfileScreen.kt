@@ -37,6 +37,7 @@ import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.UserProfile.ui.data.User
 import com.uca.polifitnessapp.ui.UserProfile.ui.data.userTest
 import com.uca.polifitnessapp.ui.navigation.UserScreens
+import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 
 
 
@@ -45,7 +46,6 @@ import com.uca.polifitnessapp.ui.navigation.UserScreens
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ProfileScreen( ){
-
     Column(
         modifier = Modifier
             .fillMaxSize()
