@@ -52,15 +52,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpViewModel
 import kotlinx.coroutines.launch
 
 
 
-@Preview(showSystemUi = true)
 @Composable
-fun SignUpScreen(){
+fun SignUpScreen(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
