@@ -63,13 +63,13 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
                 }
             )
         }
-        isLoading.value = false
+        _isLoading.value = false
     }
 
     // On Login
     fun onLogin() {
 
-        isLoading.value = true
+        _isLoading.value = true
         if (!validateData()) {
             _status.value = LoginUiStatus.ErrorWithMessage("Invalid credentials email or password")
             return

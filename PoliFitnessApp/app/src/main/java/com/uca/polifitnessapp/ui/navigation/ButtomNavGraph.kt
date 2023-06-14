@@ -61,6 +61,7 @@ fun NavigationHost(navController: NavHostController) {
         // This flow contains the onboarding screen and the register screen
         // The register screen is the first screen that the user will see after the onboarding screen
         // The onboarding screen is the first screen that the user will see if the user is not logged in
+
         navigation(
             // startDestination = "onboard_screen",
             startDestination = "splash_screen",
@@ -149,6 +150,8 @@ fun NavigationHost(navController: NavHostController) {
     }
 }
 
+
+// TODO - Remove this function
 @Composable
 fun PreviewScreens(
     greeting: String
