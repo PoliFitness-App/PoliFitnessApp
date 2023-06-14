@@ -312,8 +312,6 @@ fun NewItem(
         ),
     ) {
         // Image
-
-        println(new.image)
         GlideImage(
             model = new.image,
             contentDescription = "News",
