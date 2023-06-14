@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,10 +38,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.EditProfile.viewmodel.EditProfileViewModel
@@ -51,7 +48,7 @@ import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 @Composable
 fun EditProfileScreen(
     navController: NavController,
-    userViewMode: UserViewModel,
+    userViewModel: UserViewModel,
     viewModel: EditProfileViewModel
 ) {
     Column(
@@ -67,7 +64,8 @@ fun EditProfileScreen(
         HeaderImage()
         EditProfileText()
         combine(
-            viewModel
+            viewModel,
+            userViewModel
         )
     }
 }
@@ -135,17 +133,16 @@ fun EditProfileText() {
 @Composable
 fun weightField(
     modifier: Modifier,
-    weightVM: String,
+    weightVM: Float,
     isValidWeight: Boolean,
-    onTextFieldChanged: (String) -> Unit
+    onTextFieldChanged: (Float) -> Unit
 ) {
-    val textSate = remember { mutableStateOf("") }
-
     TextField(
-        value = textSate.value,
+        value = weightVM.toString(),
         onValueChange = {
-            textSate.value = it
+            onTextFieldChanged(it.toFloat())
         },
+        isError = isValidWeight,
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -180,13 +177,17 @@ fun weightField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun heightField(
-    modifier: Modifier
+    modifier: Modifier,
+    heightVM: Float,
+    isValidHeight: Boolean,
+    onTextFieldChanged: (Float) -> Unit
 ) {
-    val textSate = remember { mutableStateOf("") }
-
     TextField(
-        value = textSate.value,
-        onValueChange = { textSate.value = it },
+        value = heightVM.toString(),
+        onValueChange = {
+            onTextFieldChanged(it.toFloat())
+        },
+        isError = isValidHeight,
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -221,13 +222,17 @@ fun heightField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun waistField(
-    modifier: Modifier
+    modifier: Modifier,
+    waistP: Float,
+    isValidWaist: Boolean,
+    onTextFieldChanged: (Float) -> Unit
 ) {
-    val textSate = remember { mutableStateOf("") }
-
     TextField(
-        value = textSate.value,
-        onValueChange = { textSate.value = it },
+        value = waistP.toString(),
+        onValueChange = {
+            onTextFieldChanged(it.toFloat())
+        },
+        isError = isValidWaist,
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -262,13 +267,17 @@ fun waistField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun hipField(
-    modifier: Modifier
+    modifier: Modifier,
+    hipP: Float,
+    isValidHip: Boolean,
+    onTextFieldChanged: (Float) -> Unit
 ) {
-    val textSate = remember { mutableStateOf("") }
-
     TextField(
-        value = textSate.value,
-        onValueChange = { textSate.value = it },
+        value = hipP.toString(),
+        onValueChange = {
+            onTextFieldChanged(it.toFloat())
+        },
+        isError = isValidHip,
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -347,15 +356,19 @@ fun cmicon() {
 
 @Composable()
 fun combine(
-    viewModel: EditProfileViewModel
+    viewModel: EditProfileViewModel,
+    userViewModel: UserViewModel
 ) {
+
+    // get the user from the view model
+    val user = userViewModel.user.value!!
 
     // Set the variable to remember the state of the text's field
     // weight, height, waistP and hipP
-    val weight: String by viewModel.height.observeAsState(initial = "")
-    val height: String by viewModel.height.observeAsState(initial = "")
-    val waistP: String by viewModel.waistP.observeAsState(initial = "")
-    val hipP: String by viewModel.hipP.observeAsState(initial = "")
+    val weight: Float by viewModel.weight.observeAsState(initial = 0F)
+    val height: Float by viewModel.height.observeAsState(initial = 0F)
+    val waistP: Float by viewModel.waistP.observeAsState(initial = 0F)
+    val hipP: Float by viewModel.hipP.observeAsState(initial = 0F)
 
     // Set the variable to remember the state
     // isValidWeight, isValidHeight, isValidWaistP and isValidHipP
@@ -363,6 +376,7 @@ fun combine(
     val isValidHeight by viewModel.isValidHeight.observeAsState(initial = false)
     val isValidWaistP by viewModel.isValidWaistP.observeAsState(initial = false)
     val isValidHipP by viewModel.isValidHipP.observeAsState(initial = false)
+    val isValidForm by viewModel.isEnabled.observeAsState(initial = false)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -378,7 +392,7 @@ fun combine(
                 weight,
                 isValidWeight
             ) {
-                viewModel.onFieldChange(it,height,waistP,hipP)
+                viewModel.onFieldChange(it, height, waistP, hipP)
             }
 
             kgicon()
@@ -391,8 +405,12 @@ fun combine(
         ) {
 
             heightField(
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
+                modifier = Modifier.align(Alignment.CenterVertically),
+                height,
+                isValidHeight
+            ) {
+                viewModel.onFieldChange(weight, it, waistP, hipP)
+            }
             cmicon()
 
         }
@@ -403,8 +421,12 @@ fun combine(
         ) {
 
             waistField(
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
+                modifier = Modifier.align(Alignment.CenterVertically),
+                waistP,
+                isValidWaistP
+            ) {
+                viewModel.onFieldChange(weight, height, it, hipP)
+            }
             cmicon()
 
         }
@@ -415,8 +437,12 @@ fun combine(
         ) {
 
             hipField(
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
+                modifier = Modifier.align(Alignment.CenterVertically),
+                hipP,
+                isValidHipP
+            ) {
+                viewModel.onFieldChange(weight, height, waistP, it)
+            }
             cmicon()
 
         }
@@ -428,8 +454,14 @@ fun combine(
         ) {
 
             SaveButton(
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
+                modifier = Modifier
+                    .align(Alignment.CenterVertically),
+                isValidForm
+            ) {
+                viewModel.onUpdate(user)
+                viewModel.clearData()
+
+            }
 
         }
 
@@ -440,10 +472,18 @@ fun combine(
 
 
 @Composable
-fun SaveButton(modifier: Modifier) {
+fun SaveButton(
+    modifier: Modifier,
+    isValidForm: Boolean,
+    onClick: () -> Unit
+) {
     Button(
-        onClick = { "/*TODO*/ " },
+        onClick = {
+            onClick()
+        },
+        enabled = isValidForm,
         shape = RoundedCornerShape(10.dp),
+
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
             pressedElevation = 10.dp,

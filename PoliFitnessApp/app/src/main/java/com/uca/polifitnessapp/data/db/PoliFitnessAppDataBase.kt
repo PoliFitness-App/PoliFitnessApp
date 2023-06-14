@@ -11,7 +11,7 @@ import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 import com.uca.polifitnessapp.data.db.models.UserModel
 
-@Database(entities = [UserModel::class, RoutineModel::class, NoticeModel::class], version = 6)
+@Database(entities = [UserModel::class, RoutineModel::class, NoticeModel::class], version = 8)
 abstract class PoliFitnessDatabase : RoomDatabase(){
 
     abstract fun userDao(): UserDao

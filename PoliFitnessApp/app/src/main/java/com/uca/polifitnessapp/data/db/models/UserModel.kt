@@ -18,11 +18,34 @@ data class UserModel(
     @ColumnInfo(name = "birthday") val birthday: String,
     @ColumnInfo(name = "height") var height: Float,
     @ColumnInfo(name = "weight") var weight: Float,
-    @ColumnInfo(name = "waistP") var waistP: String,
-    @ColumnInfo(name = "hipP") var hipP: String,
+    @ColumnInfo(name = "waistP") var waistP: Float,
+    @ColumnInfo(name = "hipP") var hipP: Float,
     @ColumnInfo(name = "approach") val approach: String
-    ) {
-    constructor(_id: String, name: String, email: String, height: Float, weight: Float, imc: Float, icc: Float, approach: String)
-            : this("", "", "", "", 0.0F, 0.0F, false, "", 0.0F, 0.0F, "", "","")
+) {
+    constructor(
+        _id: String,
+        name: String,
+        email: String,
+        height: Float,
+        weight: Float,
+        imc: Float,
+        icc: Float,
+        approach: String
+    )
+            : this(
+        "",
+        "",
+        "",
+        "",
+        0F,
+        0F,
+        false,
+        "",
+        0F,
+        0F,
+        0F,
+        0F,
+        ""
+    )
 }
 

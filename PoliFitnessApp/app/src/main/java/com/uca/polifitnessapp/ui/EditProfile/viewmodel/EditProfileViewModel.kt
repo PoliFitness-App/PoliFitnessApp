@@ -11,6 +11,7 @@ import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
 import com.uca.polifitnessapp.ui.EditProfile.ui.EditProfileUiStatus
+import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
 import kotlinx.coroutines.launch
 
 class EditProfileViewModel(
@@ -28,10 +29,10 @@ class EditProfileViewModel(
     var height = MutableLiveData(0F)
 
     // waistP
-    var waistP = MutableLiveData("")
+    var waistP = MutableLiveData(0F)
 
     // hipP
-    var hipP = MutableLiveData("")
+    var hipP = MutableLiveData(0F)
 
     // ---
     // States
@@ -72,7 +73,7 @@ class EditProfileViewModel(
     // ---
 
     // On Field Change
-    fun onFieldChange(weightU: Float, heightU: Float, waistPU: String, hipPU: String) {
+    fun onFieldChange(weightU: Float, heightU: Float, waistPU: Float, hipPU: Float) {
         // verify if the data is valid
         // if the data is valid
         if (validateData()) {
@@ -101,6 +102,7 @@ class EditProfileViewModel(
     }
 
     private fun updateData(user: UserModel) {
+        println(user)
         // we update the data
         viewModelScope.launch {
             _status.postValue(
@@ -117,22 +119,35 @@ class EditProfileViewModel(
         when {
             weight.value.toString().isEmpty() -> return false
             height.value.toString().isEmpty() -> return false
-            waistP.value.isNullOrEmpty() -> return false
-            hipP.value.isNullOrEmpty() -> return false
+            waistP.value.toString().isEmpty() -> return false
+            hipP.value.toString().isEmpty() -> return false
         }
         return true
     }
 
-    // We set the functions
+
+    // ---
+    // We set the auxiliary functions
+    // ---
+
     // Clear data function
     fun clearData() {
         // We clear the data
         weight.value = 0F
         height.value = 0F
-        waistP.value = ""
-        hipP.value = ""
+        waistP.value = 0F
+        hipP.value = 0F
     }
 
+    // Clear status function
+    fun clearStatus() {
+        _status.value = EditProfileUiStatus.Resume
+    }
+
+    // ---
+    // Factory
+    // ---
+    
     // Companion object to set the factory
     companion object {
         val Factory = viewModelFactory {

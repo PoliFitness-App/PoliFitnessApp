@@ -56,7 +56,10 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        UserCard(user = user)
+        UserCard(
+            user = user,
+            navController
+        )
         generalInfoUser(user = user)
         specificlInfoUser(user = user)
         contactCard()
@@ -65,7 +68,10 @@ fun ProfileScreen(
 
 
 @Composable
-fun UserCard( user: UserModel ) {
+fun UserCard(
+    user: UserModel,
+    navController: NavController
+) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
@@ -103,7 +109,9 @@ fun UserCard( user: UserModel ) {
             modifier = Modifier
                 .width(92.dp)
                 .height(33.dp),
-            onClick = { }
+            onClick = {
+                navController.navigate(UserScreens.EditProfileScreen.route)
+            }
         ) {
             Text(text = "Editar",
                 fontSize = 12.sp)
