@@ -2,8 +2,8 @@ package com.uca.polifitnessapp.ui.calculator.ui
 
 data class ValueState(
     val label: String, // lable
-    val value: String = "", // A string representing the user's input value.
-    val error: String? = null // error meaage if any
+    val value: String = "", // Input del usuario
+    val error: String? = null // error si es null
 ) {
     fun toNumber() = value.toDoubleOrNull()
 }

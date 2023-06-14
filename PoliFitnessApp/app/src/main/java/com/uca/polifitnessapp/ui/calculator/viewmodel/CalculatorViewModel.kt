@@ -72,6 +72,8 @@ class CalculatorViewModel: ViewModel() {
     }
 
     private fun calculateBMI(height: Double, weight: Double, waist: Double, hip: Double) {
+
+
         bmi = weight / (height * height)
 
         messageIbm = when {
@@ -80,9 +82,10 @@ class CalculatorViewModel: ViewModel() {
             bmi in 25.0..29.9 -> "Alto"
             bmi >= 30.0 -> "Muy Alto"
             else -> error("Invalid params")
+
         }
 
-        icc = waist/hip
+        icc = (waist/hip)*10 
         messageIcc= when {
             icc < 0.95 -> "Riesgo Bajo"
             icc in 0.96..0.99 -> "Riesgo Alto"
