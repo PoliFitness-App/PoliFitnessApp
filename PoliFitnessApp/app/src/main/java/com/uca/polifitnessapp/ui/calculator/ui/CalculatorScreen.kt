@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,7 +45,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -68,8 +66,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
-import com.uca.polifitnessapp.ui.navigation.CalculatorButton
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
@@ -88,8 +84,8 @@ fun CalculatorScreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+
         Spacer(modifier = Modifier.width(90.dp))
-        HeaderTextImageCards()
         CalculatorView(viewModel = CalculatorViewModel())
 
 
@@ -98,7 +94,7 @@ fun CalculatorScreen(){
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun HeaderTextImageCards(){
+fun HeaderText( viewModel: CalculatorViewModel = CalculatorViewModel()){
     Column {
 
         Text(
@@ -110,13 +106,12 @@ fun HeaderTextImageCards(){
                 .align(Alignment.Start),
         )
 
-        HeaderImageCards()
         
     }
 }
 
 @Composable
-fun HeaderImageCards(
+fun HeaderImageCards( viewModel: CalculatorViewModel = CalculatorViewModel()
 ){
     Row(
         modifier = Modifier
@@ -125,7 +120,7 @@ fun HeaderImageCards(
     ) {
 
 
-        CalculatorCard()
+        CalculatorCard(viewModel = viewModel)
 
         Spacer(modifier = Modifier.width(20.dp))
 
@@ -170,7 +165,7 @@ fun CalculatorCard( viewModel: CalculatorViewModel = CalculatorViewModel()){
                 )
 
                 //
-                Text(text = viewModel.message,
+                Text(text = viewModel.messageIbm,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -209,7 +204,7 @@ fun CalculatorCard( viewModel: CalculatorViewModel = CalculatorViewModel()){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "25.5",
+                Text(text = "%.2f".format(viewModel.icc),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -217,7 +212,7 @@ fun CalculatorCard( viewModel: CalculatorViewModel = CalculatorViewModel()){
                 )
 
                 //
-                Text(text = "Normal",
+                Text(text = viewModel.messageIcc,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -252,11 +247,135 @@ fun CalculatorCard( viewModel: CalculatorViewModel = CalculatorViewModel()){
 @Composable
 fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(20.dp),
+        modifier = Modifier.padding(25.dp, 0.dp, 0.dp, 0.dp)
     ) {
+
+        HeaderText()
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) {
+
+
+            // Tarjetas con los resultados IMC e ICC
+
+            Column() {
+
+                //IMC CARD
+                ElevatedCard(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .height(80.dp)
+                        .width(152.dp),
+                    elevation = CardDefaults.elevatedCardElevation(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(10.dp),
+                ){
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+
+                    ) {
+                        Text(text = "%.2f".format(viewModel.bmi),
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontSize = 16.sp,
+                        )
+
+                        //
+                        Text(text = viewModel.messageIbm,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier
+                                .padding(0.dp, 8.dp, 0.dp, 0.dp),
+                            fontSize = 14.sp,
+                        )
+
+                        //
+                        Text(text = "IMC",
+                            fontWeight = FontWeight.ExtraLight,
+                            color = MaterialTheme.colorScheme.scrim,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .padding(8.dp, 8.dp, 8.dp, 8.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                }
+
+                //ICC CARD
+                ElevatedCard(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .height(80.dp)
+                        .width(152.dp),
+                    elevation = CardDefaults.elevatedCardElevation(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(10.dp),
+                ){
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+
+                    ) {
+                        Text(text = "%.2f".format(viewModel.icc),
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontSize = 16.sp,
+                        )
+
+                        //
+                        Text(text = viewModel.messageIcc,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier
+                                .padding(0.dp, 8.dp, 0.dp, 0.dp),
+                            fontSize = 14.sp,
+                        )
+
+                        //
+                        Text(text = "ICC",
+                            fontWeight = FontWeight.ExtraLight,
+                            color = MaterialTheme.colorScheme.scrim,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .padding(8.dp, 8.dp, 8.dp, 8.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                }
+
+            }
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.calculator_header_img),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(139.dp)
+                    .height(178.dp)
+            )
+
+        }
 
 
         /*GenderField(
@@ -295,22 +414,26 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            /*waistField(
+            waistField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                waist
+                viewModel.waistState,
+                ImeAction.Next,
+                viewModel::updateWaist
             )
-            cmicon()*/
+            cmicon()
         }
 
-        /*Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
+        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
             hipField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                hip
+                viewModel.hipState,
+                ImeAction.Done,
+                viewModel::updateHip
             )
             cmicon()
-        }*/
+        }
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -321,7 +444,11 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             CalculateButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = "Calculate",
-                viewModel::calculate
+                onClick = {
+                    coroutineScope.launch {
+                        viewModel.calculate()
+                    }
+                }
             )
 
         }
@@ -461,12 +588,14 @@ fun heightField(
 @Composable
 fun waistField(
     modifier: Modifier,
-    waist: String,
+    state: ValueState,
+    imeAction: ImeAction,
+    onValueChange: (String) -> Unit
 ){
-    val waist = remember { mutableStateOf("") }
     TextField(
-        value = waist.value,
-        onValueChange = { waist.value = it},
+        value = state.value,
+        isError = state.error != null,
+        onValueChange = { onValueChange(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -483,7 +612,7 @@ fun waistField(
                 fontSize = 12.sp
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
         modifier = modifier
             .width(240.dp),
         singleLine = true,
@@ -503,12 +632,14 @@ fun waistField(
 @Composable
 fun hipField(
     modifier: Modifier,
-    hip: String,
+    state: ValueState,
+    imeAction: ImeAction,
+    onValueChange: (String) -> Unit
 ){
-    val hip = remember { mutableStateOf("") }
     TextField(
-        value = hip.value,
-        onValueChange = { hip.value = it},
+        value = state.value,
+        isError = state.error != null,
+        onValueChange = { onValueChange(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -525,7 +656,7 @@ fun hipField(
                 fontSize = 12.sp
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
         modifier = modifier
             .width(240.dp),
         singleLine = true,
@@ -585,7 +716,7 @@ fun cmicon(){
 
 
 @Composable
-fun RowScope.CalculateButton(
+fun CalculateButton(
     modifier: Modifier,
     text: String,
     onClick: () -> Unit
