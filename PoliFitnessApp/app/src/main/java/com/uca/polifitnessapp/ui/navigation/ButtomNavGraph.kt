@@ -24,6 +24,7 @@ import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
+import com.uca.polifitnessapp.ui.signup.signupscreen.SignUpScreen
 import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -74,7 +75,7 @@ fun NavigationHost(navController: NavHostController) {
             }
             composable("register_screen") {
                 // TODO - Register screen
-                PreviewScreens(greeting = "Home Screen")
+                SignUpScreen(navController = navController)
                 // After the user is registered, the user will be redirected to the login screen
             }
         }
@@ -136,12 +137,14 @@ fun NavigationHost(navController: NavHostController) {
             }
             // Profile route
             composable(Profile.rute) {
-                ProfileScreen(navController, userViewModel)
+                ProfileScreen()
             }
             // Edit profile route
             composable(UserScreens.EditProfileScreen.route) {
                 EditProfileScreen()
             }
+
+            
         }
     }
 }
