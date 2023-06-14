@@ -1,7 +1,9 @@
 package com.uca.polifitnessapp.ui.navigation
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +21,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.EditProfile.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.EditProfile.viewmodel.EditProfileViewModel
@@ -28,16 +29,18 @@ import com.uca.polifitnessapp.ui.onboardscreen.ui.MainFunction
 import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
 import com.uca.polifitnessapp.ui.login.ui.LoginScreen
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
-
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
 import com.uca.polifitnessapp.ui.news.data.NewsViewModel
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
+import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.launch
 import com.uca.polifitnessapp.ui.signup.signupscreen.SignUpScreen
 import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavigationHost(navController: NavHostController) {
@@ -51,8 +54,8 @@ fun NavigationHost(navController: NavHostController) {
     factory = LoginViewModel.Factory
     )
     
-    val newsViewModel: NewsViewModel = viewModel(
-        factory = NewsViewModel.Factory
+    val newsScreenViewModel: NewsScreenViewModel = viewModel(
+        factory = NewsScreenViewModel.Factory
     )
     
     // User view model (global)
@@ -71,7 +74,7 @@ fun NavigationHost(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = "main_flow"//login_screen
+        startDestination = "login_screen"//login_screen
     ) {
 
         // ---
@@ -146,11 +149,13 @@ fun NavigationHost(navController: NavHostController) {
         ) {
             // Home route
             composable(Home.rute) {
-                PreviewScreens(greeting = "Home Screen", viewModel = newsViewModel)
+                PreviewScreens(greeting = "Home Screen")
             }
             // News route
             composable(News.rute) {
-                NewsListScreen()
+                NewsListScreen(
+                    viewModel = newsScreenViewModel
+                )
             }
             // Routine route
             composable(Rutine.rute) {
@@ -162,7 +167,11 @@ fun NavigationHost(navController: NavHostController) {
             }
             // Edit profile route
             composable(UserScreens.EditProfileScreen.route) {
-                EditProfileScreen(navController, userViewModel, editProfileViewModel)
+                EditProfileScreen(
+                    navController,
+                    userViewModel,
+                    editProfileViewModel
+                )
             }
         }
     }
@@ -173,41 +182,6 @@ fun NavigationHost(navController: NavHostController) {
 @Composable
 fun PreviewScreens(
     greeting: String,
-    viewModel: NewsViewModel
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = greeting)
-        //Log.d("News", "News: ${viewModel.news}")
-        val coroutineScope = rememberCoroutineScope()
-        val news = viewModel.getNews("%").collectAsLazyPagingItems()
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            println("IMPRESION DE LAS NOTICIAS----------------------------------")
-            println(news)
-            items(count = news.itemCount) { index ->
-                val item = news[index]
-                if (item != null) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ){
-                        Text(
-                            text = item.title,
-
-                            modifier = Modifier
-                                .fillMaxSize()
-                        )
-                    }
-                }
-            }
-            println("TERMINA LA IMPRESION DE LAS NOTICIAS--------------------------------")
-        }
-    }
+    //
 }

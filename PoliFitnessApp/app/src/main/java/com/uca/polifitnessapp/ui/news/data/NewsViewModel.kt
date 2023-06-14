@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class NewsViewModel(private val repository: NoticeRepository):ViewModel() {
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getNews(query: String = "%") = repository.getNewsPage(2, query)// cambiar aqui el parametro q recibe, pa q no sea quemado
+    fun getNews(query: String) = repository.getNewsPage(2, query)// cambiar aqui el parametro q recibe, pa q no sea quemado
 
    // private val _news = MutableStateFlow<PagingData<NoticeModel>>(repository.)
     //var news: Flow<PagingData<NoticeModel>> = _news

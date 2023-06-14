@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,10 +34,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.ui.news.data.News
 import com.uca.polifitnessapp.ui.news.data.NewsViewModel
 import com.uca.polifitnessapp.ui.news.data.newsList
+import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 
 // ----
 // News List Screen
@@ -53,7 +59,9 @@ var indexsizefilter by mutableStateOf(0)
 // -----
 
 @Composable
-fun NewsListScreen() {
+fun NewsListScreen(
+    viewModel: NewsScreenViewModel
+) {
 
     Column(
         modifier = Modifier
@@ -63,7 +71,9 @@ fun NewsListScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // news list
-        NewsList()
+        NewsList(
+            viewModel
+        )
     }
 
 }
@@ -82,7 +92,9 @@ data class FilterData(
 // ------
 
 @Composable
-fun HeaderSection() {
+fun HeaderSection(
+    viewModel: NewsScreenViewModel
+) {
     // List of icons
     val icon = listOf(
         FilterData(
@@ -131,7 +143,7 @@ fun HeaderSection() {
         val onItemClick = { index: Int ->
             selectedIndex = index
             // filter news
-            newsFilter(index)
+            viewModel.onCategoryChange(index)
         }
 
         // Filter items
@@ -154,37 +166,6 @@ fun HeaderSection() {
             }
         }
 
-    }
-}
-
-// function for filter news
-fun newsFilter(index: Int) {
-    //when index
-    when (index) {
-        0 -> {
-            // filter news by category "General"
-            category = ""
-        }
-
-        1 -> {
-            // filter news by category "Futbol"
-            category = "Futbol"
-        }
-
-        2 -> {
-            // filter news by category "Basketball"
-            category = "Basketball"
-        }
-
-        3 -> {
-            // filter news by category "Volleyball"
-            category = "Volleyball"
-        }
-
-        4 -> {
-            // filter news by category "Actividades"
-            category = "Actividades"
-        }
     }
 }
 
@@ -251,6 +232,7 @@ fun FilterItem(
 
 @Composable
 fun NewsList(
+    viewModel: NewsScreenViewModel
 ) {
     // Container
     Column(
@@ -268,15 +250,16 @@ fun NewsList(
             selectedIndex = index
         }
 
-        if (category.isBlank())
-        // index size for news list
-            indexsize = newsList.size
-        else
-        // index size for filter list
-            indexsize = newsList.filter { it.category == category }.size
-
         // header (News filter)
-        HeaderSection()
+        HeaderSection(
+            viewModel
+        )
+
+        // category
+        val category: String by viewModel.category.observeAsState(initial = "%")
+
+        // List of news, comes from the viewModel
+        val news = viewModel.getNews(category).collectAsLazyPagingItems()
 
         // News items
         LazyVerticalGrid(
@@ -286,18 +269,17 @@ fun NewsList(
                 .padding(0.dp, 0.dp, 0.dp, 64.dp),
             columns = GridCells.Adaptive(minSize = 350.dp)
         ) {
-            items(indexsize) { index ->
+            items(news.itemCount) { index ->
+                val item = news[index]
                 // Filter item
-                NewItem(
-                    new = if (category.isBlank())
-                        newsList[index]
-                    else
-                        newsList.filter { it.category == category }[index],
-                    index = index,
-                    selected = selectedIndex == index,
-                    onClick = onItemClick
-                )
-
+                if (item != null) {
+                    NewItem(
+                        new = item,
+                        index = index,
+                        selected = selectedIndex == index,
+                        onClick = onItemClick
+                    )
+                }
             }
         }
 
@@ -308,9 +290,10 @@ fun NewsList(
 // New Item
 // ------
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun NewItem(
-    new: News,
+    new: NoticeModel,
     index: Int,
     selected: Boolean,
     onClick: (Int) -> Unit
@@ -329,9 +312,8 @@ fun NewItem(
         ),
     ) {
         // Image
-
-        Image(
-            painter = painterResource(id = new.image),
+        GlideImage(
+            model = new.image,
             contentDescription = "News",
             modifier = Modifier
                 .fillMaxWidth()
@@ -393,5 +375,5 @@ fun NewItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewNewsListScreen() {
-    NewsListScreen()
+    //NewsListScreen()
 }

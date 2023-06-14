@@ -77,11 +77,11 @@ class EditProfileViewModel(
         // verify if the data is valid
         // if the data is valid
 
-            // we set the data
-            weight.value = weightU.trim()
-            height.value = heightU.trim()
-            waistP.value = waistPU.trim()
-            hipP.value = hipPU.trim()
+        // we set the data
+        weight.value = weightU.trim()
+        height.value = heightU.trim()
+        waistP.value = waistPU.trim()
+        hipP.value = hipPU.trim()
 
         // we set the state of the button
         _isEnabled.value = validateData()
