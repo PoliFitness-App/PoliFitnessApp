@@ -14,21 +14,26 @@ class CalculatorViewModel: ViewModel() {
     var icc by mutableStateOf(0.0)
         private set
 
+    var gender by mutableStateOf("")
+        private set
+
     var messageIbm by mutableStateOf("")
         private set
 
     var messageIcc by mutableStateOf("")
         private set
-    var heightState by mutableStateOf(ValueState("Height", "m"))
+    var heightState by mutableStateOf(ValueState("Height", ))
         private set
-    var weightState by mutableStateOf(ValueState("Weight", "kg"))
-        private set
-
-    var waistState by mutableStateOf(ValueState("Weight", "kg"))
+    var weightState by mutableStateOf(ValueState("Weight",))
         private set
 
-    var hipState by mutableStateOf(ValueState("Weight", "kg"))
+    var waistState by mutableStateOf(ValueState("Weight", ))
         private set
+
+    var hipState by mutableStateOf(ValueState("Weight",))
+        private set
+
+    var genderState by mutableStateOf(ValueState("genero"))
 
     fun updateHeight(it: String) {
         heightState = heightState.copy(value = it, error = null)
@@ -44,6 +49,10 @@ class CalculatorViewModel: ViewModel() {
 
     fun updateHip(it: String) {
         hipState = hipState.copy(value = it, error = null)
+    }
+
+    fun updateGender(it: String) {
+        genderState = genderState.copy(value = it, error = null)
     }
 
     fun calculate() {

@@ -377,10 +377,11 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
         }
 
-
-        /*GenderField(
-            gender
-        )*/
+        GenderField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            viewModel.genderState,
+            viewModel::updateGender
+        )
 
         //BirthdayField(birthdate, onDateChange = {})
 
@@ -756,8 +757,9 @@ fun CalculateButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenderField(
-    gender: String,
-    onGenderChange: (String) -> Unit
+    modifier: Modifier,
+    state: ValueState,
+    onValueChange: (String) -> Unit
 ) {
 
 
@@ -774,8 +776,8 @@ fun GenderField(
         onExpandedChange = { isExpanded = it}
     ) {
         TextField(
-            value = gender,
-            onValueChange = {onGenderChange(it)},
+            value = state.value,
+            onValueChange = {onValueChange(it)},
             shape = MaterialTheme.shapes.small,
             readOnly = true,
             leadingIcon = {
