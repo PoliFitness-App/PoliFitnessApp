@@ -16,8 +16,8 @@ interface NoticeDao {
     suspend fun getAllNotices(): List<NoticeModel>
 
     //funcion para obtener todas las noticias por bloques
-    @Query("SELECT * FROM notice_table")
-    fun pagingSource(): PagingSource<Int, NoticeModel>
+    @Query("SELECT * FROM notice_table WHERE category like :query")
+    fun pagingSource(query: String): PagingSource<Int, NoticeModel>
 
 
     //Funcion para insertar una noticia

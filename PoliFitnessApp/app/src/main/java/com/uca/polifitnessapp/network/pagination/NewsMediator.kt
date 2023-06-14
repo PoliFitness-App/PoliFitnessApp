@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.network.pagination.mediators
+package com.uca.polifitnessapp.network.pagination
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -20,22 +20,16 @@ class NewsMediator(private val database: PoliFitnessDatabase, private val servic
         return try {
 
             val loadKey = when (loadType) {
-                LoadType.REFRESH -> null
+                LoadType.REFRESH -> 1
                 // In this example, you never need to prepend, since REFRESH
                 // will always load the first page in the list. Immediately
                 // return, reporting end of pagination.
                 LoadType.PREPEND ->
                     return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
-
-                    if (lastItem == null) {
-                        return MediatorResult.Success(
-                            endOfPaginationReached = true
-                        )
-                    }
-
-                    lastItem.noticeId
+                    2
+                    //TODO implementar remote keys para obtener las pagination
+                    //crear una nueva tabla para controlar el pagination de news y rutinas
                 }
             }
 
@@ -43,9 +37,14 @@ class NewsMediator(private val database: PoliFitnessDatabase, private val servic
             // wrapped in a withContext(Dispatcher.IO) { ... } block since
             // Retrofit's Coroutine CallAdapter dispatches on a worker
             // thread.
+            println("PARAMETROS Q SE LE PASAN A RESPONSE-------------------------------")
+            println("page: $loadKey")
+            println("limit: ${state.config.pageSize}")
             val response = service.getPostsByBlocks(
-                page = state.config.pageSize, limit = loadKey ?: 1
+                page = loadKey , limit = state.config.pageSize
             )
+            println("RESPONSE---------------------")
+            println(response)
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -55,19 +54,13 @@ class NewsMediator(private val database: PoliFitnessDatabase, private val servic
                 // Insert new users into database, which invalidates the
                 // current PagingData, allowing Paging to present the updates
                 // in the DB.
-                database.noticeDao().insertAll(response.map {new ->
-                    NoticeModel(
-                        new.tittle,
-                        new.description,
-                        new.image,
-                        new.category,
-                        new.hidden
-                    )
-                })
+                println("INSERCION DE TODOS LOS ELEMENTOS EN LA BASE DE DATOS-------------------------------")
+                println(response.post)//aqui manda null
+                database.noticeDao().insertAll(response.post)
             }
 
             MediatorResult.Success(
-                endOfPaginationReached = response.isNullOrEmpty()// si esta vacia debe retornar true
+                endOfPaginationReached = response.post.isEmpty()// si esta vacia debe retornar true
             )
         } catch (e: IOException) {
             MediatorResult.Error(e)
@@ -76,4 +69,6 @@ class NewsMediator(private val database: PoliFitnessDatabase, private val servic
         }
 
     }
+
+
 }

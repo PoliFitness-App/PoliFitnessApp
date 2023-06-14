@@ -1,11 +1,16 @@
 package com.uca.polifitnessapp.ui.navigation
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -13,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.EditProfile.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.UserProfile.ui.ProfileScreen
@@ -22,8 +28,11 @@ import com.uca.polifitnessapp.ui.login.ui.LoginScreen
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 
 import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
+import com.uca.polifitnessapp.ui.news.data.NewsViewModel
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
+import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -36,9 +45,13 @@ fun NavigationHost(navController: NavHostController) {
     factory = LoginViewModel.Factory
     )
 
+    val newsViewModel: NewsViewModel = viewModel(
+        factory = NewsViewModel.Factory
+    )
+
     NavHost(
         navController = navController,
-        startDestination = "login_screen"
+        startDestination = "main_flow"//login_screen
     ) {
 
         // ---
@@ -90,7 +103,7 @@ fun NavigationHost(navController: NavHostController) {
         ) {
             // Home route
             composable(Home.rute) {
-                PreviewScreens(greeting = "Home Screen")
+                PreviewScreens(greeting = "Home Screen", viewModel = newsViewModel)
             }
             // News route
             composable(News.rute) {
@@ -114,7 +127,8 @@ fun NavigationHost(navController: NavHostController) {
 
 @Composable
 fun PreviewScreens(
-    greeting: String
+    greeting: String,
+    viewModel: NewsViewModel
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -122,5 +136,21 @@ fun PreviewScreens(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = greeting)
+        //Log.d("News", "News: ${viewModel.news}")
+        val coroutineScope = rememberCoroutineScope()
+        val news = viewModel.getNews("%").collectAsLazyPagingItems()
+
+        LazyColumn {
+            println("IMPRESION DE LAS NOTICIAS----------------------------------")
+            println(news)
+            items(count = news.itemCount) { index ->
+                val item = news[index]
+                if (item != null) {
+                    Text(text = item.title)
+                }
+            }
+            println("TERMINA LA IMPRESION DE LAS NOTICIAS--------------------------------")
+        }
+
     }
 }

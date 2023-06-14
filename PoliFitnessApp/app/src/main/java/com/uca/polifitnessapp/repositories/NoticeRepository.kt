@@ -4,10 +4,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
-import com.uca.polifitnessapp.data.db.dao.NoticeDao
 import com.uca.polifitnessapp.data.db.models.NoticeModel
-import com.uca.polifitnessapp.network.pagination.mediators.NewsMediator
-import com.uca.polifitnessapp.network.retrofit.RetrofitInstance
+import com.uca.polifitnessapp.network.pagination.NewsMediator
 import com.uca.polifitnessapp.network.service.NewsService
 
 class NoticeRepository(private val database: PoliFitnessDatabase, private val retrofitInstance: NewsService) {
@@ -29,13 +27,15 @@ class NoticeRepository(private val database: PoliFitnessDatabase, private val re
     //TODO cambiar en la api las rutas para agregar pagination
 
     @ExperimentalPagingApi
-    fun getNewsPage(pageSize: Int) = Pager(
+    fun getNewsPage(pageSize: Int, query: String) = Pager(
         config = PagingConfig(
             pageSize = pageSize,
             prefetchDistance = (0.10 * pageSize).toInt()
         ),
         remoteMediator = NewsMediator(database, retrofitInstance)
     ) {
-        noticeDao.pagingSource()
+        println("PETICION DE PAGINACION-------------------------------")
+        println(query)
+        noticeDao.pagingSource(query)//recibe la queryq se le manda desde la vista
     }.flow
 }

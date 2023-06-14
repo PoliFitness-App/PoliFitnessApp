@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.news.data.News
+import com.uca.polifitnessapp.ui.news.data.NewsViewModel
 import com.uca.polifitnessapp.ui.news.data.newsList
 
 // ----
