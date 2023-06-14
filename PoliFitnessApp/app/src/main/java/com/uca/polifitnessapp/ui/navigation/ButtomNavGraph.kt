@@ -136,7 +136,7 @@ fun NavigationHost(navController: NavHostController) {
             }
             // Profile route
             composable(Profile.rute) {
-                ProfileScreen(navController, userViewModel)
+                ProfileScreen()
             }
             // Edit profile route
             composable(UserScreens.EditProfileScreen.route) {
