@@ -9,8 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.uca.polifitnessapp.ui.signup.ui.validation.SignUpUiState
-import com.uca.polifitnessapp.ui.signup.ui.validation.UiEvent
 import kotlinx.coroutines.delay
 
 
