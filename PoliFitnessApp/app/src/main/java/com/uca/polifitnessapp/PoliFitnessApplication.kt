@@ -19,7 +19,7 @@ class PoliFitnessApplication: Application(){
 
     //implementacion de los repositorios de la aplicacion
     val noticeRepository: NoticeRepository by lazy {
-        NoticeRepository(database.noticeDao())
+        NoticeRepository(database, retrofitInstance.getPoliFitnessAPINews())
     }
 
     val routineRepository: RoutineRepository by lazy {
