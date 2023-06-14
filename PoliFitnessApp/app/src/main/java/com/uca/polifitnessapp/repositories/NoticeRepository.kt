@@ -32,10 +32,9 @@ class NoticeRepository(private val database: PoliFitnessDatabase, private val re
             pageSize = pageSize,
             prefetchDistance = (0.10 * pageSize).toInt()
         ),
-        remoteMediator = NewsMediator(database, retrofitInstance)
+        remoteMediator = NewsMediator(database, retrofitInstance, query)
     ) {
-        println("PETICION DE PAGINACION-------------------------------")
-        println(query)
-        noticeDao.pagingSource(query)//recibe la queryq se le manda desde la vista
+        // recibe la query q se le manda desde la vista
+        noticeDao.pagingSource(query)
     }.flow
 }

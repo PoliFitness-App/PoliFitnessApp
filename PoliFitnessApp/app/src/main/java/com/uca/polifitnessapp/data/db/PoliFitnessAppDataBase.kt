@@ -5,18 +5,23 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.uca.polifitnessapp.data.db.dao.NoticeDao
+import com.uca.polifitnessapp.data.db.dao.RemoteKeyDao
 import com.uca.polifitnessapp.data.db.dao.RoutineDao
 import com.uca.polifitnessapp.data.db.dao.UserDao
 import com.uca.polifitnessapp.data.db.models.NoticeModel
+import com.uca.polifitnessapp.data.db.models.RemoteKey
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 import com.uca.polifitnessapp.data.db.models.UserModel
 
-@Database(entities = [UserModel::class, RoutineModel::class, NoticeModel::class], version = 4, exportSchema = false)
+@Database(entities = [UserModel::class, RoutineModel::class, NoticeModel::class, RemoteKey::class], version = 6, exportSchema = false)
 abstract class PoliFitnessDatabase : RoomDatabase(){
 
     abstract fun userDao(): UserDao
     abstract fun routineDao(): RoutineDao
     abstract fun noticeDao(): NoticeDao
+
+    //funcion de claves remotas
+    abstract fun remoteKeysDao(): RemoteKeyDao
 
     companion object{
         @Volatile
