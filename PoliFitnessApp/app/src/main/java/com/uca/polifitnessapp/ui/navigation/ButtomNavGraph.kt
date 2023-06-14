@@ -33,6 +33,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
 import com.uca.polifitnessapp.ui.news.data.NewsViewModel
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
+import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.launch
@@ -53,8 +54,8 @@ fun NavigationHost(navController: NavHostController) {
     factory = LoginViewModel.Factory
     )
     
-    val newsViewModel: NewsViewModel = viewModel(
-        factory = NewsViewModel.Factory
+    val newsScreenViewModel: NewsScreenViewModel = viewModel(
+        factory = NewsScreenViewModel.Factory
     )
     
     // User view model (global)
@@ -148,11 +149,13 @@ fun NavigationHost(navController: NavHostController) {
         ) {
             // Home route
             composable(Home.rute) {
-                PreviewScreens(greeting = "Home Screen", viewModel = newsViewModel)
+                PreviewScreens(greeting = "Home Screen")
             }
             // News route
             composable(News.rute) {
-                NewsListScreen()
+                NewsListScreen(
+                    viewModel = newsScreenViewModel
+                )
             }
             // Routine route
             composable(Rutine.rute) {
@@ -179,40 +182,6 @@ fun NavigationHost(navController: NavHostController) {
 @Composable
 fun PreviewScreens(
     greeting: String,
-    viewModel: NewsViewModel
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = greeting)
-        //Log.d("News", "News: ${viewModel.news}")
-        val coroutineScope = rememberCoroutineScope()
-        val news = viewModel.getNews("%").collectAsLazyPagingItems()
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            println("IMPRESION DE LAS NOTICIAS----------------------------------")
-            items(count = news.itemCount) { index ->
-                val item = news[index]
-                if (item != null) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ){
-                        Text(
-                            text = item.title,
-
-                            modifier = Modifier
-                                .fillMaxSize()
-                        )
-                    }
-                }
-            }
-            println("TERMINA LA IMPRESION DE LAS NOTICIAS--------------------------------")
-        }
-    }
+    //
 }
