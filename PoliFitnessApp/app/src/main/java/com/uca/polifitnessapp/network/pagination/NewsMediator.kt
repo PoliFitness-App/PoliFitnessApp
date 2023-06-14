@@ -32,6 +32,7 @@ class NewsMediator(private val database: PoliFitnessDatabase, private val servic
 
                     // test de paginas sacadas de la api
                     val remoteKey = database.withTransaction {
+                        // TODO consultar si esta bien hecho, por q en este caso esta guardando: % = num, futbol = num2, y no se puede compartir con otro remote mediator
                         database.remoteKeysDao().remoteKeyByQuery(query)// le mando la query para saber a q clave remota acceder
                     }
                     if (remoteKey.nextKey == null) {

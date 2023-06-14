@@ -37,4 +37,42 @@ class NoticeRepository(private val database: PoliFitnessDatabase, private val re
         // recibe la query q se le manda desde la vista
         noticeDao.pagingSource(query)
     }.flow
+
+    /**
+     * FORMA EN LA SE DDEBE LLAMAR DENTRO DEL ELEMENTO COMPOSE
+     *val news = viewModel.getNews("%").collectAsLazyPagingItems()
+
+    LazyColumn(
+    modifier = Modifier
+    .fillMaxSize()
+    ) {
+    println("IMPRESION DE LAS NOTICIAS----------------------------------")
+    println(news)
+    items(count = news.itemCount) { index ->
+    val item = news[index]
+    if (item != null) {
+    Box(
+    modifier = Modifier
+    .fillMaxSize()
+    ){
+    Text(
+    text = item.title,
+
+    modifier = Modifier
+    .fillMaxSize()
+    )
+    }
+    }
+    }
+    println("TERMINA LA IMPRESION DE LAS NOTICIAS--------------------------------")
+    }
+     *
+     * */
+
+
+    /*
+    * DATA Q PONER EN EL VIEWMODEL DE NOTICIAS
+    * @OptIn(ExperimentalPagingApi::class)
+    fun getNews(query: String = "%") = repository.getNewsPage(2, query)// cambiar aqui el parametro q recibe, pa q no sea quemado
+    * */
 }

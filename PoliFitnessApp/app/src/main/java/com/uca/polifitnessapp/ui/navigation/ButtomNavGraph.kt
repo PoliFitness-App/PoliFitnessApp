@@ -3,6 +3,7 @@ package com.uca.polifitnessapp.ui.navigation
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -140,13 +141,26 @@ fun PreviewScreens(
         val coroutineScope = rememberCoroutineScope()
         val news = viewModel.getNews("%").collectAsLazyPagingItems()
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             println("IMPRESION DE LAS NOTICIAS----------------------------------")
             println(news)
             items(count = news.itemCount) { index ->
                 val item = news[index]
                 if (item != null) {
-                    Text(text = item.title)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ){
+                        Text(
+                            text = item.title,
+
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+                    }
                 }
             }
             println("TERMINA LA IMPRESION DE LAS NOTICIAS--------------------------------")
