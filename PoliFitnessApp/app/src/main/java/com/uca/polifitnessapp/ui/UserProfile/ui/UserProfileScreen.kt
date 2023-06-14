@@ -1,5 +1,7 @@
 package com.uca.polifitnessapp.ui.UserProfile.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,7 +40,11 @@ import com.uca.polifitnessapp.ui.UserProfile.ui.data.User
 import com.uca.polifitnessapp.ui.UserProfile.ui.data.userTest
 import com.uca.polifitnessapp.ui.navigation.UserScreens
 import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     // navController
@@ -56,7 +62,10 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        UserCard(user = user)
+        UserCard(
+            user = user,
+            navController
+        )
         generalInfoUser(user = user)
         specificlInfoUser(user = user)
         contactCard()
@@ -65,7 +74,10 @@ fun ProfileScreen(
 
 
 @Composable
-fun UserCard( user: UserModel ) {
+fun UserCard(
+    user: UserModel,
+    navController: NavController
+) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
@@ -103,7 +115,9 @@ fun UserCard( user: UserModel ) {
             modifier = Modifier
                 .width(92.dp)
                 .height(33.dp),
-            onClick = { }
+            onClick = {
+                navController.navigate(UserScreens.EditProfileScreen.route)
+            }
         ) {
             Text(text = "Editar",
                 fontSize = 12.sp)
@@ -113,6 +127,7 @@ fun UserCard( user: UserModel ) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun generalInfoUser(user: UserModel){
     Row(
@@ -189,6 +204,12 @@ fun generalInfoUser(user: UserModel){
 
         }
 
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val datOfBirth = LocalDate.parse(user.birthday, formatter)
+
+        val age = Period.between(datOfBirth, LocalDate.now()).years
+
+
         ElevatedCard(
             modifier = Modifier
                 .padding(10.dp)
@@ -203,7 +224,7 @@ fun generalInfoUser(user: UserModel){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = user.birthday + " años",
+                Text(text = "$age años",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,

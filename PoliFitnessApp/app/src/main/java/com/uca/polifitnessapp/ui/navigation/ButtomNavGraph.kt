@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.EditProfile.ui.EditProfileScreen
+import com.uca.polifitnessapp.ui.EditProfile.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.UserProfile.ui.ProfileScreen
 import com.uca.polifitnessapp.ui.onboardscreen.ui.MainFunction
 import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
@@ -35,14 +36,19 @@ fun NavigationHost(navController: NavHostController) {
     // Instance of view models
     // ---
 
-    // login view model
+    // Login view model
     val loginViewModel: LoginViewModel = viewModel(
     factory = LoginViewModel.Factory
     )
 
-    // user view model (global)
+    // User view model (global)
     val userViewModel: UserViewModel= viewModel(
         factory = UserViewModel.Factory
+    )
+
+    // Edit profile view model
+    val editProfileViewModel: EditProfileViewModel = viewModel(
+        factory = EditProfileViewModel.Factory
     )
 
     // ---
@@ -138,14 +144,12 @@ fun NavigationHost(navController: NavHostController) {
             }
             // Profile route
             composable(Profile.rute) {
-                ProfileScreen()
+                ProfileScreen(navController, userViewModel)
             }
             // Edit profile route
             composable(UserScreens.EditProfileScreen.route) {
-                EditProfileScreen()
+                EditProfileScreen(navController, userViewModel, editProfileViewModel)
             }
-
-            
         }
     }
 }

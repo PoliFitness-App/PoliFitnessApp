@@ -43,6 +43,12 @@ fun MainScalfold() {
         "register_screen" -> {
             bottomBarState.value = false
         }
+
+        // Edit profile
+        "edit_profile_screen" -> {
+            bottomBarState.value = false
+        }
+
         // default
         else -> {
             bottomBarState.value = true
