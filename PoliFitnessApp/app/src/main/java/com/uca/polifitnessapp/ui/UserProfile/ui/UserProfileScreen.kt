@@ -39,59 +39,59 @@ import com.uca.polifitnessapp.ui.UserProfile.ui.data.userTest
 import com.uca.polifitnessapp.ui.navigation.UserScreens
 import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 
-
-
-
-
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun ProfileScreen( ){
+fun ProfileScreen(
+    // navController
+    navController: NavController,
+    // user view model
+    userViewModel: UserViewModel
+){
+    // get the user from the view model
+    val user = userViewModel.user.value!!
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        UserCard(user = userTest.value)
-        generalInfoUser(user = userTest.value)
-        specificlInfoUser(user = userTest.value)
+        UserCard(user = user)
+        generalInfoUser(user = user)
+        specificlInfoUser(user = user)
         contactCard()
     }
 }
 
 
-
 @Composable
-fun UserCard( user: User ) {
+fun UserCard( user: UserModel ) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp, 20.dp, 0.dp, 0.dp),
+            .padding(8.dp, 20.dp, 8.dp, 8.dp),
     ) {
         Image(painter = painterResource(id = R.drawable.profilepic),
             modifier = Modifier.size(50.dp),
             contentDescription = stringResource(
                 id = R.string.description,
-
-
                 )
         )
         Column(){
-            Text(text= user.name,
+            Text(text= user.username,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.scrim,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .padding(0.dp, 8.dp, 0.dp, 0.dp),
                 fontSize = 14.sp,
             )
 
-            Text(text = "Programa de perder grasa",
+            Text(text = user.approach,
                 fontWeight = FontWeight.ExtraLight,
                 color = MaterialTheme.colorScheme.scrim,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 fontSize = 12.sp,
             )
 
@@ -103,8 +103,8 @@ fun UserCard( user: User ) {
             modifier = Modifier
                 .width(92.dp)
                 .height(33.dp),
-            onClick = { }) {
-
+            onClick = { }
+        ) {
             Text(text = "Editar",
                 fontSize = 12.sp)
 
@@ -114,8 +114,7 @@ fun UserCard( user: User ) {
 }
 
 @Composable
-fun generalInfoUser(user: User){
-
+fun generalInfoUser(user: UserModel){
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -123,7 +122,7 @@ fun generalInfoUser(user: User){
 
         ElevatedCard(
             modifier = Modifier
-                .padding(10.dp)
+                .padding(8.dp)
                 .width(105.dp)
                 .height(73.dp),
             elevation = CardDefaults.elevatedCardElevation(12.dp),
@@ -204,7 +203,7 @@ fun generalInfoUser(user: User){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = user.age.toString() + " años",
+                Text(text = user.birthday + " años",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -230,7 +229,7 @@ fun generalInfoUser(user: User){
 
 @Composable
 fun specificlInfoUser(
-    user: User
+    user: UserModel
 ){
 
     Row(
@@ -342,7 +341,7 @@ fun contactCard() {
 
     ElevatedCard(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(8.dp)
             .width(350.dp)
             .height(156.dp),
         elevation = CardDefaults.elevatedCardElevation(12.dp),
