@@ -28,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,11 +43,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.EditProfile.viewmodel.EditProfileViewModel
+import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 
-@Preview
 @Composable
-fun EditProfileScreen(){
+fun EditProfileScreen(
+    navController: NavController,
+    userViewMode: UserViewModel,
+    viewModel: EditProfileViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,9 +66,9 @@ fun EditProfileScreen(){
     ) {
         HeaderImage()
         EditProfileText()
-        combine()
-
-
+        combine(
+            viewModel
+        )
     }
 }
 
@@ -73,15 +81,17 @@ fun EditProfileScreen(){
 
 
 @Composable
-fun HeaderImage(){
+fun HeaderImage() {
     Box(
         modifier = Modifier
             .size(250.dp)
-    ){
-        Image(painter = painterResource(id = R.drawable.editprofileimg),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.editprofileimg),
             modifier = Modifier.fillMaxSize(),
             alignment = Alignment.Center,
-            contentDescription = "Imagen " )
+            contentDescription = "Imagen "
+        )
     }
 
 }
@@ -93,7 +103,7 @@ fun HeaderImage(){
 // ------------
 
 @Composable
-fun EditProfileText(){
+fun EditProfileText() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -107,12 +117,15 @@ fun EditProfileText(){
             horizontalArrangement = Arrangement.Center
 
         ) {
-            Text(text = "¿Es hora de un cambio?",
+            Text(
+                text = "¿Es hora de un cambio?",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
-            Image(painter = painterResource(id = R.drawable.fireimg),
-                contentDescription = "Imagen fuego" )
+            Image(
+                painter = painterResource(id = R.drawable.fireimg),
+                contentDescription = "Imagen fuego"
+            )
         }
 
     }
@@ -121,12 +134,18 @@ fun EditProfileText(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun weightField(
-    modifier: Modifier
-){
+    modifier: Modifier,
+    weightVM: String,
+    isValidWeight: Boolean,
+    onTextFieldChanged: (String) -> Unit
+) {
     val textSate = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
-        onValueChange = { textSate.value = it },
+    TextField(
+        value = textSate.value,
+        onValueChange = {
+            textSate.value = it
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -151,10 +170,10 @@ fun weightField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-        
+
         )
     )
-    
+
 }
 
 
@@ -162,10 +181,11 @@ fun weightField(
 @Composable
 fun heightField(
     modifier: Modifier
-){
+) {
     val textSate = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
+    TextField(
+        value = textSate.value,
         onValueChange = { textSate.value = it },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
@@ -202,10 +222,11 @@ fun heightField(
 @Composable
 fun waistField(
     modifier: Modifier
-){
+) {
     val textSate = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
+    TextField(
+        value = textSate.value,
         onValueChange = { textSate.value = it },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
@@ -238,15 +259,15 @@ fun waistField(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun hipField(
     modifier: Modifier
-){
+) {
     val textSate = remember { mutableStateOf("") }
 
-    TextField(value = textSate.value,
+    TextField(
+        value = textSate.value,
         onValueChange = { textSate.value = it },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
@@ -279,14 +300,15 @@ fun hipField(
 }
 
 @Composable
-fun kgicon(){
+fun kgicon() {
     ElevatedCard(
         modifier = Modifier
             .height(74.dp)
             .size(80.dp)
             .padding(10.dp),
-        shape = RoundedCornerShape(10.dp),colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
-    ){
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -301,15 +323,15 @@ fun kgicon(){
 }
 
 @Composable
-fun cmicon(){
+fun cmicon() {
     ElevatedCard(
         modifier = Modifier
             .height(74.dp)
             .size(80.dp)
             .padding(10.dp),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
-    ){
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -324,53 +346,94 @@ fun cmicon(){
 }
 
 @Composable()
-fun combine(){
+fun combine(
+    viewModel: EditProfileViewModel
+) {
+
+    // Set the variable to remember the state of the text's field
+    // weight, height, waistP and hipP
+    val weight: String by viewModel.height.observeAsState(initial = "")
+    val height: String by viewModel.height.observeAsState(initial = "")
+    val waistP: String by viewModel.waistP.observeAsState(initial = "")
+    val hipP: String by viewModel.hipP.observeAsState(initial = "")
+
+    // Set the variable to remember the state
+    // isValidWeight, isValidHeight, isValidWaistP and isValidHipP
+    val isValidWeight by viewModel.isValidWeight.observeAsState(initial = false)
+    val isValidHeight by viewModel.isValidHeight.observeAsState(initial = false)
+    val isValidWaistP by viewModel.isValidWaistP.observeAsState(initial = false)
+    val isValidHipP by viewModel.isValidHipP.observeAsState(initial = false)
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-            weightField(modifier = Modifier.align(Alignment.CenterVertically))
+            weightField(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                weight,
+                isValidWeight
+            ) {
+                viewModel.onFieldChange(it,height,waistP,hipP)
+            }
+
             kgicon()
 
         }
 
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-            heightField(modifier = Modifier.align(Alignment.CenterVertically))
+            heightField(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
             cmicon()
 
         }
 
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-            waistField(modifier = Modifier.align(Alignment.CenterVertically))
+            waistField(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
             cmicon()
 
         }
 
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-            hipField(modifier = Modifier.align(Alignment.CenterVertically))
+            hipField(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
             cmicon()
 
         }
 
 
-        Row( horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-            SaveButton(modifier = Modifier.align(Alignment.CenterVertically))
+            SaveButton(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
 
         }
 
 
-        
     }
 
 }
@@ -379,7 +442,7 @@ fun combine(){
 @Composable
 fun SaveButton(modifier: Modifier) {
     Button(
-        onClick = { "/*TODO*/ "},
+        onClick = { "/*TODO*/ " },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
@@ -393,7 +456,7 @@ fun SaveButton(modifier: Modifier) {
             containerColor = Color(0xFF034189)
         ),
 
-    )
+        )
     {
         Text(
             text = "Guardar",
@@ -404,9 +467,9 @@ fun SaveButton(modifier: Modifier) {
     }
 }
 
-
-
-
+// ---
+// Preview
+// ---
 
 
 
