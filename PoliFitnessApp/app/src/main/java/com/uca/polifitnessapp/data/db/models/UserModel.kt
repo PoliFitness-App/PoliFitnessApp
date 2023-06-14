@@ -3,23 +3,49 @@ package com.uca.polifitnessapp.data.db.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 
 @Entity(tableName = "user_table")
 data class UserModel(
-
-    @PrimaryKey(autoGenerate = true) var userId: Long = 0L,
-    @ColumnInfo(name = "name") val name: String,
+    @PrimaryKey @SerializedName("_id") val _id: String,
+    @ColumnInfo(name = "username") val username: String,
     @ColumnInfo(name = "email") val email: String,
-    @ColumnInfo(name = "height") val height: Float,
-    @ColumnInfo(name = "weight") val weight: Float,
-    @ColumnInfo(name = "age") val age: Int,
+    @ColumnInfo(name = "lastname") val lastname: String,
     @ColumnInfo(name = "imc") val imc: Float,
     @ColumnInfo(name = "icc") val icc: Float,
+    @ColumnInfo(name = "gender") val gender: Boolean,
+    @ColumnInfo(name = "birthday") val birthday: String,
+    @ColumnInfo(name = "height") var height: Float,
+    @ColumnInfo(name = "weight") var weight: Float,
+    @ColumnInfo(name = "waistP") var waistP: Float,
+    @ColumnInfo(name = "hipP") var hipP: Float,
+    @ColumnInfo(name = "approach") val approach: String
+) {
+    constructor(
+        _id: String,
+        name: String,
+        email: String,
+        height: Float,
+        weight: Float,
+        imc: Float,
+        icc: Float,
+        approach: String
     )
-
-{
-    constructor(name: String, email: String, height: Float, weight: Float, age:Int, imc: Float, icc: Float):
-            this(0, name, email, height, weight, age, imc, icc)
+            : this(
+        "",
+        "",
+        "",
+        "",
+        0F,
+        0F,
+        false,
+        "",
+        0F,
+        0F,
+        0F,
+        0F,
+        ""
+    )
 }
 

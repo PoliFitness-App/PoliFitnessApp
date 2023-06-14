@@ -117,7 +117,7 @@ fun RoutinesList(
         // Recomended routines list
         LazyColumn(
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(0.dp, 0.dp, 0.dp, 64.dp)
@@ -202,7 +202,7 @@ fun RoutineItem(
         elevation = CardDefaults.elevatedCardElevation(8.dp),
         modifier = Modifier
             .padding(16.dp)
-            .width(350.dp)
+            .width(500.dp)
             .height(155.dp)
         ,
         // Card colors

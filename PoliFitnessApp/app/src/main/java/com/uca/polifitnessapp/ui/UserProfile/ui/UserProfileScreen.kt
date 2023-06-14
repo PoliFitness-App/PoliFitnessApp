@@ -1,5 +1,7 @@
 package com.uca.polifitnessapp.ui.UserProfile.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,36 +29,60 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.UserProfile.ui.data.User
+import com.uca.polifitnessapp.ui.UserProfile.ui.data.userTest
 import com.uca.polifitnessapp.ui.navigation.UserScreens
+import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ProfileScreen(navController: NavController, user: UserModel){
+fun ProfileScreen(
+    // navController
+    navController: NavController,
+    // user view model
+    userViewModel: UserViewModel
+){
+    // get the user from the view model
+    val user = userViewModel.user.value!!
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(25.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        UserCard(navController, user)
-        generalInfoUser(user)
-        specificlInfoUser()
+        UserCard(
+            user = user,
+            navController
+        )
+        generalInfoUser(user = user)
+        specificlInfoUser(user = user)
         contactCard()
     }
 }
 
+
 @Composable
-fun UserCard( navController: NavController, user: UserModel) {
+fun UserCard(
+    user: UserModel,
+    navController: NavController
+) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp, 20.dp, 8.dp, 8.dp),
     ) {
         Image(painter = painterResource(id = R.drawable.profilepic),
             modifier = Modifier.size(50.dp),
@@ -63,28 +91,45 @@ fun UserCard( navController: NavController, user: UserModel) {
                 )
         )
         Column(){
-            Text(text= user.name)
-
-            Text(text = "Programa de perder grasa",
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Light
+            Text(text= user.username,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.scrim,
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .padding(0.dp, 8.dp, 0.dp, 0.dp),
+                fontSize = 14.sp,
             )
+
+            Text(text = user.approach,
+                fontWeight = FontWeight.ExtraLight,
+                color = MaterialTheme.colorScheme.scrim,
+                style = MaterialTheme.typography.labelMedium,
+                fontSize = 12.sp,
+            )
+
+
         }
         Button(
-            colors = ButtonDefaults.buttonColors(Color("#2E5DA8".toColorInt())),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(20.dp),
-            onClick = { navController.navigate(route = UserScreens.EditProfileScreen.route)}) {
-
-            Text(text = "Editar", fontSize = 12.sp)
+            modifier = Modifier
+                .width(92.dp)
+                .height(33.dp),
+            onClick = {
+                navController.navigate(UserScreens.EditProfileScreen.route)
+            }
+        ) {
+            Text(text = "Editar",
+                fontSize = 12.sp)
 
         }
 
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun generalInfoUser(user: UserModel){
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -92,8 +137,10 @@ fun generalInfoUser(user: UserModel){
 
         ElevatedCard(
             modifier = Modifier
-                .padding(10.dp)
-                .size(80.dp),
+                .padding(8.dp)
+                .width(105.dp)
+                .height(73.dp),
+            elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
@@ -103,9 +150,22 @@ fun generalInfoUser(user: UserModel){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = user.height.toString(), color = Color("#2E5DA8".toColorInt()))
+                Text(text = user.height.toString() +" cm",
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 14.sp,
+                )
 
-                Text(text = "Altura", textAlign = TextAlign.Center)
+                Text(text = "Altura",
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(8.dp, 8.dp, 8.dp, 8.dp),
+                    textAlign = TextAlign.Center
+                )
             }
 
         }
@@ -113,7 +173,9 @@ fun generalInfoUser(user: UserModel){
         ElevatedCard(
             modifier = Modifier
                 .padding(10.dp)
-                .size(80.dp),
+                .width(105.dp)
+                .height(73.dp),
+            elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
@@ -123,16 +185,37 @@ fun generalInfoUser(user: UserModel){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = user.weight.toString() +"kg", color = Color("#2E5DA8".toColorInt()))
-                Text(text = "Peso")
+                Text(text = user.weight.toString() + " kg",
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 14.sp,
+                )
+                Text(text = "Peso",
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(8.dp, 8.dp, 8.dp, 8.dp),
+                    textAlign = TextAlign.Center
+                )
             }
 
         }
 
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val datOfBirth = LocalDate.parse(user.birthday, formatter)
+
+        val age = Period.between(datOfBirth, LocalDate.now()).years
+
+
         ElevatedCard(
             modifier = Modifier
                 .padding(10.dp)
-                .size(80.dp),
+                .width(105.dp)
+                .height(73.dp),
+            elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
@@ -141,8 +224,21 @@ fun generalInfoUser(user: UserModel){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = user.age.toString()+"años", color = Color("#2E5DA8".toColorInt()))
-                Text(text = "Edad")
+                Text(text = "$age años",
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 14.sp,
+                )
+                Text(text = "Edad",
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(8.dp, 8.dp, 8.dp, 8.dp),
+                    textAlign = TextAlign.Center
+                )
             }
 
         }
@@ -150,40 +246,71 @@ fun generalInfoUser(user: UserModel){
 
 }
 
+
+
 @Composable
-fun specificlInfoUser(){
+fun specificlInfoUser(
+    user: UserModel
+){
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
 
         ElevatedCard(
             modifier = Modifier
                 .padding(20.dp)
-                .size(120.dp),
+                .width(160.dp)
+                .height(120.dp),
+            elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
-                Text(text = "20.1", color = Color("#2E5DA8".toColorInt()))
-                Text(text = "Normal", color = Color("#2E5DA8".toColorInt()))
+                ) {
+                Text(text = user.imc.toString(),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 16.sp,
+                )
+
+                //
+                Text(text = "Normal",
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier
+                        .padding(0.dp, 8.dp, 0.dp, 0.dp),
+                    fontSize = 14.sp,
+                )
+
+                //
                 Text(text = "IMC (Indice de masa corporal)",
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Center)
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(8.dp, 8.dp, 8.dp, 8.dp),
+                    textAlign = TextAlign.Center
+                )
             }
 
         }
 
         ElevatedCard(
             modifier = Modifier
-                .size(120.dp),
+                .padding(20.dp)
+                .width(160.dp)
+                .height(120.dp),
+            elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
         ){
@@ -193,12 +320,32 @@ fun specificlInfoUser(){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "19.3 ", color = Color("#2E5DA8".toColorInt()))
-                Text(text = "Normal", color = Color("#2E5DA8".toColorInt()))
-                Text(text = "ICC (Indice cindtura-cadera)",
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Center
+                Text(text = user.icc.toString(),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 16.sp,
                 )
+
+                //
+                Text(text = "Normal",
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier
+                        .padding(0.dp, 8.dp, 0.dp, 0.dp),
+                    fontSize = 14.sp,
+                )
+
+                //
+                Text(text = "ICC (Indice cintura - cadera)",
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(8.dp, 8.dp, 8.dp, 8.dp),
+                    textAlign = TextAlign.Center)
 
             }
 
@@ -214,34 +361,53 @@ fun specificlInfoUser(){
 fun contactCard() {
 
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .padding(8.dp)
+            .width(350.dp)
+            .height(156.dp),
+        elevation = CardDefaults.elevatedCardElevation(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.Start,
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)
 
         ) {
-            Text(text = "Otros", fontWeight = FontWeight.Bold, fontSize = 20.sp,)
+            Text(text = "Otros",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,)
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth(),
+
+
+                ) {
                 Icon(
                     painter = painterResource(id = R.drawable.mail),
                     contentDescription = null,
                     modifier = Modifier.size(28.dp)
                 )
 
-                // gap between icon and text
-                Spacer(modifier = Modifier.width(width = 10.dp))
 
                 Text(
                     text = "Contáctanos",
-                    fontSize = 10.sp
-                )
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
+
+                    )
+
+                // gap between icon and text
+                Spacer(modifier = Modifier.width(width = 125.dp))
 
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
@@ -251,7 +417,10 @@ fun contactCard() {
             }
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.admin_panel_settings),
@@ -260,12 +429,17 @@ fun contactCard() {
                 )
 
                 // gap between icon and text
-                Spacer(modifier = Modifier.width(width = 6.dp))
 
                 Text(
                     text = "Política de privacidad",
-                    fontSize = 10.sp
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
                 )
+
+                Spacer(modifier = Modifier.width(width = 80.dp))
 
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),

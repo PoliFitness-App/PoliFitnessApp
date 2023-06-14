@@ -22,17 +22,12 @@ interface UserDao {
     suspend fun insertUser(user: UserModel)
 
     //Funcion para obtener un usuario por id
-    @Query("SELECT * FROM user_table WHERE userId = :userId")
-    suspend fun getUserById(userId: Int): UserModel?
-
-    //Funcion para obtener un usuario por nombre
-    @Query("SELECT * FROM user_table WHERE name = :name")
-    suspend fun getUserByName(name: String): UserModel?
+    @Query("SELECT * FROM user_table WHERE _id = :id")
+    suspend fun getUserById(id: String): UserModel?
 
     //Funcion para actualizar un usuario
     @Update
     suspend fun updateUser(user: UserModel)
-
 
     //Funcion para eliminar un usuario
     @Transaction
@@ -40,9 +35,7 @@ interface UserDao {
     suspend fun deleteUser(user: UserModel)
 
     //Funcion para actualizar IMC e ICC
-    @Query("UPDATE user_table SET imc = :imc, icc = :icc WHERE userId = :userId")
-    suspend fun updateImcIccUser(userId: Int, imc: Float, icc: Float)
-    
-
+    @Query("UPDATE user_table SET imc = :imc, icc = :icc WHERE _id = :id")
+    suspend fun updateImcIccUser(id: Int, imc: Float, icc: Float)
 
 }

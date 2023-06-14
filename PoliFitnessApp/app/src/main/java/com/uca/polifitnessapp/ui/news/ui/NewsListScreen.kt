@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material3.Card
@@ -41,9 +43,14 @@ import com.uca.polifitnessapp.ui.news.data.newsList
 // ------
 
 // category filter state and index size for filter
+
 var category by mutableStateOf("")
 var indexsize by mutableStateOf(0)
 var indexsizefilter by mutableStateOf(0)
+
+// -----
+// News List Screen
+// -----
 
 @Composable
 fun NewsListScreen() {
@@ -52,7 +59,7 @@ fun NewsListScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
-        //Center items horizontally in the column
+        // center items horizontally in the column
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // news list
@@ -76,7 +83,6 @@ data class FilterData(
 
 @Composable
 fun HeaderSection() {
-
     // List of icons
     val icon = listOf(
         FilterData(
@@ -120,6 +126,8 @@ fun HeaderSection() {
 
         // States for filter
         var selectedIndex by remember { mutableStateOf(0) }
+
+        // on item click
         val onItemClick = { index: Int ->
             selectedIndex = index
             // filter news
@@ -255,6 +263,7 @@ fun NewsList(
 
         // States for news list
         var selectedIndex by remember { mutableStateOf(0) }
+
         val onItemClick = { index: Int ->
             selectedIndex = index
         }
@@ -266,18 +275,17 @@ fun NewsList(
         // index size for filter list
             indexsize = newsList.filter { it.category == category }.size
 
+        // header (News filter)
+        HeaderSection()
+
         // News items
-        LazyColumn(
+        LazyVerticalGrid(
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(0.dp, 0.dp, 0.dp, 64.dp)
+                .padding(0.dp, 0.dp, 0.dp, 64.dp),
+            columns = GridCells.Adaptive(minSize = 350.dp)
         ) {
-            item {
-                // header (News filter)
-                HeaderSection()
-            }
             items(indexsize) { index ->
                 // Filter item
                 NewItem(
