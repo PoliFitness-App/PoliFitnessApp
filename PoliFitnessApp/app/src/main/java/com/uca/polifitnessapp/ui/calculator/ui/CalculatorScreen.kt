@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.calculator
+package com.uca.polifitnessapp.ui.calculator.ui
 
 
 import androidx.compose.foundation.Image
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +27,6 @@ import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -56,15 +56,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
+import com.uca.polifitnessapp.ui.navigation.CalculatorButton
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -86,12 +90,13 @@ fun CalculatorScreen(){
 
         Spacer(modifier = Modifier.width(90.dp))
         HeaderTextImageCards()
-        SignUpPersonalInfoView(viewModel = SignUpPersonalInfoViewModel())
+        CalculatorView(viewModel = CalculatorViewModel())
 
 
     }
 }
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HeaderTextImageCards(){
     Column {
@@ -137,7 +142,7 @@ fun HeaderImageCards(
 
 
 @Composable
-fun CalculatorCard(){
+fun CalculatorCard( viewModel: CalculatorViewModel = CalculatorViewModel()){
 
     Column() {
 
@@ -157,7 +162,7 @@ fun CalculatorCard(){
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "25.5",
+                Text(text = "%.2f".format(viewModel.bmi),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -165,7 +170,7 @@ fun CalculatorCard(){
                 )
 
                 //
-                Text(text = "Normal",
+                Text(text = viewModel.message,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -245,20 +250,7 @@ fun CalculatorCard(){
 
 
 @Composable
-fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
-
-    val gender: String by viewModel.gender.observeAsState(initial = "")
-    val birthdate: String by viewModel.birthdate.observeAsState(initial = "")
-    val weight: String by viewModel.weight.observeAsState(initial = "")
-    val height: String by viewModel.height.observeAsState(initial = "")
-    val waist: String by viewModel.waist.observeAsState(initial = "")
-    val hip: String by viewModel.hip.observeAsState(initial = "")
-
-    val signupenable: Boolean by viewModel.signupEnable.observeAsState(initial = true)
-
-
-    val coroutineScope = rememberCoroutineScope()
-
+fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
 
     Column(
@@ -267,11 +259,11 @@ fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
     ) {
 
 
-        GenderField(
-            gender,
-        ){ viewModel.onRegisterChange()}
+        /*GenderField(
+            gender
+        )*/
 
-        BirthdayField(birthdate, onDateChange = {})
+        //BirthdayField(birthdate, onDateChange = {})
 
 
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
@@ -279,8 +271,10 @@ fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
 
             weightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                weight
-            ){ viewModel.onRegisterChange()}
+                viewModel.weightState,
+                ImeAction.Next,
+                viewModel::updateWeight
+            )
             kgicon()
 
         }
@@ -290,8 +284,10 @@ fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
 
             heightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                height
-            ){ viewModel.onRegisterChange()}
+                viewModel.heightState,
+                ImeAction.Next,
+                viewModel::updateHeight
+            )
             cmicon()
 
         }
@@ -299,33 +295,35 @@ fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            waistField(
+            /*waistField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 waist
-            ){ viewModel.onRegisterChange()}
-            cmicon()
-
+            )
+            cmicon()*/
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
+        /*Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
             hipField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 hip
-            ){ viewModel.onRegisterChange()}
-
+            )
             cmicon()
+        }*/
 
-        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .padding(16.dp, 12.dp)
+                .fillMaxWidth(),
+        ) {
+            CalculateButton(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                text = "Calculate",
+                viewModel::calculate
+            )
 
-        SaveButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            signupenable,
-        ){
-            coroutineScope.launch {
-                viewModel.onSingupSelected()
-            }
         }
 
 
@@ -373,15 +371,16 @@ fun HeaderImage(
 @Composable
 fun weightField(
     modifier: Modifier,
-    weight: String,
-    onWeightChange: (Number) -> Unit
+    state: ValueState,
+    imeAction: ImeAction,
+    onValueChange: (String) -> Unit
 ){
-
-    val weight = remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     TextField(
-        value = weight.value,
-        onValueChange = { weight.value = it },
+        value = state.value,
+        isError = state.error != null,
+        onValueChange = { onValueChange(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -398,7 +397,7 @@ fun weightField(
                 fontSize = 12.sp
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
         modifier = modifier
             .width(240.dp),
         singleLine = true,
@@ -417,14 +416,16 @@ fun weightField(
 @Composable
 fun heightField(
     modifier: Modifier,
-    height: String,
-    onHeightChange: (String) -> Unit
+    state: ValueState,
+    imeAction: ImeAction,
+    onValueChange: (String) -> Unit
 ){
-    val height = remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     TextField(
-        value = height.value,
-        onValueChange = { height.value = it},
+        value = state.value,
+        isError = state.error != null,
+        onValueChange = { onValueChange(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -441,7 +442,7 @@ fun heightField(
                 fontSize = 12.sp
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
         modifier = modifier
             .width(240.dp),
         singleLine = true,
@@ -461,7 +462,6 @@ fun heightField(
 fun waistField(
     modifier: Modifier,
     waist: String,
-    onWaistChange: (String) -> Unit
 ){
     val waist = remember { mutableStateOf("") }
     TextField(
@@ -504,7 +504,6 @@ fun waistField(
 fun hipField(
     modifier: Modifier,
     hip: String,
-    onHipChange: (String) -> Unit
 ){
     val hip = remember { mutableStateOf("") }
     TextField(
@@ -586,13 +585,16 @@ fun cmicon(){
 
 
 @Composable
-fun SaveButton(
+fun RowScope.CalculateButton(
     modifier: Modifier,
-    signupEnabled: Boolean,
-    onSignupSelected: () -> Unit
-) {
+    text: String,
+    onClick: () -> Unit
+)
+{
+    val focusManager = LocalFocusManager.current
+
     Button(
-        onClick = { onSignupSelected()},
+        onClick = { focusManager.clearFocus(); onClick()},
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
@@ -605,11 +607,10 @@ fun SaveButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
         ),
-        enabled = signupEnabled
     )
     {
         Text(
-            text = "SIguiente >",
+            text,
             fontSize = 16.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
