@@ -379,6 +379,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
         GenderField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
+            viewModel.genderState,
             viewModel::updateGender,
         )
 
@@ -757,6 +758,7 @@ fun CalculateButton(
 @Composable
 fun GenderField(
     modifier: Modifier,
+    state: ValueState,
     onValueChange: (String) -> Unit,
 ) {
 
@@ -765,9 +767,9 @@ fun GenderField(
         mutableStateOf(false)
     }
 
-    var gender by remember {
+    /*var gender by remember {
         mutableStateOf("")
-    }
+    }*/
 
 
     ExposedDropdownMenuBox(
@@ -775,7 +777,7 @@ fun GenderField(
         onExpandedChange = { isExpanded = it}
     ) {
         TextField(
-            value = gender,
+            value = state.value,
             onValueChange = {onValueChange(it)},
             shape = MaterialTheme.shapes.small,
             readOnly = true,
@@ -819,7 +821,7 @@ fun GenderField(
             DropdownMenuItem(
                 text = { Text(text = "Femenino")},
                 onClick = {
-                    gender = "Femenino"
+                    state.value = "Femenino"
                     isExpanded = false
 
                 }
@@ -828,7 +830,7 @@ fun GenderField(
             DropdownMenuItem(
                 text = { Text(text = "Masculino")},
                 onClick = {
-                    gender = "Masculino"
+                    state.value = "Masculino"
                     isExpanded = false
 
                 }

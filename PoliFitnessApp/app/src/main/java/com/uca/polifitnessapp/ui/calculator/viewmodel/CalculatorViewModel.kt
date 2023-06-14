@@ -60,6 +60,8 @@ class CalculatorViewModel: ViewModel() {
         val weight = weightState.toNumber()
         val waist = heightState.toNumber()
         val hip = weightState.toNumber()
+        val gender = genderState.value
+
         if (height == null)
             heightState = heightState.copy(error = "Invalid number")
         else if (weight == null)
@@ -68,12 +70,24 @@ class CalculatorViewModel: ViewModel() {
             waistState = waistState.copy(error = "Invalid number")
         else if (hip == null)
             hipState = hipState.copy(error = "Invalid number")
-        else calculateBMI(height, weight, waist, hip)
+        else calculateBMI(height, weight, waist, hip, gender)
     }
 
-    private fun calculateBMI(height: Double, weight: Double, waist: Double, hip: Double) {
+    private fun calculateBMI(height: Double, weight: Double, waist: Double, hip: Double, gender: String) {
 
 
+        if (gender == "Femenino") {
+            bmi = weight / (height * height)
+
+            messageIbm = when {
+                bmi < 18.5 -> "Bajo"
+                bmi in 18.5..24.9 -> "Normal"
+                bmi in 25.0..29.9 -> "Alto"
+                bmi >= 30.0 -> "Muy Alto"
+                else -> error("Invalid params")
+
+            }
+        } else
         bmi = weight / (height * height)
 
         messageIbm = when {
@@ -82,19 +96,16 @@ class CalculatorViewModel: ViewModel() {
             bmi in 25.0..29.9 -> "Alto"
             bmi >= 30.0 -> "Muy Alto"
             else -> error("Invalid params")
-
         }
 
-        icc = (waist/hip)*10
-        messageIcc= when {
+        icc = (waist / hip) * 10
+        messageIcc = when {
             icc < 0.95 -> "Riesgo Bajo"
             icc in 0.96..0.99 -> "Riesgo Alto"
             icc >= 1.0 -> "Muy alto"
             else -> error("Invalid params")
         }
 
+
     }
-
-
-
 }
