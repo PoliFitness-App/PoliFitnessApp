@@ -143,6 +143,8 @@ fun NavigationHost(navController: NavHostController) {
             composable(UserScreens.EditProfileScreen.route) {
                 EditProfileScreen()
             }
+
+            
         }
     }
 }
