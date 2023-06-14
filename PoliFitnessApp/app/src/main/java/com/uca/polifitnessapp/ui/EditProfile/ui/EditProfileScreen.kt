@@ -133,14 +133,14 @@ fun EditProfileText() {
 @Composable
 fun weightField(
     modifier: Modifier,
-    weightVM: Float,
+    weightVM: String,
     isValidWeight: Boolean,
-    onTextFieldChanged: (Float) -> Unit
+    onTextFieldChanged: (String) -> Unit
 ) {
     TextField(
-        value = weightVM.toString(),
+        value = weightVM,
         onValueChange = {
-            onTextFieldChanged(it.toFloat())
+            onTextFieldChanged(it)
         },
         isError = isValidWeight,
         shape = MaterialTheme.shapes.small,
@@ -167,7 +167,6 @@ fun weightField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
 
@@ -178,14 +177,14 @@ fun weightField(
 @Composable
 fun heightField(
     modifier: Modifier,
-    heightVM: Float,
+    heightVM: String,
     isValidHeight: Boolean,
-    onTextFieldChanged: (Float) -> Unit
+    onTextFieldChanged: (String) -> Unit
 ) {
     TextField(
-        value = heightVM.toString(),
+        value = heightVM,
         onValueChange = {
-            onTextFieldChanged(it.toFloat())
+            onTextFieldChanged(it)
         },
         isError = isValidHeight,
         shape = MaterialTheme.shapes.small,
@@ -223,14 +222,14 @@ fun heightField(
 @Composable
 fun waistField(
     modifier: Modifier,
-    waistP: Float,
+    waistP: String,
     isValidWaist: Boolean,
-    onTextFieldChanged: (Float) -> Unit
+    onTextFieldChanged: (String) -> Unit
 ) {
     TextField(
-        value = waistP.toString(),
+        value = waistP,
         onValueChange = {
-            onTextFieldChanged(it.toFloat())
+            onTextFieldChanged(it)
         },
         isError = isValidWaist,
         shape = MaterialTheme.shapes.small,
@@ -268,14 +267,14 @@ fun waistField(
 @Composable
 fun hipField(
     modifier: Modifier,
-    hipP: Float,
+    hipP: String,
     isValidHip: Boolean,
-    onTextFieldChanged: (Float) -> Unit
+    onTextFieldChanged: (String) -> Unit
 ) {
     TextField(
-        value = hipP.toString(),
+        value = hipP,
         onValueChange = {
-            onTextFieldChanged(it.toFloat())
+            onTextFieldChanged(it)
         },
         isError = isValidHip,
         shape = MaterialTheme.shapes.small,
@@ -365,10 +364,10 @@ fun combine(
 
     // Set the variable to remember the state of the text's field
     // weight, height, waistP and hipP
-    val weight: Float by viewModel.weight.observeAsState(initial = 0F)
-    val height: Float by viewModel.height.observeAsState(initial = 0F)
-    val waistP: Float by viewModel.waistP.observeAsState(initial = 0F)
-    val hipP: Float by viewModel.hipP.observeAsState(initial = 0F)
+    val weight: String by viewModel.weight.observeAsState(initial = "")
+    val height: String by viewModel.height.observeAsState(initial = "")
+    val waistP: String by viewModel.waistP.observeAsState(initial = "")
+    val hipP: String by viewModel.hipP.observeAsState(initial = "")
 
     // Set the variable to remember the state
     // isValidWeight, isValidHeight, isValidWaistP and isValidHipP
@@ -460,12 +459,9 @@ fun combine(
             ) {
                 viewModel.onUpdate(user)
                 viewModel.clearData()
-
+                viewModel.clearStatus()
             }
-
         }
-
-
     }
 
 }

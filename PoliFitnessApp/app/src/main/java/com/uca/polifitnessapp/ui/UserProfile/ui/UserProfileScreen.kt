@@ -1,5 +1,7 @@
 package com.uca.polifitnessapp.ui.UserProfile.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,7 +40,11 @@ import com.uca.polifitnessapp.ui.UserProfile.ui.data.User
 import com.uca.polifitnessapp.ui.UserProfile.ui.data.userTest
 import com.uca.polifitnessapp.ui.navigation.UserScreens
 import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     // navController
@@ -121,6 +127,7 @@ fun UserCard(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun generalInfoUser(user: UserModel){
     Row(
@@ -197,6 +204,12 @@ fun generalInfoUser(user: UserModel){
 
         }
 
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val datOfBirth = LocalDate.parse(user.birthday, formatter)
+
+        val age = Period.between(datOfBirth, LocalDate.now()).years
+
+
         ElevatedCard(
             modifier = Modifier
                 .padding(10.dp)
@@ -211,7 +224,7 @@ fun generalInfoUser(user: UserModel){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = user.birthday + " años",
+                Text(text = "$age años",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,

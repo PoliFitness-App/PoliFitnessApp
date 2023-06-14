@@ -22,17 +22,17 @@ class EditProfileViewModel(
     // Text fields variables
     // --
 
-    // weght
-    var weight = MutableLiveData(0F)
+    // weight
+    var weight = MutableLiveData("")
 
     // height
-    var height = MutableLiveData(0F)
+    var height = MutableLiveData("")
 
     // waistP
-    var waistP = MutableLiveData(0F)
+    var waistP = MutableLiveData("")
 
     // hipP
-    var hipP = MutableLiveData(0F)
+    var hipP = MutableLiveData("")
 
     // ---
     // States
@@ -73,16 +73,15 @@ class EditProfileViewModel(
     // ---
 
     // On Field Change
-    fun onFieldChange(weightU: Float, heightU: Float, waistPU: Float, hipPU: Float) {
+    fun onFieldChange(weightU: String, heightU: String, waistPU: String, hipPU: String) {
         // verify if the data is valid
         // if the data is valid
-        if (validateData()) {
+
             // we set the data
-            weight.value = weightU
-            height.value = heightU
-            waistP.value = waistPU
-            hipP.value = hipPU
-        }
+            weight.value = weightU.trim()
+            height.value = heightU.trim()
+            waistP.value = waistPU.trim()
+            hipP.value = hipPU.trim()
 
         // we set the state of the button
         _isEnabled.value = validateData()
@@ -92,10 +91,10 @@ class EditProfileViewModel(
     fun onUpdate(user: UserModel) {
 
         // we set the data
-        user.weight = weight.value!!
-        user.height = height.value!!
-        user.waistP = waistP.value!!
-        user.hipP = hipP.value!!
+        user.weight = weight.value!!.toFloat()
+        user.height = height.value!!.toFloat()
+        user.waistP = waistP.value!!.toFloat()
+        user.hipP = hipP.value!!.toFloat()
 
         // we update the data
         updateData(user)
@@ -133,10 +132,10 @@ class EditProfileViewModel(
     // Clear data function
     fun clearData() {
         // We clear the data
-        weight.value = 0F
-        height.value = 0F
-        waistP.value = 0F
-        hipP.value = 0F
+        weight.value = ""
+        height.value = ""
+        waistP.value = ""
+        hipP.value = ""
     }
 
     // Clear status function
@@ -147,7 +146,7 @@ class EditProfileViewModel(
     // ---
     // Factory
     // ---
-    
+
     // Companion object to set the factory
     companion object {
         val Factory = viewModelFactory {
