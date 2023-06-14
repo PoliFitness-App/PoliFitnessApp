@@ -22,18 +22,18 @@ class CalculatorViewModel: ViewModel() {
 
     var messageIcc by mutableStateOf("")
         private set
-    var heightState by mutableStateOf(ValueState("Height", ))
+    var heightState by mutableStateOf(ValueState())
         private set
-    var weightState by mutableStateOf(ValueState("Weight",))
-        private set
-
-    var waistState by mutableStateOf(ValueState("Waist", ))
+    var weightState by mutableStateOf(ValueState())
         private set
 
-    var hipState by mutableStateOf(ValueState("Hip",))
+    var waistState by mutableStateOf(ValueState( ))
         private set
 
-    var genderState by mutableStateOf(ValueState("genero"))
+    var hipState by mutableStateOf(ValueState())
+        private set
+
+    var genderState by mutableStateOf(ValueState())
 
     fun updateHeight(it: String) {
         heightState = heightState.copy(value = it, error = null)
@@ -85,7 +85,7 @@ class CalculatorViewModel: ViewModel() {
 
         }
 
-        icc = (waist/hip)*10 
+        icc = (waist/hip)*10
         messageIcc= when {
             icc < 0.95 -> "Riesgo Bajo"
             icc in 0.96..0.99 -> "Riesgo Alto"
@@ -97,12 +97,4 @@ class CalculatorViewModel: ViewModel() {
 
 
 
-    fun clear() {
-        heightState = heightState.copy(value = "", error = null)
-        weightState = weightState.copy(value = "", error = null)
-        bmi = 0.0
-        icc = 0.0
-        messageIbm = ""
-        messageIcc = ""
-    }
 }
