@@ -38,7 +38,10 @@ class CredentialsRepository(
 
     // Function to login the user
     // We send the email and password to the api
-    suspend fun login(email: String, password: String): ApiResponse<String> {
+    suspend fun login(
+        email: String,
+        password: String
+    ): ApiResponse<String> {
         try {
             val response: LoginResponse = api.login(LoginRequest(email, password))
             return ApiResponse.Success(response.token)
@@ -74,16 +77,35 @@ class CredentialsRepository(
     }
 
     // Function to register the user
-    // We send the name, email and password to the api
-    suspend fun register(name: String, email: String, password: String): ApiResponse<String> {
+    // We send data to the api
+    suspend fun register(
+        user: UserModel,
+        password: String
+    ): ApiResponse<String> {
         try {
             val response: RegisterResponse =
-                api.register(RegisterRequest(name, email, password))
-            return ApiResponse.Success(response.msg)
+                api.register(
+                    RegisterRequest(
+                        user.username,
+                        user.lastname,
+                        user.email,
+                        password,
+                        user.imc,
+                        user.icc,
+                        user.gender,
+                        user.birthday,
+                        user.weight,
+                        user.height,
+                        user.waistP,
+                        user.hipP,
+                        user.approach
+                    )
+                )
+            return ApiResponse.Success(response.message)
 
         } catch (e: HttpException) {
             if (e.code() == 400) {
-                return ApiResponse.ErrorWithMessage("email already exists")
+                return ApiResponse.ErrorWithMessage("Ha ocurrido un error al registrar el usuario, el usuario ya existe")
             }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
@@ -94,10 +116,20 @@ class CredentialsRepository(
     // Function to update the user
     // We send the updated information to the api
 
-    suspend fun updateUser(user: UserModel): ApiResponse<String> {
+    suspend fun updateUser(
+        user: UserModel
+    ): ApiResponse<String> {
         try {
             val response: UpdateResponse =
-                api.update(UpdateRequest(user.weight, user.height, user.waistP, user.hipP, user._id))
+                api.update(
+                    UpdateRequest(
+                        user.weight,
+                        user.height,
+                        user.waistP,
+                        user.hipP,
+                        user._id
+                    )
+                )
             // we update the fields of the user
             user.height = response.height
             user.weight = response.weight

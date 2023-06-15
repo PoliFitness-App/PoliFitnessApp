@@ -8,12 +8,18 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.uca.polifitnessapp.PoliFitnessApplication
+import com.uca.polifitnessapp.repositories.CredentialsRepository
 import kotlinx.coroutines.delay
 
 
-class SignUpViewModel: ViewModel() {
-
+class SignUpViewModel(
+    private val repository: CredentialsRepository
+) : ViewModel() {
 
     // EMAIL
     private val _email = MutableLiveData("")
@@ -44,7 +50,6 @@ class SignUpViewModel: ViewModel() {
     private var isEnableRegisterButton: MutableState<Boolean> = mutableStateOf(false)
 
 
-
     // IS LOADING
 
     private val _isLoading = MutableLiveData<Boolean>()
@@ -66,8 +71,6 @@ class SignUpViewModel: ViewModel() {
 
     private val _isWrongInputChecked = MutableLiveData<Boolean>()
     val isWrongInputChecked: LiveData<Boolean> = _isWrongInputChecked
-
-
 
 
     // ON LOGIN CHANGED
@@ -113,38 +116,48 @@ class SignUpViewModel: ViewModel() {
     }
 
 
-
     // IS VALID PASSWORD
-    private fun isValidPassword(password: String): Boolean = (!password.isNullOrEmpty() && password.length >= 8)
-
-
+    private fun isValidPassword(password: String): Boolean =
+        (!password.isEmpty() && password.length >= 8)
 
     // IS VALID EMAIL
 
     private fun isValidEmail(email: String): Boolean =
         Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
-    fun validateEmail(email: String): Boolean = (!email.isNullOrEmpty())
+    fun validateEmail(email: String): Boolean = (email.isNotEmpty())
 
     //VALIDATE NAME
 
-    fun validateName(name: String): Boolean = (!name.isNullOrEmpty() && name.length > 1)
-
+    fun validateName(name: String): Boolean = (name.isNotEmpty() && name.length > 1)
 
 
     //VALIDATE LASTNAME
-    fun validateLastName(lastname: String): Boolean = (!lastname.isNullOrEmpty() && lastname.length > 1)
+    fun validateLastName(lastname: String): Boolean = (lastname.isNotEmpty() && lastname.length > 1)
 
     //VALIDATE CHECKBOX
     fun validateCheckbox(isChecked: Boolean): Boolean = (isChecked)
 
 
-
     suspend fun onSingupSelected() {
         _isLoading.value = true
         delay(4000)
-
         _isLoading.value = false
+    }
+
+    // ---
+    // Companion object
+    // ---
+
+    // Factory of the view model
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                val app =
+                    this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as PoliFitnessApplication
+                SignUpViewModel(app.credentialRepository)
+            }
+        }
     }
 
 }

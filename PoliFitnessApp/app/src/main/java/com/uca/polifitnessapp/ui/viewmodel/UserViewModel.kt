@@ -23,6 +23,11 @@ class UserViewModel(private val repository: CredentialsRepository)  : ViewModel(
     val user: MutableLiveData<UserModel>
         get() = _user
 
+    // password
+    private val _password = MutableLiveData("")
+    val password: MutableLiveData<String>
+        get() = _password
+
     // Function to get the user
     fun getUser(){
         viewModelScope.launch {

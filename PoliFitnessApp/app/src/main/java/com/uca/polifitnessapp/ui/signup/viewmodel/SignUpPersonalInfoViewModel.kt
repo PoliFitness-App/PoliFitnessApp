@@ -9,11 +9,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.uca.polifitnessapp.PoliFitnessApplication
+import com.uca.polifitnessapp.repositories.CredentialsRepository
+import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.signup.validation.SignUpUiStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SignUpPersonalInfoViewModel: ViewModel() {
+class SignUpPersonalInfoViewModel(
+    private val repository: CredentialsRepository
+): ViewModel() {
 
     // GENDER
     private val _gender = MutableLiveData("")
@@ -31,7 +36,6 @@ class SignUpPersonalInfoViewModel: ViewModel() {
     private val _height = MutableLiveData("")
     val height: LiveData<String> = _height
 
-
     // WAIST
     private val _waist = MutableLiveData("")
     val waist: LiveData<String> = _waist
@@ -40,14 +44,15 @@ class SignUpPersonalInfoViewModel: ViewModel() {
     private val _hip = MutableLiveData("")
     val hip: LiveData<String> = _hip
 
+    // ---
+    // Status
+    // ---
 
     // IS LOADING
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-
     // SIGNUP ENABLE
-
     private val _signupEnable = MutableLiveData<Boolean>()
     val signupEnable: LiveData<Boolean> = _signupEnable
 
@@ -57,10 +62,13 @@ class SignUpPersonalInfoViewModel: ViewModel() {
     val status: LiveData<SignUpUiStatus>
         get() = _status
 
-    private fun register(gender: String, birthdate: String, weight: String, height: String, waist: String, hip: String) {
-        // TCreate a coroutine to call the register function from the repository
-        // and inside the coroutine set the value of the status
+    // ---
+    // Functions
+    // ---
 
+    private fun register(gender: String, birthdate: String, weight: String, height: String, waistP: String, hipP: String) {
+        // Create a coroutine to call the register function from the repository
+        // and inside the coroutine set the value of the status
 
     }
 
@@ -89,8 +97,6 @@ class SignUpPersonalInfoViewModel: ViewModel() {
         return true
     }
 
-
-
     private fun shouldEnabledRegisterButton() {
         isEnabledRegisterButton.value =
             gender.value?.isNotEmpty() ?: false
@@ -109,6 +115,19 @@ class SignUpPersonalInfoViewModel: ViewModel() {
     suspend fun onSingupSelected() {
     }
 
+    // ---
+    // Companion object
+    //
 
+    // Factory of the view model
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                val app =
+                    this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as PoliFitnessApplication
+                SignUpPersonalInfoViewModel(app.credentialRepository)
+            }
+        }
+    }
 
 }

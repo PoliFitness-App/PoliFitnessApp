@@ -54,13 +54,19 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpViewModel
+import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 
 
 @Composable
-fun SignUpScreen(navController: NavController){
+fun SignUpScreen(
+    navController: NavController,
+    viewModel: SignUpViewModel,
+    userViewModel: UserViewModel
+){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,15 +78,20 @@ fun SignUpScreen(navController: NavController){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        SignUpView(Modifier.align(Alignment.CenterHorizontally),
-            viewModel = viewModel())
-
-
+        SignUpView(
+            Modifier.align(Alignment.CenterHorizontally),
+            viewModel,
+            navController
+        )
     }
 }
 
 @Composable
-fun SignUpView(modifier: Modifier, viewModel: SignUpViewModel){
+fun SignUpView(
+    modifier: Modifier,
+    viewModel: SignUpViewModel,
+    navController: NavController
+){
 
     // CREAR NUESTRAS VARIABLES DE ESTADO PARA EL NOMBRE, APELLIDO, EMAIL, CONTRASEÑA Y CONFIRMACION DE CONTRASEÑA
 

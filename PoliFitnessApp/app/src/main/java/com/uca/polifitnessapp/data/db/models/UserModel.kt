@@ -20,7 +20,7 @@ data class UserModel(
     @ColumnInfo(name = "weight") var weight: Float,
     @ColumnInfo(name = "waistP") var waistP: Float,
     @ColumnInfo(name = "hipP") var hipP: Float,
-    @ColumnInfo(name = "approach") val approach: String
+    @ColumnInfo(name = "approach") var approach: String
 ) {
     constructor(
         _id: String,

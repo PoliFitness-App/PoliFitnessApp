@@ -70,15 +70,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
+import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SignUpPersonalInfoSCreen(){
+fun SignUpPersonalInfoScreen(
+    navController: NavController,
+    viewModel: SignUpPersonalInfoViewModel,
+    userViewModel: UserViewModel
+){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,16 +95,28 @@ fun SignUpPersonalInfoSCreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        // ---
+        // Header Image
+        //
         HeaderImage(modifier = Modifier.fillMaxWidth())
-        SignUpPersonalInfoView(viewModel = SignUpPersonalInfoViewModel())
 
+        // ---
+        // Personal Info
+        // ---
+        SignUpPersonalInfoView(
+            viewModel,
+            navController
+        )
 
     }
 }
 
 
 @Composable
-fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
+fun SignUpPersonalInfoView(
+    viewModel: SignUpPersonalInfoViewModel,
+    navController: NavController
+){
 
     val gender: String by viewModel.gender.observeAsState(initial = "")
     val birthdate: String by viewModel.birthdate.observeAsState(initial = "")
