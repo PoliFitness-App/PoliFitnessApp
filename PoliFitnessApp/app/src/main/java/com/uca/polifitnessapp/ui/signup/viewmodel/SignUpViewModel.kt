@@ -141,7 +141,7 @@ class SignUpViewModel(
 
     suspend fun onSingupSelected() {
         _isLoading.value = true
-        delay(4000)
+        delay(2000)
         _isLoading.value = false
     }
 

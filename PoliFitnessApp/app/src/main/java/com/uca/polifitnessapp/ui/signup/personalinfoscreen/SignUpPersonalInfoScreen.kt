@@ -1,6 +1,5 @@
 package com.uca.polifitnessapp.ui.signup.personalinfoscreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Height
-import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Male
 import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Straighten
@@ -29,7 +27,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -39,7 +36,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -52,7 +48,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,21 +56,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 @Composable
@@ -104,6 +93,7 @@ fun SignUpPersonalInfoScreen(
         // Personal Info
         // ---
         SignUpPersonalInfoView(
+            userViewModel,
             viewModel,
             navController
         )
@@ -114,6 +104,7 @@ fun SignUpPersonalInfoScreen(
 
 @Composable
 fun SignUpPersonalInfoView(
+    userViewModel: UserViewModel,
     viewModel: SignUpPersonalInfoViewModel,
     navController: NavController
 ){
@@ -127,10 +118,7 @@ fun SignUpPersonalInfoView(
 
     val signupenable: Boolean by viewModel.signupEnable.observeAsState(initial = true)
 
-
     val coroutineScope = rememberCoroutineScope()
-
-
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -196,13 +184,20 @@ fun SignUpPersonalInfoView(
             signupenable,
         ){
             coroutineScope.launch {
-                viewModel.onSingupSelected()
+                val genderAux = gender == "Masculino"
+                // We set the dat  -> name, lastname, email, password
+                userViewModel.onSignUpPersonalInfo(
+                    genderAux,
+                    birthdate,
+                    weight,
+                    height,
+                    waist,
+                    hip
+                )
+                navController.popBackStack()
+                navController.navigate("goal_screen")
             }
         }
-
-
-
-
     }
 
 }

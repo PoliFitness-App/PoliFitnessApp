@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.EditProfile.ui
+package com.uca.polifitnessapp.ui.user.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,8 +29,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.EditProfile.viewmodel.EditProfileViewModel
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 @Composable
 fun EditProfileScreen(

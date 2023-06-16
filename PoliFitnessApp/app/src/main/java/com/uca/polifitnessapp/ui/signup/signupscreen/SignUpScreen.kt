@@ -48,17 +48,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpViewModel
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
-
 
 
 @Composable
@@ -66,7 +62,7 @@ fun SignUpScreen(
     navController: NavController,
     viewModel: SignUpViewModel,
     userViewModel: UserViewModel
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,6 +76,7 @@ fun SignUpScreen(
 
         SignUpView(
             Modifier.align(Alignment.CenterHorizontally),
+            userViewModel,
             viewModel,
             navController
         )
@@ -89,9 +86,10 @@ fun SignUpScreen(
 @Composable
 fun SignUpView(
     modifier: Modifier,
+    userViewModel: UserViewModel,
     viewModel: SignUpViewModel,
     navController: NavController
-){
+) {
 
     // CREAR NUESTRAS VARIABLES DE ESTADO PARA EL NOMBRE, APELLIDO, EMAIL, CONTRASEÑA Y CONFIRMACION DE CONTRASEÑA
 
@@ -122,35 +120,48 @@ fun SignUpView(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        NameField(modifier = Modifier.align(Alignment.CenterHorizontally),
+        NameField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             name,
             isWrongInputName,
-        ) { viewModel.onNameChanged(it) }
+        ) {
+            viewModel.onNameChanged(it)
+        }
 
 
-        LastNameField(modifier = Modifier.align(Alignment.CenterHorizontally),
+        LastNameField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             lastname,
             isWrongInputLastName,
-        ) { viewModel.onLastnameChanged(it) }
+        ) {
+            viewModel.onLastnameChanged(it)
+        }
 
 
         EmailField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             email,
             isWrongInputEmail
-        ) { viewModel.onEmailChanged(it) }
+        ) {
+            viewModel.onEmailChanged(it)
+        }
 
 
         PasswordField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
+            password,
             isWrongInputPassword
-        ) { viewModel.onPasswordChanged(it) }
+        ) {
+            viewModel.onPasswordChanged(it)
+        }
 
 
         TermsAndConditionText(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             isWrongInputCheckbox
-        ){ viewModel.onCheckboxChanged(it)}
+        ) {
+            viewModel.onCheckboxChanged(it)
+        }
 
 
         SignUpButton(
@@ -158,23 +169,16 @@ fun SignUpView(
             signupenable
         ) {
             coroutineScope.launch {
-                viewModel.onSingupSelected()
+                // We set the dat  -> name, lastname, email, password
+                navController.popBackStack()
+                navController.navigate("personal_info_screen")
             }
         }
 
         GoogleLogin(modifier = Modifier.align(Alignment.CenterHorizontally))
-
-
-
-
-
-
     }
 
 }
-
-
-
 
 
 // -----------
@@ -185,7 +189,7 @@ fun SignUpView(
 
 @Composable
 fun SignUpHeaderText(
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -196,9 +200,11 @@ fun SignUpHeaderText(
         Text(text = "Hey!")
 
 
-        Text(text = "Crea una cuenta",
+        Text(
+            text = "Crea una cuenta",
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold)
+            fontWeight = FontWeight.Bold
+        )
 
 
     }
@@ -214,11 +220,11 @@ fun NameField(
     name: String,
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
-){
+) {
 
     TextField(
         value = name,
-        onValueChange = { onTextFieldChanged(it)},
+        onValueChange = { onTextFieldChanged(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -277,11 +283,11 @@ fun LastNameField(
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
 
-){
+) {
 
     TextField(
         value = lastname,
-        onValueChange = { onTextFieldChanged(it)  },
+        onValueChange = { onTextFieldChanged(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -339,7 +345,7 @@ fun EmailField(
     email: String,
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
-){
+) {
 
     TextField(
         value = email,
@@ -394,24 +400,23 @@ fun EmailField(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordField(
     modifier: Modifier,
+    password: String,
     isWrongInput: Boolean,
     onTextSelected: (String) -> Unit
-){
-    val password = remember { mutableStateOf("") }
-
-    val passwordVisible = remember{
+) {
+    val passwordVisible = remember {
         mutableStateOf(false)
     }
 
-    TextField(value = password.value,
+    TextField(
+        value = password,
         onValueChange = {
-            password.value = it
-            onTextSelected(it) },
+            onTextSelected(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -431,18 +436,18 @@ fun PasswordField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         isError = isWrongInput,
         trailingIcon = {
-            val iconImage = if (passwordVisible.value){
+            val iconImage = if (passwordVisible.value) {
                 Icons.Outlined.Visibility
-            }else {
+            } else {
                 Icons.Outlined.VisibilityOff
             }
-            var description = if(passwordVisible.value){
+            var description = if (passwordVisible.value) {
                 "Hide password"
-            }else{
+            } else {
                 "Show password"
             }
 
-            IconButton(onClick = {passwordVisible.value = !passwordVisible.value}){
+            IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                 Icon(imageVector = iconImage, contentDescription = description)
 
             }
@@ -457,7 +462,7 @@ fun PasswordField(
                 )
             }
         },
-        visualTransformation = if(passwordVisible.value) VisualTransformation.None else
+        visualTransformation = if (passwordVisible.value) VisualTransformation.None else
             PasswordVisualTransformation(),
 
         modifier = modifier
@@ -476,15 +481,11 @@ fun PasswordField(
 }
 
 
-
-
-
-
-
 @Composable
-fun SignUpButton(modifier: Modifier,
-                 signupEnabled: Boolean,
-                 onSignupSelected: () -> Unit
+fun SignUpButton(
+    modifier: Modifier,
+    signupEnabled: Boolean,
+    onSignupSelected: () -> Unit
 ) {
     Button(
         onClick = { onSignupSelected() },
@@ -527,8 +528,10 @@ fun TermsAndConditionText(
         val checkedState = remember { mutableStateOf(false) }
         Checkbox(
             checked = checkedState.value,
-            onCheckedChange = { checkedState.value = it
-                onCheckedChanged(it) },
+            onCheckedChange = {
+                checkedState.value = it
+                onCheckedChanged(it)
+            },
             colors = CheckboxDefaults.colors(Color.DarkGray),
         )
 

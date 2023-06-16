@@ -53,14 +53,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation.findNavController
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable

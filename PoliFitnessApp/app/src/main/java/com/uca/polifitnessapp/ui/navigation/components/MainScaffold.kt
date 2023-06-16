@@ -1,16 +1,18 @@
-package com.uca.polifitnessapp.ui.navigation
+package com.uca.polifitnessapp.ui.navigation.components
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.uca.polifitnessapp.ui.navigation.NavigationHost
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScalfold() {
@@ -40,7 +42,15 @@ fun MainScalfold() {
         }
 
         // Register screen
-        "register_screen" -> {
+        "sign_up_screen" -> {
+            bottomBarState.value = false
+        }
+
+        "personal_info_screen" ->{
+            bottomBarState.value = false
+        }
+
+        "approach_screen"->{
             bottomBarState.value = false
         }
 

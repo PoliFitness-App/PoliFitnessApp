@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.navigation
+package com.uca.polifitnessapp.ui.navigation.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize

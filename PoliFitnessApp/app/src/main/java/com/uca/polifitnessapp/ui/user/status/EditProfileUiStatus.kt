@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.EditProfile.ui
+package com.uca.polifitnessapp.ui.user.status
 
 import java.lang.Exception
 

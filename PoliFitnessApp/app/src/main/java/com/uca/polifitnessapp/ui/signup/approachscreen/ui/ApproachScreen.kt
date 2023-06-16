@@ -37,17 +37,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
-import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
 import com.uca.polifitnessapp.ui.signup.approachscreen.data.ApproachData
 import com.uca.polifitnessapp.ui.signup.validation.SignUpUiStatus
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 
@@ -126,6 +124,15 @@ fun SignUpGoalScreen(
     // viewModel
     // ---
     // Get the user from the view model
+
+
+    // Check if there is a user
+    if (userViewModel.user.value == null) {
+        // If there is no user, create an empty one
+        userViewModel.user.value = UserModel("", "", "", 0f, 0f, 0f,0f,"")
+        // Create an empty password
+        userViewModel.password.value = ""
+    }
     val user = userViewModel.user.value!!
     val password = userViewModel.password.value!!
 

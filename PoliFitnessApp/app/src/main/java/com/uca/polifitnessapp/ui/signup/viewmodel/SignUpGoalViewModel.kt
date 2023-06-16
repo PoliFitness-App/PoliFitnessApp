@@ -86,6 +86,8 @@ class SignUpGoalViewModel(
 
         // If the approach is not empty, it updates the approach variable
         approach.value = approachU
+        // It also updates the is enabled variable
+        _isEnabled.value = true
     }
 
     // ---

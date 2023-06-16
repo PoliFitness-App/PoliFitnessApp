@@ -67,9 +67,9 @@ class SignUpPersonalInfoViewModel(
     // ---
 
     private fun register(gender: String, birthdate: String, weight: String, height: String, waistP: String, hipP: String) {
+
         // Create a coroutine to call the register function from the repository
         // and inside the coroutine set the value of the status
-
     }
 
     fun onRegisterChange() {
@@ -112,8 +112,6 @@ class SignUpPersonalInfoViewModel(
         _status.value = SignUpUiStatus.Resume
     }
 
-    suspend fun onSingupSelected() {
-    }
 
     // ---
     // Companion object

@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.EditProfile.viewmodel
+package com.uca.polifitnessapp.ui.user.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +10,7 @@ import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
-import com.uca.polifitnessapp.ui.EditProfile.ui.EditProfileUiStatus
-import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
+import com.uca.polifitnessapp.ui.user.status.EditProfileUiStatus
 import kotlinx.coroutines.launch
 
 class EditProfileViewModel(
