@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -48,14 +47,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.theme.md_theme_dark_outline
 import com.uca.polifitnessapp.ui.theme.md_theme_light_onPrimary
-import com.uca.polifitnessapp.ui.theme.md_theme_light_onSurface
-import com.uca.polifitnessapp.ui.theme.md_theme_light_onSurfaceVariant
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
 import com.uca.polifitnessapp.ui.theme.md_theme_light_primary
 import com.uca.polifitnessapp.ui.theme.md_theme_light_scrim
-import com.uca.polifitnessapp.ui.theme.md_theme_light_secondary
 import com.uca.polifitnessapp.ui.theme.md_theme_light_secondaryContainer
 
 @Preview
@@ -300,7 +295,7 @@ fun someRoutines() {
                             backgroundColor = colorResource(R.color.white),
                             content = {
                                 Icon(
-                                    painterResource(R.drawable.nav_icon),
+                                    painterResource(R.drawable.nav_to_icon),
                                     contentDescription = "Ver rutina",
                                     tint = md_theme_light_primary)
                             }
