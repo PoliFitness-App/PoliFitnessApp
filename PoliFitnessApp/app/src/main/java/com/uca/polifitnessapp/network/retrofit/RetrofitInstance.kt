@@ -4,6 +4,7 @@ import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.network.interceptor.LoginInterceptor
 import com.uca.polifitnessapp.network.service.AuthService
 import com.uca.polifitnessapp.network.service.NewsService
+import com.uca.polifitnessapp.network.service.RoutineService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -43,4 +44,9 @@ object RetrofitInstance {
     
     fun getPoliFitnessAPINews(): NewsService = retrofit.create(NewsService::class.java)
     fun getLoginService(): AuthService = retrofit.create(AuthService::class.java)
+
+    // ---
+    // Instancia de rutinas
+    // ---
+    fun getPoliFitnessAPIRoutines(): RoutineService = retrofit.create(RoutineService::class.java)
 }

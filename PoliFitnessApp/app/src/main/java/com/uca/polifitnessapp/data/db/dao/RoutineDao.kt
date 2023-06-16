@@ -1,10 +1,13 @@
 package com.uca.polifitnessapp.data.db.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 
 @Dao
@@ -13,6 +16,10 @@ interface RoutineDao {
     //Funcion para obtener todas las rutinas
     @Query("SELECT * FROM routine_table")
     suspend fun getAllRoutines(): List<RoutineModel>
+
+    // funcion para obtener todas las noticias por bloques
+    @Query("SELECT * FROM routine_table WHERE category like :query")
+    fun pagingSource(query: String): PagingSource<Int, RoutineModel>
 
 
     //Funcion para ingresar una rutina
@@ -51,5 +58,13 @@ interface RoutineDao {
     //funcion para obtener rutinas por nivel y categoria
     @Query("SELECT * FROM routine_table WHERE level = :level AND category = :category")
     suspend fun getRoutinesByLevelAndCategory(level: String, category: String): List<RoutineModel>
+
+    // funcion para el pagination limpiar base
+    @Query("DELETE FROM routine_table")
+    suspend fun clearAll()
+
+    // funcion para el pagination insertar lista
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(routines: List<RoutineModel>)
 
 }

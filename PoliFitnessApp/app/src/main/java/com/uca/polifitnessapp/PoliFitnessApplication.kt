@@ -23,7 +23,7 @@ class PoliFitnessApplication: Application(){
     }
 
     val routineRepository: RoutineRepository by lazy {
-        RoutineRepository(database.routineDao())
+        RoutineRepository(database, retrofitInstance.getPoliFitnessAPIRoutines())
     }
 
     val userRepository: UserRepository by lazy {
