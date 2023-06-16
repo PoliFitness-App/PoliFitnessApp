@@ -380,7 +380,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
         GenderField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             viewModel.genderState,
-            viewModel::updateGender,
+            viewModel::updateGender
         )
 
         //BirthdayField(birthdate, onDateChange = {})
