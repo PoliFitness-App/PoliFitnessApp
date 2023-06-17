@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.signup.approachscreen.ui
+package com.uca.polifitnessapp.ui.signup.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -42,12 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
-import com.uca.polifitnessapp.ui.signup.approachscreen.data.ApproachData
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
+import com.uca.polifitnessapp.ui.signup.data.ApproachData
 import com.uca.polifitnessapp.ui.signup.validation.SignUpUiStatus
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -110,8 +111,6 @@ fun SignUpGoalScreen(
     // ---
     // Is wrong ?
     val isEnabled: Boolean by viewModel.isEnabled.observeAsState(initial = false)
-    // Approach
-    val approach: String by viewModel.approach.observeAsState(initial = "")
 
     // ---
     // Auxiliary variables
@@ -124,17 +123,6 @@ fun SignUpGoalScreen(
     // viewModel
     // ---
     // Get the user from the view model
-
-
-    // Check if there is a user
-    if (userViewModel.user.value == null) {
-        // If there is no user, create an empty one
-        userViewModel.user.value = UserModel("", "", "", 0f, 0f, 0f,0f,"")
-        // Create an empty password
-        userViewModel.password.value = ""
-    }
-    val user = userViewModel.user.value!!
-    val password = userViewModel.password.value!!
 
     Column(
         modifier = Modifier
@@ -156,9 +144,6 @@ fun SignUpGoalScreen(
         MainFunction(){
             // Set the approach on the view model
             viewModel.onApproachChange(it)
-
-            // Update the approach on the user
-            user.approach = it
         }
         // ---
         // Button
@@ -173,12 +158,10 @@ fun SignUpGoalScreen(
                     handleUiStatus(
                         status,
                         navController,
-                        context,
-                        viewModel,
-                        user,
-                        password
+                        context
                     )
                 }
+                viewModel.onSignUp()
             }
         }
     }
@@ -191,28 +174,23 @@ fun handleUiStatus(
     status: SignUpUiStatus,
     navController: NavController,
     context: Context,
-    viewModel: SignUpGoalViewModel,
-    user: UserModel,
-    password: String
 ) {
     when (status) {
         is SignUpUiStatus.Error -> {
             Toast.makeText(context, "Error de conexion", Toast.LENGTH_SHORT).show()
         }
-
         is SignUpUiStatus.ErrorWithMessage -> {
             Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
         }
-
         is SignUpUiStatus.Success -> {
-
-            // TODO: Save user data
-            viewModel.onSignUp(user,password)
-
+            Toast.makeText(context, "done", Toast.LENGTH_SHORT).show()
             // We nagivate to "main_flow"
-            navController.navigate("main_flow")
+            navController.navigate(MainRoutes.MAIN_ROUTE) {
+                popUpTo(AuthRoutes.NEW_USER_FLOW) {
+                    inclusive = true
+                }
+            }
         }
-
         else -> {}
     }
 }

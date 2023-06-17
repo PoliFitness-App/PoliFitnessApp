@@ -6,12 +6,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
 import com.uca.polifitnessapp.ui.onboardscreen.ui.MainFunction
-import com.uca.polifitnessapp.ui.signup.approachscreen.ui.SignUpGoalScreen
-import com.uca.polifitnessapp.ui.signup.personalinfoscreen.SignUpPersonalInfoScreen
-import com.uca.polifitnessapp.ui.signup.signupscreen.SignUpScreen
+import com.uca.polifitnessapp.ui.signup.ui.SignUpGoalScreen
+import com.uca.polifitnessapp.ui.signup.ui.SignUpPersonalInfoScreen
+import com.uca.polifitnessapp.ui.signup.ui.SignUpScreen
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 // ---
@@ -23,10 +21,8 @@ import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 fun NavGraphBuilder.authGraph(
     navController: NavHostController,
-    signUpViewModel: SignUpViewModel,
-    signUpPersonalViewModel: SignUpPersonalInfoViewModel,
     signUpGoalViewModel: SignUpGoalViewModel,
-    userViewModel: UserViewModel
+    userViewModel:UserViewModel
 ) {
     navigation(
         startDestination = AuthRoutes.SIGN_UP_SCREEN,
@@ -45,14 +41,13 @@ fun NavGraphBuilder.authGraph(
         composable(AuthRoutes.SIGN_UP_SCREEN) {
             SignUpScreen(
                 navController,
-                signUpViewModel,
-                userViewModel
+                signUpGoalViewModel,
             )
         }
         composable(AuthRoutes.PERSONAL_INFO_SCREEN) {
             SignUpPersonalInfoScreen(
                 navController,
-                signUpPersonalViewModel,
+                signUpGoalViewModel,
                 userViewModel
             )
         }

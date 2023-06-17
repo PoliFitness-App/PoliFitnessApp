@@ -79,26 +79,37 @@ class CredentialsRepository(
     // Function to register the user
     // We send data to the api
     suspend fun register(
-        user: UserModel,
-        password: String
+        username: String,
+        lastname: String,
+        email: String,
+        password: String,
+        imc: Float,
+        icc: Float,
+        gender:Boolean,
+        dateOfBirth: String,
+        weight: Float,
+        height: Float,
+        waistP: Float,
+        hipP: Float,
+        approach: String,
     ): ApiResponse<String> {
         try {
             val response: RegisterResponse =
                 api.register(
                     RegisterRequest(
-                        user.username,
-                        user.lastname,
-                        user.email,
+                        username,
+                        lastname,
+                        email,
                         password,
-                        user.imc,
-                        user.icc,
-                        user.gender,
-                        user.birthday,
-                        user.weight,
-                        user.height,
-                        user.waistP,
-                        user.hipP,
-                        user.approach
+                        imc,
+                        icc,
+                        gender,
+                        dateOfBirth,
+                        weight,
+                        height,
+                        waistP,
+                        hipP,
+                        approach
                     )
                 )
             return ApiResponse.Success(response.message)

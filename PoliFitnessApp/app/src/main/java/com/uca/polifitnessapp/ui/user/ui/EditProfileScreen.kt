@@ -129,7 +129,7 @@ fun EditProfileText() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun weightField(
+fun WeightField(
     modifier: Modifier,
     weightVM: String,
     isValidWeight: Boolean,
@@ -209,7 +209,6 @@ fun heightField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
 
@@ -254,7 +253,6 @@ fun waistField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
 
@@ -322,7 +320,6 @@ fun kgicon() {
 
         ) {
             Text(text = "KG", color = Color.White)
-
         }
 
     }
@@ -345,9 +342,7 @@ fun cmicon() {
 
         ) {
             Text(text = "CM", color = Color.White)
-
         }
-
     }
 }
 
@@ -384,7 +379,7 @@ fun combine(
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            weightField(
+            WeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 weight,
                 isValidWeight
@@ -443,7 +438,6 @@ fun combine(
             cmicon()
 
         }
-
 
         Row(
             horizontalArrangement = Arrangement.Center,

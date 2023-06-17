@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.signup.signupscreen
+package com.uca.polifitnessapp.ui.signup.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,16 +52,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpViewModel
-import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    viewModel: SignUpViewModel,
-    userViewModel: UserViewModel
+    viewModel: SignUpGoalViewModel,
 ) {
     Column(
         modifier = Modifier
@@ -76,7 +75,6 @@ fun SignUpScreen(
 
         SignUpView(
             Modifier.align(Alignment.CenterHorizontally),
-            userViewModel,
             viewModel,
             navController
         )
@@ -86,28 +84,29 @@ fun SignUpScreen(
 @Composable
 fun SignUpView(
     modifier: Modifier,
-    userViewModel: UserViewModel,
-    viewModel: SignUpViewModel,
+    viewModel: SignUpGoalViewModel,
     navController: NavController
 ) {
 
-    // CREAR NUESTRAS VARIABLES DE ESTADO PARA EL NOMBRE, APELLIDO, EMAIL, CONTRASEÑA Y CONFIRMACION DE CONTRASEÑA
+    // --
+    // View model variables
+    // --
 
-    val name: String by viewModel.name.observeAsState(initial = "")
+    val username: String by viewModel.username.observeAsState(initial = "")
     val lastname: String by viewModel.lastname.observeAsState(initial = "")
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
-    val checkbox: Boolean by viewModel.checkbox.observeAsState(initial = false)
-    val signupenable: Boolean by viewModel.signupEnable.observeAsState(initial = false)
+
+    val checkbox: Boolean by viewModel.checkBox.observeAsState(initial = false)
 
     val coroutineScope = rememberCoroutineScope()
 
+    val isWrongInputName: Boolean by viewModel.isValidUsername.observeAsState(initial = false)
+    val isWrongInputLastName: Boolean by viewModel.isValidLastname.observeAsState(initial = false)
+    val isWrongInputEmail: Boolean by viewModel.isValidEmail.observeAsState(initial = false)
+    val isWrongInputPassword: Boolean by viewModel.isValidPassword.observeAsState(initial = false)
 
-    val isWrongInputName: Boolean by viewModel.isWrongInputName.observeAsState(initial = false)
-    val isWrongInputLastName: Boolean by viewModel.isWrongInputLastname.observeAsState(initial = false)
-    val isWrongInputEmail: Boolean by viewModel.isWrongInputEmail.observeAsState(initial = false)
-    val isWrongInputPassword: Boolean by viewModel.isWrongInputPassword.observeAsState(initial = false)
-    val isWrongInputCheckbox: Boolean by viewModel.isWrongInputChecked.observeAsState(initial = false)
+    val signUpEnable: Boolean by viewModel.isSignUpButton1.observeAsState(initial = false)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -122,10 +121,10 @@ fun SignUpView(
 
         NameField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            name,
+            username,
             isWrongInputName,
         ) {
-            viewModel.onNameChanged(it)
+            viewModel.onUsernameChange(it)
         }
 
 
@@ -134,7 +133,7 @@ fun SignUpView(
             lastname,
             isWrongInputLastName,
         ) {
-            viewModel.onLastnameChanged(it)
+            viewModel.onLastnameChange(it)
         }
 
 
@@ -143,7 +142,7 @@ fun SignUpView(
             email,
             isWrongInputEmail
         ) {
-            viewModel.onEmailChanged(it)
+            viewModel.onEmailChange(it)
         }
 
 
@@ -152,30 +151,31 @@ fun SignUpView(
             password,
             isWrongInputPassword
         ) {
-            viewModel.onPasswordChanged(it)
+            viewModel.onPasswordChange(it)
         }
 
 
         TermsAndConditionText(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            isWrongInputCheckbox
+            checkbox,
         ) {
             viewModel.onCheckboxChanged(it)
         }
 
-
         SignUpButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            signupenable
+            signUpEnable
         ) {
             coroutineScope.launch {
                 // We set the dat  -> name, lastname, email, password
-                navController.popBackStack()
-                navController.navigate("personal_info_screen")
+                navController.navigate(AuthRoutes.PERSONAL_INFO_SCREEN)
             }
         }
 
-        GoogleLogin(modifier = Modifier.align(Alignment.CenterHorizontally))
+        GoogleLogin(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+        )
     }
 
 }
@@ -221,10 +221,11 @@ fun NameField(
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
 ) {
-
     TextField(
         value = name,
-        onValueChange = { onTextFieldChanged(it) },
+        onValueChange = {
+            onTextFieldChanged(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -261,7 +262,6 @@ fun NameField(
                 )
             }
         },
-
         modifier = modifier
             .width(315.dp),
         singleLine = true,
@@ -455,7 +455,7 @@ fun PasswordField(
         supportingText = {
             if (isWrongInput) {
                 Text(
-                    text = "La contraseña debe tener al menos 8 caracteres",
+                    text = "La contraseña debe de tener entre 8 y 32 chars, y al menos 1 M, 1 m y 1 #",
                     color = Color.Red,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
@@ -488,7 +488,9 @@ fun SignUpButton(
     onSignupSelected: () -> Unit
 ) {
     Button(
-        onClick = { onSignupSelected() },
+        onClick = {
+            onSignupSelected()
+        },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
@@ -516,7 +518,7 @@ fun SignUpButton(
 @Composable
 fun TermsAndConditionText(
     modifier: Modifier,
-    isWrongInput: Boolean,
+    checkbox: Boolean,
     onCheckedChanged: (Boolean) -> Unit,
 ) {
     Row(
@@ -524,27 +526,20 @@ fun TermsAndConditionText(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(5.dp, 10.dp, 0.dp, 0.dp)
     ) {
-
-        val checkedState = remember { mutableStateOf(false) }
         Checkbox(
-            checked = checkedState.value,
+            checked = checkbox,
             onCheckedChange = {
-                checkedState.value = it
                 onCheckedChanged(it)
             },
             colors = CheckboxDefaults.colors(Color.DarkGray),
         )
-
-
         Text(
             text = "Si continúa navegando, consideramos que acepta nuestra Politica de Privacidad y Terminos de Uso.",
             fontSize = 12.sp,
             color = Color(0xFF565E71),
             fontWeight = FontWeight.Normal,
         )
-
     }
-
 }
 
 @Composable

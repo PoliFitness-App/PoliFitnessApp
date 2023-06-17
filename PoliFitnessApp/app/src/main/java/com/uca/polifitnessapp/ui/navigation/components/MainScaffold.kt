@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -42,15 +43,15 @@ fun MainScalfold() {
         }
 
         // Register screen
-        "sign_up_screen" -> {
+        AuthRoutes.SIGN_UP_SCREEN -> {
             bottomBarState.value = false
         }
 
-        "personal_info_screen" ->{
+        AuthRoutes.PERSONAL_INFO_SCREEN ->{
             bottomBarState.value = false
         }
 
-        "approach_screen"->{
+        AuthRoutes.GOAL_SCREEN ->{
             bottomBarState.value = false
         }
 
