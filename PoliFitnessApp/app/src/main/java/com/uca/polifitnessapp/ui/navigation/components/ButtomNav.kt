@@ -38,6 +38,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 
 // BOTTOM BAR
 
@@ -93,7 +94,9 @@ fun BottomBar(
 
             // CALCULATOR
 
-            CalculatorButton()
+            CalculatorButton(
+                navController
+            )
 
             // RUTINE
 
@@ -119,21 +122,34 @@ fun BottomBar(
 // CALCULATOR BUTTON
 
 @Composable
-fun CalculatorButton() {
+fun CalculatorButton(
+    navController: NavHostController
+) {
     FloatingActionButton(
         modifier = Modifier
             .width(60.dp)
             .height(60.dp)
             .offset(y = (-10).dp),
         onClick = {
-
+            // Navigate to the screen when the item is clicked, and pop up to the start destination
+            // of the graph to avoid building up a large stack of destinations on the back stack as users select items
+            navController.navigate(MainRoutes.MAIN_CALCULATOR_SCREEN) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
         },
         containerColor = Color(0xFF034189),
         contentColor = Color.White,
         shape = RoundedCornerShape(50.dp),
         elevation = FloatingActionButtonDefaults.elevation(10.dp, 10.dp)
     ) {
-        Icon(imageVector = Icons.Outlined.Calculate, contentDescription = "")
+        Icon(
+            imageVector = Icons.Outlined.Calculate,
+            contentDescription = "Calculator"
+        )
     }
 }
 

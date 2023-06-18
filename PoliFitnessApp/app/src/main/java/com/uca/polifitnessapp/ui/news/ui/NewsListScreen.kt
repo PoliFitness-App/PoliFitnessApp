@@ -1,6 +1,7 @@
 package com.uca.polifitnessapp.ui.news.ui
 
-import androidx.compose.foundation.Image
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,29 +30,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.NoticeModel
-import com.uca.polifitnessapp.ui.news.data.News
-import com.uca.polifitnessapp.ui.news.data.NewsViewModel
-import com.uca.polifitnessapp.ui.news.data.newsList
+import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
-
-// ----
-// News List Screen
-// ------
-
-// category filter state and index size for filter
-
-var category by mutableStateOf("")
-var indexsize by mutableStateOf(0)
-var indexsizefilter by mutableStateOf(0)
 
 // -----
 // News List Screen
@@ -60,9 +51,9 @@ var indexsizefilter by mutableStateOf(0)
 
 @Composable
 fun NewsListScreen(
-    viewModel: NewsScreenViewModel
+    viewModel: NewsScreenViewModel,
+    navController: NavHostController
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -70,12 +61,17 @@ fun NewsListScreen(
         // center items horizontally in the column
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // news list
-        NewsList(
-            viewModel
-        )
+        if (viewModel.isLoading.value) {
+            // Loading
+            LoadingScreen()
+        } else {
+            // News List
+            NewsList(
+                viewModel,
+                navController
+            )
+        }
     }
-
 }
 
 // ----
@@ -232,7 +228,8 @@ fun FilterItem(
 
 @Composable
 fun NewsList(
-    viewModel: NewsScreenViewModel
+    viewModel: NewsScreenViewModel,
+    navController: NavHostController
 ) {
     // Container
     Column(
@@ -242,14 +239,6 @@ fun NewsList(
         //Center items horizontally in the column
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        // States for news list
-        var selectedIndex by remember { mutableStateOf(0) }
-
-        val onItemClick = { index: Int ->
-            selectedIndex = index
-        }
-
         // header (News filter)
         HeaderSection(
             viewModel
@@ -275,14 +264,13 @@ fun NewsList(
                 if (item != null) {
                     NewItem(
                         new = item,
-                        index = index,
-                        selected = selectedIndex == index,
-                        onClick = onItemClick
-                    )
+                        viewModel
+                    ){noticeId ->
+                        navController.navigate("new_info_screen/${noticeId}")
+                    }
                 }
             }
         }
-
     }
 }
 
@@ -294,9 +282,8 @@ fun NewsList(
 @Composable
 fun NewItem(
     new: NoticeModel,
-    index: Int,
-    selected: Boolean,
-    onClick: (Int) -> Unit
+    viewModel: NewsScreenViewModel,
+    onClick: (String) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -304,7 +291,12 @@ fun NewItem(
         modifier = Modifier
             .padding(16.dp)
             .width(350.dp)
-            .height(285.dp),
+            .height(285.dp)
+            .clickable {
+                viewModel.fetchNewById(new.noticeId)
+                onClick(new.noticeId)
+            }
+        ,
         // Card colors
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
@@ -326,9 +318,6 @@ fun NewItem(
         // Column with title, description, category
         Column(
             Modifier
-                .clickable {
-                    onClick.invoke(index)
-                }
                 .fillMaxSize()
                 .padding(12.dp),
             verticalArrangement = Arrangement.Center,
@@ -344,8 +333,13 @@ fun NewItem(
                 style = MaterialTheme.typography.bodySmall
             )
             // Description
+            val description = if (new.description.length > 40) {
+                "${new.description.take(10)}..." // Agregar "..." después de los 10 caracteres
+            } else {
+                new.description // Mantener la descripción completa si tiene 10 caracteres o menos
+            }
             Text(
-                text = new.description,
+                text = description,
                 fontWeight = FontWeight.ExtraLight,
                 color = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier
@@ -360,7 +354,7 @@ fun NewItem(
                 fontWeight = FontWeight.ExtraLight,
                 color = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier
-                    .padding(8.dp, 16.dp, 8.dp, 8.dp)
+                    .padding(0.dp, 16.dp, 8.dp, 8.dp)
                     .align(Alignment.End),
                 style = MaterialTheme.typography.labelSmall
             )

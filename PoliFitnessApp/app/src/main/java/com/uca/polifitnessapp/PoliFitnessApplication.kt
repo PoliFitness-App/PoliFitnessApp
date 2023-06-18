@@ -12,22 +12,12 @@ import com.uca.polifitnessapp.repositories.RoutineRepository
 import com.uca.polifitnessapp.repositories.UserRepository
 
 class PoliFitnessApplication: Application(){
-    //implementando la base de datos
+
+    // ---
+    // Database instance
+    // ---
     private val database: PoliFitnessDatabase by lazy {
         PoliFitnessDatabase.newInstance(this)
-    }
-
-    //implementacion de los repositorios de la aplicacion
-    val noticeRepository: NoticeRepository by lazy {
-        NoticeRepository(database, retrofitInstance.getPoliFitnessAPINews())
-    }
-
-    val routineRepository: RoutineRepository by lazy {
-        RoutineRepository(database.routineDao())
-    }
-
-    val userRepository: UserRepository by lazy {
-        UserRepository(database.userDao())
     }
 
     // ---
@@ -53,15 +43,6 @@ class PoliFitnessApplication: Application(){
     fun getUserState(): Boolean = prefs.getBoolean(USER_STATE, false)
 
     // ---
-    // Repositories
-    // ---
-
-    // CredentialsRepository
-    val credentialRepository: CredentialsRepository by lazy{
-        CredentialsRepository(retrofitInstance.getLoginService(), database.userDao())
-    }
-
-    // ---
     // Functions
     // ---
 
@@ -78,6 +59,26 @@ class PoliFitnessApplication: Application(){
         editor.putBoolean(USER_STATE, state)
         editor.apply()
     }
+
+    // ---
+    // Repositories
+    // ---
+
+    // Credentials repository
+    val credentialRepository: CredentialsRepository by lazy{
+        CredentialsRepository(retrofitInstance.getLoginService(), database.userDao())
+    }
+
+    // News repository
+    val noticeRepository: NoticeRepository by lazy {
+        NoticeRepository(database, retrofitInstance.getPoliFitnessAPINews())
+    }
+
+    // Routines repository
+    val routineRepository: RoutineRepository by lazy {
+        RoutineRepository(database.routineDao())
+    }
+
 
     companion object {
         const val USER_TOKEN = "user_token"

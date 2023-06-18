@@ -1,14 +1,19 @@
 package com.uca.polifitnessapp.ui.news.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.ExperimentalPagingApi
 import com.uca.polifitnessapp.PoliFitnessApplication
+import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.repositories.NoticeRepository
-import com.uca.polifitnessapp.ui.news.data.NewsViewModel
+import com.uca.polifitnessapp.ui.news.status.NewStatusUi
+import kotlinx.coroutines.launch
 
 class NewsScreenViewModel(
     private val repository: NoticeRepository
@@ -19,7 +24,9 @@ class NewsScreenViewModel(
     // ---
 
     var category = MutableLiveData("%")
-
+    var new = MutableLiveData<NoticeModel>()
+    val status: NewStatusUi by mutableStateOf(NewStatusUi.Resume)
+    val isLoading = mutableStateOf(false)
 
     // ---
     // News functions
@@ -27,7 +34,24 @@ class NewsScreenViewModel(
 
     // Get News
     @OptIn(ExperimentalPagingApi::class)
-    fun getNews(query: String) = repository.getNewsPage(5, query)
+    fun getNews(query: String) =
+        repository.getNewsPage(5, query)
+
+    fun fetchNewById(id: String):NoticeModel? {
+        // Fetch new by id
+        // Set loading
+        setLoading(true)
+        // Launch coroutine
+        viewModelScope.launch{
+            // Call repository function
+            new.value = repository.getNoticeById(id)
+        }
+
+        // Set loading
+        setLoading(false)
+
+        return new.value
+    }
 
     // On category change
     fun onCategoryChange(index:Int){
@@ -57,6 +81,13 @@ class NewsScreenViewModel(
                 category.value = "Actividades"
             }
         }
+    }
+
+    // ---
+    // Loading functions
+    // ---
+    private fun setLoading(loading: Boolean) {
+        isLoading.value = loading
     }
 
     // ---

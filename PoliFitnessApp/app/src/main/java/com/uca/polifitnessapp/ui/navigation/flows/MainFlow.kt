@@ -1,17 +1,24 @@
 package com.uca.polifitnessapp.ui.navigation.flows
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import com.uca.polifitnessapp.ui.calculator.ui.CalculatorScreen
 import com.uca.polifitnessapp.ui.user.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.ui.ProfileScreen
 import com.uca.polifitnessapp.ui.navigation.PreviewScreens
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems
+import com.uca.polifitnessapp.ui.news.ui.NewItemBox
+import com.uca.polifitnessapp.ui.news.ui.NewItemScreen
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
@@ -42,7 +49,8 @@ fun NavGraphBuilder.mainGraph(
         // News route
         composable(ButtomNavItems.News.rute) {
             NewsListScreen(
-                newsScreenViewModel
+                newsScreenViewModel,
+                navController
             )
         }
         // Routine route
@@ -56,6 +64,9 @@ fun NavGraphBuilder.mainGraph(
                 userViewModel
             )
         }
+        composable(MainRoutes.MAIN_CALCULATOR_SCREEN){
+            CalculatorScreen()
+        }
         // Edit profile route
         composable(MainRoutes.MAIN_USER_EDIT) {
             EditProfileScreen(
@@ -63,6 +74,36 @@ fun NavGraphBuilder.mainGraph(
                 userViewModel,
                 editProfileViewModel
             )
+        }
+        // New info route
+        composable("new_info_screen/{newId}",
+            arguments = listOf(
+                navArgument("newId") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val newId = it.arguments?.getString("newId")
+
+            val new = remember(newId) {
+                newId?.let {newId->
+                    newsScreenViewModel.fetchNewById(newId)
+                }
+            }
+
+            when {
+                new != null -> NewItemBox(
+                    new,
+                    navController = navController
+                )
+                else -> {
+                    Toast.makeText(
+                        navController.context,
+                        "Error al cargar la noticia",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
 }
@@ -74,4 +115,6 @@ fun NavGraphBuilder.mainGraph(
 object MainRoutes{
     const val MAIN_ROUTE = "main_flow"
     const val MAIN_USER_EDIT = "edit_profile_screen"
+    const val MAIN_NEW_INFO = "new_info_screen/{newId}"
+    const val MAIN_CALCULATOR_SCREEN = "calculator_screen"
 }

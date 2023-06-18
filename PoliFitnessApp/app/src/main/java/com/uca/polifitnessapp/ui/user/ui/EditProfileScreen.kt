@@ -473,7 +473,6 @@ fun SaveButton(
         },
         enabled = isValidForm,
         shape = RoundedCornerShape(10.dp),
-
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
             pressedElevation = 10.dp,
@@ -485,8 +484,7 @@ fun SaveButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
         ),
-
-        )
+    )
     {
         Text(
             text = "Guardar",
@@ -496,11 +494,5 @@ fun SaveButton(
         )
     }
 }
-
-// ---
-// Preview
-// ---
-
-
 
 
