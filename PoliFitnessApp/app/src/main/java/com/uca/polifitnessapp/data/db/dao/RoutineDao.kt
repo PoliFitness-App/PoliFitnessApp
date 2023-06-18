@@ -21,6 +21,23 @@ interface RoutineDao {
     @Query("SELECT * FROM routine_table WHERE category like :query")
     fun pagingSource(query: String): PagingSource<Int, RoutineModel>
 
+    // funcion para buscar por enfoque por bloques
+    @Query("SELECT * FROM routine_table WHERE approach like :query")
+    fun pagingSourceByApproach(query: String): PagingSource<Int, RoutineModel>
+
+    // funcion para buscar por nivel por bloques
+    @Query("SELECT * FROM routine_table WHERE level like :query")
+    fun pagingSourceByLevel(query: String): PagingSource<Int, RoutineModel>
+
+
+    // funcion para buscar por enfoque y categoria por bloques
+    @Query("SELECT * FROM routine_table WHERE approach like :query AND category like :query2")
+    fun pagingSourceByApproachAndCategory(query: String, query2: String): PagingSource<Int, RoutineModel>
+
+    // funcion para buscar por enfoque y nivel por bloques
+    @Query("SELECT * FROM routine_table WHERE approach like :query AND level like :query2")
+    fun pagingSourceByApproachAndLevel(query: String, query2: String): PagingSource<Int, RoutineModel>
+
 
     //Funcion para ingresar una rutina
     @Transaction

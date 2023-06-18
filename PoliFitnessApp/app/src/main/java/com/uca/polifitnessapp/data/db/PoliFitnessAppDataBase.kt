@@ -15,7 +15,7 @@ import com.uca.polifitnessapp.data.db.models.RemoteKeyRoutine
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 import com.uca.polifitnessapp.data.db.models.UserModel
 
-@Database(entities = [UserModel::class, RoutineModel::class, NoticeModel::class, RemoteKey::class, RemoteKeyRoutine::class], version = 11, exportSchema = false)
+@Database(entities = [UserModel::class, RoutineModel::class, NoticeModel::class, RemoteKey::class, RemoteKeyRoutine::class], version = 12, exportSchema = false)
 abstract class PoliFitnessDatabase : RoomDatabase(){
 
     abstract fun userDao(): UserDao

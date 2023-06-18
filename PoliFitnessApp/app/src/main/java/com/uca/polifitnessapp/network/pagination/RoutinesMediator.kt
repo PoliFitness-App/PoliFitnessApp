@@ -8,6 +8,7 @@ import androidx.room.withTransaction
 import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.data.db.models.RemoteKey
+import com.uca.polifitnessapp.data.db.models.RemoteKeyRoutine
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 import com.uca.polifitnessapp.network.service.RoutineService
 import retrofit2.HttpException
@@ -27,12 +28,9 @@ class RoutinesMediator(private val database: PoliFitnessDatabase, private val se
                 LoadType.PREPEND ->
                     return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    //TODO implementar remote keys para obtener las pagination
-                    //crear una nueva tabla para controlar el pagination de news y rutinas
 
                     // test de paginas sacadas de la api
                     val remoteKey = database.withTransaction {
-                        // TODO consultar si esta bien hecho, por q en este caso esta guardando: % = num, futbol = num2, y no se puede compartir con otro remote mediator
                         database.remoteKeysRoutineDao().remoteKeyByQuery(query)// le mando la query para saber a q clave remota acceder
                     }
                     if (remoteKey.nextKey == null) {
@@ -49,9 +47,15 @@ class RoutinesMediator(private val database: PoliFitnessDatabase, private val se
             // Retrofit's Coroutine CallAdapter dispatches on a worker
             // thread.
 
+            println("ANTES DE HACER LA PETICION")
+            println(loadKey)
+            println(state.config.pageSize)
             val response = service.getRoutinesByBlocks(
-                page = loadKey , limit = state.config.pageSize
+                page = loadKey , limit = 1//state.config.pageSize
             )
+
+            println("RESPUESTA DE LAS RUTINAAAAAAAAAAAAAAAAAS")
+            println(response.routines)
 
 
             database.withTransaction {
@@ -65,7 +69,7 @@ class RoutinesMediator(private val database: PoliFitnessDatabase, private val se
                 // in the DB.
                 database.routineDao().insertAll(response.routines)
                 database.remoteKeysRoutineDao().insertOrReplace(
-                    RemoteKey(query ,
+                    RemoteKeyRoutine(query ,
                         if(response.currentPage == response.totalPages){// si la pagina actual es igual al numero de paginas, estamos en la ultima pagina
                             null
                         }else response.currentPage + 1)// la siguiente pagina seria la actual mas 1

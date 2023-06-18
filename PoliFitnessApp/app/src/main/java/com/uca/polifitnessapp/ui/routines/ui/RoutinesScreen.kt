@@ -54,14 +54,19 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.RoutineModel
-import com.uca.polifitnessapp.ui.routines.data.routinesList
+import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
+//import com.uca.polifitnessapp.ui.routines.data.routinesList
 
 
 // Main Screen for Routines
 @Composable
-fun RoutinesListScreen() {
+fun RoutinesListScreen(
+    // TODO REVISAR
+    viewModel: RoutinesViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -70,7 +75,7 @@ fun RoutinesListScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // routines list
-        RoutinesList()
+        RoutinesList( viewModel)
     }
 
 }
@@ -84,6 +89,8 @@ var category by mutableStateOf("")
 // Routine list component
 @Composable
 fun RoutinesList(
+    // TODO revisar
+    viewModel: RoutinesViewModel
 ) {
     // Container
     Column(
@@ -103,15 +110,23 @@ fun RoutinesList(
         // Filter's for news list
         // Filter by level
         if (level == "") {
-            indexsize = routinesList.size
+            // TODO REVISAR, obtengo los items de la pagina
+            indexsize = viewModel.getRoutinesByLevel(level).collectAsLazyPagingItems().itemCount
         } else
-            indexsize = routinesList.filter { it.level == level }.size
+            // TODO CORROBORAR COMO SE MANEJA EL NIVEL, SI SON NUMEROS O NO
+            indexsize = viewModel.getRoutinesByLevel(level).collectAsLazyPagingItems().itemCount
 
         // Filter by category
         if (category == "") {
-            indexsizefilter = routinesList.size
+            indexsizefilter = viewModel.getRoutines("%").collectAsLazyPagingItems().itemCount
         } else
-            indexsizefilter = routinesList.filter { it.category == category }.size
+            indexsizefilter = viewModel.getRoutines(category).collectAsLazyPagingItems().itemCount
+
+        // TODO REVISAR SI ESTA BUENO
+
+        val routinesByLevel = viewModel.getRoutinesByLevel(level).collectAsLazyPagingItems()
+
+        val routinesByCategory = viewModel.getRoutines(category).collectAsLazyPagingItems()
 
 
         // Recomended routines list
@@ -135,28 +150,34 @@ fun RoutinesList(
             }
 
             // Filter por recomended routines
+            // TODO revisar1
             item {
                 FilterItem(
                     text = "Rutinas recomendadas",
                     items = listOf(
-                        "Nivel 0",
-                        "Nivel 1",
-                        "Nivel 2",
-                        "Nivel 3",
-                        "Nivel 4"
+                        "Todos",
+                        "Fácil",
+                        "Medio",
+                        "Difícil",
+                        "Muy difícil"
                     ),
                 )
             }
 
             // List of recomended routines
-            items(indexsize) { index ->
-                // Filter item
-                RoutineItem(
-                    routine = if (level.isBlank()) routinesList[index] else routinesList.filter { it.level == level }[index],
-                    index = index,
-                    selected = selectedIndex == index,
-                    onClick = onItemClick
-                )
+            // TODO REVISAR COMO TENGO Q CAMBIAR ESTO
+            items(count = routinesByLevel.itemCount) { index ->
+                val item = routinesByLevel[index]
+
+                if(item != null){
+                    // Filter item
+                    RoutineItem(
+                        routine = item,
+                        index = index,
+                        selected = selectedIndex == index,
+                        onClick = onItemClick
+                    )
+                }
             }
 
             // Filter por general routines
@@ -173,14 +194,18 @@ fun RoutinesList(
             }
 
             // List of general routines
-            items(indexsizefilter) { index ->
-                // Filter item
-                RoutineItem(
-                    routine = if (category.isBlank()) routinesList[index] else routinesList.filter { it.category == category }[index],
-                    index = index,
-                    selected = selectedIndex == index,
-                    onClick = onItemClick
-                )
+            items(count = routinesByCategory.itemCount) { index ->
+                val item = routinesByCategory[index]
+
+                if(item != null){
+                    // Filter item
+                    RoutineItem(
+                        routine = item,
+                        index = index,
+                        selected = selectedIndex == index,
+                        onClick = onItemClick
+                    )
+                }
             }
         }
     }
@@ -229,7 +254,7 @@ fun RoutineItem(
             ) {
                 // Title
                 Text(
-                    text = routine.name,
+                    text = routine.title,
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp,
                     modifier = Modifier
@@ -343,11 +368,11 @@ fun FilterItem(
                     onClick = {
                         expanded = false
                         when (label) {
-                            "Nivel 0" -> level = "0"
-                            "Nivel 1" -> level = "1"
-                            "Nivel 2" -> level = "2"
-                            "Nivel 3" -> level = "3"
-                            "Nivel 4" -> level = "4"
+                            "Todos" -> level = "%"
+                            "Fácil" -> level = "Facil"
+                            "Medio" -> level = "Medio"
+                            "Difícil" -> level = "Dificil"
+                            "Muy difícil" -> level = "Muy Dificil"
                             "Cuerpo completo" -> category = "Cuerpo completo"
                             "Tren superior" -> category = "Tren superior"
                             "Tren inferior" -> category = "Tren inferior"
@@ -373,5 +398,5 @@ fun FilterItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewNewsListScreen() {
-    RoutinesList()
+    //RoutinesList()
 }

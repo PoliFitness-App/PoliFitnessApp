@@ -3,7 +3,8 @@ package com.uca.polifitnessapp.ui.routines.data
 import androidx.compose.runtime.mutableStateListOf
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 
-var routinesList = mutableStateListOf<RoutineModel>(
+/*
+* var routinesList = mutableStateListOf<RoutineModel>(
 
     RoutineModel(
         name = "Rutina de cuerpo completo",
@@ -30,3 +31,5 @@ var routinesList = mutableStateListOf<RoutineModel>(
         url = "https://www.youtube.com/watch?v=qDSXvuYXd-w"
     )
 )
+*
+* */

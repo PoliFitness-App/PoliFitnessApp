@@ -34,6 +34,7 @@ import com.uca.polifitnessapp.ui.navigation.ButtomNavItems.*
 import com.uca.polifitnessapp.ui.news.data.NewsViewModel
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
+import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.launch
@@ -66,6 +67,11 @@ fun NavigationHost(navController: NavHostController) {
     // Edit profile view model
     val editProfileViewModel: EditProfileViewModel = viewModel(
         factory = EditProfileViewModel.Factory
+    )
+
+    // Routines view model
+    val routinesViewModel: RoutinesViewModel = viewModel(
+        factory = RoutinesViewModel.Factory
     )
 
     // ---
@@ -159,7 +165,7 @@ fun NavigationHost(navController: NavHostController) {
             }
             // Routine route
             composable(Rutine.rute) {
-                RoutinesListScreen()
+                RoutinesListScreen(routinesViewModel)
             }
             // Profile route
             composable(Profile.rute) {

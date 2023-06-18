@@ -32,9 +32,9 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
     suspend fun getRoutinesByLevelAndCategory(level: String, category: String) = routineDao.getRoutinesByLevelAndCategory(level, category)
 
 
-    // Insertar pager para obtener las rutinas
+    // Insertar pager para obtener las rutinas, todas
     @ExperimentalPagingApi
-    fun getNewsPage(pageSize: Int, query: String) = Pager(
+    fun getRoutinesPage(pageSize: Int, query: String) = Pager(
         config = PagingConfig(
             pageSize = pageSize,
             prefetchDistance = (0.10 * pageSize).toInt()
@@ -44,4 +44,61 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
         // recibe la query que se le manda desde la vista
         routineDao.pagingSource(query)
     }.flow
+
+    // Insertar pager para obtener las rutinas, por enfoque
+    @ExperimentalPagingApi
+    fun getRoutinesPageByAproach(pageSize: Int, query: String) = Pager(
+        config = PagingConfig(
+            pageSize = pageSize,
+            prefetchDistance = (0.10 * pageSize).toInt()
+        ),
+        remoteMediator = RoutinesMediator(database, service, query)
+    ) {
+        // recibe la query que se le manda desde la vista
+        routineDao.pagingSourceByApproach(query)
+    }.flow
+
+    // Insertar pager para obtener las rutinas, por enfoque y categoria
+    @ExperimentalPagingApi
+    fun getRoutinesPageByAproachAndCategory(pageSize: Int, query: String, query2: String) = Pager(
+        config = PagingConfig(
+            pageSize = pageSize,
+            prefetchDistance = (0.10 * pageSize).toInt()
+        ),
+        // Concateno ambas querys para guardarlo en claves remotas
+        remoteMediator = RoutinesMediator(database, service, query + query2)
+    ) {
+        // recibe la query que se le manda desde la vista
+        routineDao.pagingSourceByApproachAndCategory(query, query2) // query2 es la categoria
+    }.flow
+
+    // Insertar pager para obtener las rutinas, por enfoque y nivel
+    @ExperimentalPagingApi
+    fun getRoutinesPageByAproachAndLevel(pageSize: Int, query: String, query2: String) = Pager(
+        config = PagingConfig(
+            pageSize = pageSize,
+            prefetchDistance = (0.10 * pageSize).toInt()
+        ),
+        // Concateno ambas querys para guardarlo en claves remotas
+        remoteMediator = RoutinesMediator(database, service, query + query2)
+    ) {
+        // recibe la query que se le manda desde la vista
+        routineDao.pagingSourceByApproachAndLevel(query, query2) // query2 es el nivel
+    }.flow
+
+    // Insertar pager para obtener las rutinas, por nivel
+    @ExperimentalPagingApi
+    fun getRoutinesPageByLevel(pageSize: Int, query: String) = Pager(
+        config = PagingConfig(
+            pageSize = pageSize,
+            prefetchDistance = (0.10 * pageSize).toInt()
+        ),
+        // Concateno ambas querys para guardarlo en claves remotas
+        remoteMediator = RoutinesMediator(database, service, query)
+    ) {
+        // recibe la query que se le manda desde la vista
+        println("ANTES DE LLAMAR EL RUTINEDAO")
+        routineDao.pagingSourceByLevel(query)
+    }.flow
+
 }
