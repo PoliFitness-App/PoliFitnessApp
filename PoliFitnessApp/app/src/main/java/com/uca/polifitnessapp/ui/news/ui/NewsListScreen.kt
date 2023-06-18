@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,7 @@ import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
+import kotlinx.coroutines.launch
 
 // -----
 // News List Screen
@@ -244,6 +246,7 @@ fun NewsList(
             viewModel
         )
 
+        val coroutineScope = rememberCoroutineScope()
         // category
         val category: String by viewModel.category.observeAsState(initial = "%")
 
@@ -266,7 +269,10 @@ fun NewsList(
                         new = item,
                         viewModel
                     ){noticeId ->
-                        navController.navigate("new_info_screen/${noticeId}")
+                        coroutineScope.launch {
+                            viewModel.fetchNewById(noticeId)
+                            navController.navigate("new_info_screen/${noticeId}")
+                        }
                     }
                 }
             }
@@ -293,7 +299,6 @@ fun NewItem(
             .width(350.dp)
             .height(285.dp)
             .clickable {
-                viewModel.fetchNewById(new.noticeId)
                 onClick(new.noticeId)
             }
         ,
@@ -334,7 +339,7 @@ fun NewItem(
             )
             // Description
             val description = if (new.description.length > 40) {
-                "${new.description.take(10)}..." // Agregar "..." después de los 10 caracteres
+                "${new.description.take(40)}..." // Agregar "..." después de los 10 caracteres
             } else {
                 new.description // Mantener la descripción completa si tiene 10 caracteres o menos
             }

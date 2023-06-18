@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -441,6 +442,8 @@ fun combine(
 
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -479,7 +482,7 @@ fun SaveButton(
             disabledElevation = 0.dp
         ),
         modifier = modifier
-            .width(315.dp)
+            .width(330.dp)
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)

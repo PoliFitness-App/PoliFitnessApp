@@ -103,7 +103,7 @@ fun NewItemScreen(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
-            .height(480.dp),
+            .height(460.dp),
         // Card colors
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
@@ -145,7 +145,7 @@ fun NewItemScreen(
                 modifier = Modifier
                     .padding(8.dp, 0.dp, 8.dp, 8.dp)
                     .align(Alignment.Start)
-                    .height(140.dp),
+                    .height(120.dp),
                 style = MaterialTheme.typography.labelSmall
             )
             // Place
