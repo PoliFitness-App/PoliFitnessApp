@@ -30,34 +30,57 @@ class PoliFitnessApplication: Application(){
         UserRepository(database.userDao())
     }
 
-    // Retrofit aplication
+    // ---
     // Retrofit instance
+    // ---
+
     private val retrofitInstance by lazy {
         RetrofitInstance
     }
 
-    // Shared preferences instance
+    // ---
+    // Shared preferences
+    // ---
+
     private val prefs: SharedPreferences by lazy {
         getSharedPreferences("application", Context.MODE_PRIVATE)
     }
 
-    // User token -- get token
+    // ---
+    // User
+    // ---
     fun getToken(): String = prefs.getString(USER_TOKEN, "")!!
+    fun getUserState(): Boolean = prefs.getBoolean(USER_STATE, false)
 
-    // credentialsRepository
+    // ---
+    // Repositories
+    // ---
+
+    // CredentialsRepository
     val credentialRepository: CredentialsRepository by lazy{
         CredentialsRepository(retrofitInstance.getLoginService(), database.userDao())
     }
 
+    // ---
+    // Functions
+    // ---
+
+    // Fun save auth token
     fun saveAuthToken(token: String) {
         val editor = prefs.edit()
         editor.putString(USER_TOKEN, token)
         editor.apply()
         retrofitInstance.setToken(getToken())
     }
+    // Fun save user state
+    fun saveUserState(state: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean(USER_STATE, state)
+        editor.apply()
+    }
 
     companion object {
         const val USER_TOKEN = "user_token"
+        const val USER_STATE = "user_state"
     }
-
 }

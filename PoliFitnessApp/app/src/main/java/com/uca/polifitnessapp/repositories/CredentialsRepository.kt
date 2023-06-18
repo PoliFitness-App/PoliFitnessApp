@@ -23,14 +23,14 @@ class CredentialsRepository(
     // ---
 
     // Function DAO to add a user
-    private suspend fun addUser(user: UserModel) {
-        if (userDao.getUserById(user._id) == null) {
+    private suspend fun addUser(user: UserModel) =
             userDao.insertUser(user)
-        }
-    }
 
     // Function DAO to update a user
     private suspend fun updateUserDAO(user: UserModel) = userDao.updateUser(user)
+
+    // Function DAO to get a user
+    suspend fun getUserDAO(): UserModel? = userDao.getUser()
 
     // ---
     // API functions

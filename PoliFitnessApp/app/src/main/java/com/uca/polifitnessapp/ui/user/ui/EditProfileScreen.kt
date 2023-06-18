@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -49,6 +50,10 @@ fun EditProfileScreen(
     userViewModel: UserViewModel,
     viewModel: EditProfileViewModel
 ) {
+    LaunchedEffect(Unit) {
+        userViewModel.getUserInfo()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -352,9 +357,6 @@ fun combine(
     userViewModel: UserViewModel
 ) {
 
-    // get the user from the view model
-    val user = userViewModel.user.value!!
-
     // Set the variable to remember the state of the text's field
     // weight, height, waistP and hipP
     val weight: String by viewModel.weight.observeAsState(initial = "")
@@ -449,7 +451,7 @@ fun combine(
                     .align(Alignment.CenterVertically),
                 isValidForm
             ) {
-                viewModel.onUpdate(user)
+                viewModel.onUpdate(userViewModel.user)
                 viewModel.clearData()
                 viewModel.clearStatus()
             }

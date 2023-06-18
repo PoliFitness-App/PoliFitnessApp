@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.signup.data.ApproachData
@@ -186,7 +185,7 @@ fun handleUiStatus(
             Toast.makeText(context, "done", Toast.LENGTH_SHORT).show()
             // We nagivate to "main_flow"
             navController.navigate(MainRoutes.MAIN_ROUTE) {
-                popUpTo(AuthRoutes.NEW_USER_FLOW) {
+                popUpTo(AuthRoutes.AUTH_ROUTE) {
                     inclusive = true
                 }
             }

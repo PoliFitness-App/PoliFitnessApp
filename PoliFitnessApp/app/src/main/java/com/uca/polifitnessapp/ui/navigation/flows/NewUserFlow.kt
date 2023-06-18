@@ -29,7 +29,7 @@ fun NavGraphBuilder.authGraph(
 ) {
     navigation(
         startDestination = AuthRoutes.SIGN_UP_SCREEN,
-        route = AuthRoutes.NEW_USER_FLOW
+        route = AuthRoutes.AUTH_ROUTE
     ) {
         composable(AuthRoutes.SPLASH_SCREEN) {
             AnimatedSplashScreen(
@@ -76,7 +76,7 @@ fun NavGraphBuilder.authGraph(
 // ---
 
 object AuthRoutes {
-    const val NEW_USER_FLOW = "new_user_flow"
+    const val AUTH_ROUTE = "new_user_flow"
     const val SPLASH_SCREEN = "splash_screen"
     const val ONBOARD_SCREEN = "onboard_screen"
     const val SIGN_UP_SCREEN = "sign_up_screen"

@@ -84,10 +84,8 @@ fun CalculatorScreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-
         Spacer(modifier = Modifier.width(90.dp))
         CalculatorView(viewModel = CalculatorViewModel())
-
 
     }
 }
@@ -105,8 +103,6 @@ fun HeaderText( viewModel: CalculatorViewModel = CalculatorViewModel()){
                 .padding(16.dp, 8.dp, 16.dp, 8.dp)
                 .align(Alignment.Start),
         )
-
-        
     }
 }
 
@@ -118,7 +114,6 @@ fun HeaderImageCards( viewModel: CalculatorViewModel = CalculatorViewModel()
             .fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-
 
         CalculatorCard(viewModel = viewModel)
 
@@ -232,17 +227,9 @@ fun CalculatorCard( viewModel: CalculatorViewModel = CalculatorViewModel()){
                     textAlign = TextAlign.Center
                 )
             }
-
         }
-
     }
-
 }
-
-
-
-
-
 
 @Composable
 fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
@@ -257,14 +244,11 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
         HeaderText()
 
-
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.Top
         ) {
-
-
             // Tarjetas con los resultados IMC e ICC
 
             Column() {
@@ -360,9 +344,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                             textAlign = TextAlign.Center
                         )
                     }
-
                 }
-
             }
 
             Spacer(modifier = Modifier.width(20.dp))
@@ -374,7 +356,6 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                     .width(139.dp)
                     .height(178.dp)
             )
-
         }
 
         GenderField(
@@ -452,14 +433,8 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                 }
             )
         }
-
-
-
-
     }
-
 }
-
 
 
 // -----------
