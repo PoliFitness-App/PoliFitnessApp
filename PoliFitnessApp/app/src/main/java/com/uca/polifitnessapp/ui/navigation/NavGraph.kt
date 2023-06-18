@@ -83,7 +83,8 @@ fun NavigationHost(navController: NavHostController) {
         authGraph(
             navController,
             signUpGoalViewModel,
-            userViewModel
+            userViewModel,
+            loginViewModel
         )
 
         // ---

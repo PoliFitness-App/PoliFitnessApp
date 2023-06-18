@@ -5,6 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
+import com.uca.polifitnessapp.ui.login.ui.LoginScreen
+import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.onboardscreen.ui.MainFunction
 import com.uca.polifitnessapp.ui.signup.ui.SignUpGoalScreen
 import com.uca.polifitnessapp.ui.signup.ui.SignUpPersonalInfoScreen
@@ -22,7 +24,8 @@ import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 fun NavGraphBuilder.authGraph(
     navController: NavHostController,
     signUpGoalViewModel: SignUpGoalViewModel,
-    userViewModel:UserViewModel
+    userViewModel:UserViewModel,
+    loginViewModel: LoginViewModel
 ) {
     navigation(
         startDestination = AuthRoutes.SIGN_UP_SCREEN,
@@ -58,7 +61,13 @@ fun NavGraphBuilder.authGraph(
                 userViewModel
             )
         }
-
+        composable(AuthRoutes.LOGIN_SCREEN) {
+            LoginScreen(
+                viewModel = loginViewModel,
+                userViewModel = userViewModel,
+                navController = navController
+            )
+        }
     }
 }
 
@@ -73,4 +82,5 @@ object AuthRoutes {
     const val SIGN_UP_SCREEN = "sign_up_screen"
     const val PERSONAL_INFO_SCREEN = "personal_info_screen"
     const val GOAL_SCREEN = "goal_screen"
+    const val LOGIN_SCREEN = "login_screen"
 }

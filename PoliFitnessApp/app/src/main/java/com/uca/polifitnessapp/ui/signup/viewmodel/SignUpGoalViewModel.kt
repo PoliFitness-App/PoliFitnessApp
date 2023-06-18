@@ -212,10 +212,9 @@ class SignUpGoalViewModel(
     fun onUsernameChange(usernameU: String) {
         // If the username is empty, it returns an error
         _isValidUsername.value = !validateUsername(usernameU)
-        _isSignUpButton1.value = !validateUsername(usernameU)
 
         // If the username is not empty, it updates the username variable
-        username.value = usernameU.trimEnd()
+        username.value = usernameU
     }
 
     // Validate Username
@@ -226,10 +225,8 @@ class SignUpGoalViewModel(
     fun onLastnameChange(lastnameU: String) {
         // If the lastname is empty, it returns an error
         _isValidLastname.value = !validateLastName(lastnameU)
-        _isSignUpButton1.value = !validateLastName(lastnameU)
-
         // If the lastname is not empty, it updates the lastname variable
-        lastname.value = lastnameU.trimEnd()
+        lastname.value = lastnameU
     }
 
     // Validate lastname
@@ -251,20 +248,23 @@ class SignUpGoalViewModel(
 
     // On password change function -> Updates the password variable
     fun onPasswordChange(passwordU: String) {
+
         // If the password is valid?
         _isValidPassword.value = !isValidPassword(password.value!!)
+
+        println(_isValidPassword.value)
         // Set te value
         password.value = passwordU
     }
 
     // Valid Password
     private fun isValidPassword(password: String): Boolean =
-        password.length >= 8 && password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,32})".toRegex())
+        Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$").matches(password)
 
     // On weight change function -> Updates the weight variable
     fun onWeightChange(weightU: String) {
         // If the weight is empty, it returns an error
-        _isValidWeight.value = !isValidWeight(weight.value!!)
+        _isValidWeight.value = isValidWeight(weight.value!!)
 
         // If the weight is not empty, it updates the weight variable
         weight.value = weightU
@@ -273,13 +273,13 @@ class SignUpGoalViewModel(
     private fun isValidWeight(weight: String): Boolean {
         val numericRegex = Regex("^\\d+(\\.\\d+)?$")
         val maxWeight = 1000.0
-        return weight.matches(numericRegex) && weight.toDouble() > 0 && weight.toDouble() <= maxWeight
+        return numericRegex.matches(weight) && weight.toDouble() > 0 && weight.toDouble() <= maxWeight
     }
 
     // On height change function -> Updates the height variable
     fun onHeightChange(heightU: String) {
         // If the height is empty, it returns an error
-        _isValidHeight.value = !isValidHeight(height.value!!)
+        _isValidHeight.value = isValidHeight(height.value!!)
         // If the height is not empty, it updates the height variable
         height.value = heightU
     }
@@ -288,13 +288,13 @@ class SignUpGoalViewModel(
     private fun isValidHeight(value: String): Boolean {
         val numericRegex = Regex("^\\d+(\\.\\d+)?$")
         val maxWeight = 3.0
-        return value.matches(numericRegex) && value.toDouble() > 0 && value.toDouble() <= maxWeight
+        return numericRegex.matches(value) && value.toDouble() > 0 && value.toDouble() <= maxWeight
     }
 
     // On waistP change function -> Updates the waistP variable
     fun onWaistPChange(waistPU: String) {
         // If the waistP is empty, it returns an error
-        _isValidWaistP.value = !isValidWaistP(waistP.value!!)
+        _isValidWaistP.value = isValidWaistP(waistP.value!!)
         // If the waistP is not empty, it updates the waistP variable
         waistP.value = waistPU
     }
@@ -303,13 +303,13 @@ class SignUpGoalViewModel(
     private fun isValidWaistP(waist: String): Boolean {
         val numericRegex = Regex("^\\d+(\\.\\d+)?$")
         val maxWaistP = 200.0
-        return waist.matches(numericRegex) && waist.toDouble() > 0 && waist.toDouble() <= maxWaistP
+        return numericRegex.matches(waist) && waist.toDouble() > 0 && waist.toDouble() <= maxWaistP
     }
 
     // On hipP change function -> Updates the hipP variable
     fun onHipPChange(hipPU: String) {
         // If the hipP is empty, it returns an error
-        _isValidHipP.value = !isValidHipP(hipP.value!!)
+        _isValidHipP.value = isValidHipP(hipP.value!!)
         // If the hipP is not empty, it updates the hipP variable
         hipP.value = hipPU
         _isSignUpButton2.value =
@@ -322,7 +322,7 @@ class SignUpGoalViewModel(
     private fun isValidHipP(hip: String): Boolean {
         val numericRegex = Regex("^\\d+(\\.\\d+)?$")
         val maxHipP = 200.0
-        return hip.matches(numericRegex) && hip.toDouble() > 0 && hip.toDouble() <= maxHipP
+        return numericRegex.matches(hip) && hip.toDouble() > 0 && hip.toDouble() <= maxHipP
     }
 
     // On gender change function -> Updates the gender value

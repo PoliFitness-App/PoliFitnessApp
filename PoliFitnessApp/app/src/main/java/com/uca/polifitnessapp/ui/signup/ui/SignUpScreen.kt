@@ -69,12 +69,14 @@ fun SignUpScreen(
                 colorResource(id = R.color.white)
             )
             .padding(25.dp, 0.dp, 25.dp, 0.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         SignUpView(
-            Modifier.align(Alignment.CenterHorizontally),
+            Modifier.align(
+                Alignment.CenterHorizontally,
+            ),
             viewModel,
             navController
         )
@@ -113,11 +115,11 @@ fun SignUpView(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         SignUpHeaderText()
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         NameField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -154,7 +156,6 @@ fun SignUpView(
             viewModel.onPasswordChange(it)
         }
 
-
         TermsAndConditionText(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             checkbox,
@@ -174,7 +175,8 @@ fun SignUpView(
 
         GoogleLogin(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
+            navController
         )
     }
 
@@ -446,10 +448,8 @@ fun PasswordField(
             } else {
                 "Show password"
             }
-
             IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                 Icon(imageVector = iconImage, contentDescription = description)
-
             }
         },
         supportingText = {
@@ -524,7 +524,10 @@ fun TermsAndConditionText(
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(5.dp, 10.dp, 0.dp, 0.dp)
+        modifier =
+        Modifier
+            .padding(0.dp, 5.dp, 0.dp, 5.dp)
+            .width(320.dp)
     ) {
         Checkbox(
             checked = checkbox,
@@ -543,7 +546,10 @@ fun TermsAndConditionText(
 }
 
 @Composable
-fun GoogleLogin(modifier: Modifier) {
+fun GoogleLogin(
+    modifier: Modifier,
+    navController: NavController
+) {
     Image(
         painter = painterResource(id = R.drawable.or),
         contentDescription = "Google Login",
@@ -574,7 +580,10 @@ fun GoogleLogin(modifier: Modifier) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF034189),
-            modifier = modifier.clickable { /*TODO*/ }
+            modifier = modifier.clickable {
+                // Navigate lo Log In
+                navController.navigate(AuthRoutes.LOGIN_SCREEN)
+            }
         )
     }
 }

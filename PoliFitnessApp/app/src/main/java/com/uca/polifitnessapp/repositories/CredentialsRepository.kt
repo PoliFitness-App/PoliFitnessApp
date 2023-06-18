@@ -115,8 +115,11 @@ class CredentialsRepository(
             return ApiResponse.Success(response.message)
 
         } catch (e: HttpException) {
-            if (e.code() == 400) {
+            if (e.code() == 409) {
                 return ApiResponse.ErrorWithMessage("Ha ocurrido un error al registrar el usuario, el usuario ya existe")
+            }
+            if (e.code() == 400) {
+                return ApiResponse.ErrorWithMessage("Ha ocurrido un error al registrar el usuario, campos incorrectos")
             }
             return ApiResponse.Error(e)
         } catch (e: IOException) {

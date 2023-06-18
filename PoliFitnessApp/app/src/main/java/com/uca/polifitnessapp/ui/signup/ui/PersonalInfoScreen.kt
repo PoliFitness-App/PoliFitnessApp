@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -88,7 +89,7 @@ fun SignUpPersonalInfoScreen(
                 colorResource(id = R.color.white)
             )
             .padding(50.dp, 0.dp, 30.dp, 0.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -136,12 +137,12 @@ fun SignUpPersonalInfoView(
     val isValidHipP: Boolean by viewModel.isValidHipP.observeAsState(initial = false)
 
     // Button
-    val isEnabled : Boolean by viewModel.isSignUpButton2.observeAsState(initial = false)
+    val isEnabled: Boolean by viewModel.isSignUpButton2.observeAsState(initial = false)
 
     val coroutineScope = rememberCoroutineScope()
 
     Column(
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
 
@@ -168,9 +169,8 @@ fun SignUpPersonalInfoView(
         // ---
         Row(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
-
             WeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 weight,
@@ -186,7 +186,7 @@ fun SignUpPersonalInfoView(
         // ---
         Row(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
             HeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -203,9 +203,8 @@ fun SignUpPersonalInfoView(
         // ---
         Row(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
-
             WaistField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 waistP,
@@ -221,7 +220,7 @@ fun SignUpPersonalInfoView(
         // ---
         Row(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
 
             hipField(
@@ -235,9 +234,6 @@ fun SignUpPersonalInfoView(
             cmicon()
 
         }
-
-        Spacer(modifier = Modifier.height(1.dp))
-
         // ---
         // Button
         // ---
@@ -546,8 +542,10 @@ fun kgicon() {
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(text = "KG", color = Color.White)
-
+            Text(
+                text = "KG",
+                color = Color.White
+            )
         }
 
     }
@@ -558,7 +556,8 @@ fun cmicon() {
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
-            .width(48.dp),
+            .width(48.dp)
+        ,
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
     ) {
@@ -569,7 +568,6 @@ fun cmicon() {
 
         ) {
             Text(text = "CM", color = Color.White)
-
         }
 
     }
@@ -629,7 +627,7 @@ fun GenderField(
             value = gender,
             onValueChange = {
                 onGenderChange(it)
-                            },
+            },
             shape = MaterialTheme.shapes.small,
             readOnly = true,
             leadingIcon = {
@@ -735,17 +733,17 @@ fun BirthdayField(
                     todayDateBorderColor = Color(0xFF034189),
                 )
             )
-
         }
-
     }
     LaunchedEffect(dateCalendar) {
         onDateChange(dateCalendar)
     }
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable { openDialog.value = true },
+            .width(300.dp)
+            .clickable {
+                openDialog.value = true
+            },
     ) {
         TextField(
             value = dateCalendar,
