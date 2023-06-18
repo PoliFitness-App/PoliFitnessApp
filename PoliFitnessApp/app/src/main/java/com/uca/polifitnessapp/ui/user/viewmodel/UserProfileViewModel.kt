@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.UserProfile.ui
+package com.uca.polifitnessapp.ui.user.viewmodel
 
 import androidx.lifecycle.ViewModel
 

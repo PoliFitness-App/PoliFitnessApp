@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.EditProfile.ui
+package com.uca.polifitnessapp.ui.user.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,8 +29,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.EditProfile.viewmodel.EditProfileViewModel
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 @Composable
 fun EditProfileScreen(
@@ -131,7 +129,7 @@ fun EditProfileText() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun weightField(
+fun WeightField(
     modifier: Modifier,
     weightVM: String,
     isValidWeight: Boolean,
@@ -211,7 +209,6 @@ fun heightField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
 
@@ -256,7 +253,6 @@ fun waistField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
 
@@ -324,7 +320,6 @@ fun kgicon() {
 
         ) {
             Text(text = "KG", color = Color.White)
-
         }
 
     }
@@ -347,9 +342,7 @@ fun cmicon() {
 
         ) {
             Text(text = "CM", color = Color.White)
-
         }
-
     }
 }
 
@@ -386,7 +379,7 @@ fun combine(
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            weightField(
+            WeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 weight,
                 isValidWeight
@@ -445,7 +438,6 @@ fun combine(
             cmicon()
 
         }
-
 
         Row(
             horizontalArrangement = Arrangement.Center,

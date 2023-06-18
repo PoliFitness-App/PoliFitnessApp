@@ -15,7 +15,9 @@ import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: CredentialsRepository) : ViewModel() {
+class LoginViewModel(
+    private val repository: CredentialsRepository
+) : ViewModel() {
 
     // status for view model
     // email
@@ -70,6 +72,7 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     fun onLogin() {
 
         _isLoading.value = true
+
         if (!validateData()) {
             _status.value = LoginUiStatus.ErrorWithMessage("Invalid credentials email or password")
             return

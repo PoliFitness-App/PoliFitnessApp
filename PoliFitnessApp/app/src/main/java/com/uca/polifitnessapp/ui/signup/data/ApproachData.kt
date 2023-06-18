@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.signup.approachscreen.data
+package com.uca.polifitnessapp.ui.signup.data
 
 data class ApproachData(
 val image: Int,

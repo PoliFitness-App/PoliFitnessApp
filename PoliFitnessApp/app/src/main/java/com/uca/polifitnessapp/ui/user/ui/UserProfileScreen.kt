@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.UserProfile.ui
+package com.uca.polifitnessapp.ui.user.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -29,17 +29,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
-import com.uca.polifitnessapp.ui.UserProfile.ui.data.User
-import com.uca.polifitnessapp.ui.UserProfile.ui.data.userTest
-import com.uca.polifitnessapp.ui.navigation.UserScreens
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -116,7 +112,7 @@ fun UserCard(
                 .width(92.dp)
                 .height(33.dp),
             onClick = {
-                navController.navigate(UserScreens.EditProfileScreen.route)
+                navController.navigate(MainRoutes.MAIN_USER_EDIT)
             }
         ) {
             Text(text = "Editar",

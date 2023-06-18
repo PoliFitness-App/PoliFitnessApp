@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.signup.signupscreen
+package com.uca.polifitnessapp.ui.signup.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,19 +48,20 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpViewModel
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
 import kotlinx.coroutines.launch
 
 
-
 @Composable
-fun SignUpScreen(navController: NavController){
+fun SignUpScreen(
+    navController: NavController,
+    viewModel: SignUpGoalViewModel,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,102 +69,118 @@ fun SignUpScreen(navController: NavController){
                 colorResource(id = R.color.white)
             )
             .padding(25.dp, 0.dp, 25.dp, 0.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        SignUpView(Modifier.align(Alignment.CenterHorizontally),
-            viewModel = viewModel())
-
-
+        SignUpView(
+            Modifier.align(
+                Alignment.CenterHorizontally,
+            ),
+            viewModel,
+            navController
+        )
     }
 }
 
 @Composable
-fun SignUpView(modifier: Modifier, viewModel: SignUpViewModel){
+fun SignUpView(
+    modifier: Modifier,
+    viewModel: SignUpGoalViewModel,
+    navController: NavController
+) {
 
-    // CREAR NUESTRAS VARIABLES DE ESTADO PARA EL NOMBRE, APELLIDO, EMAIL, CONTRASEÑA Y CONFIRMACION DE CONTRASEÑA
+    // --
+    // View model variables
+    // --
 
-    val name: String by viewModel.name.observeAsState(initial = "")
+    val username: String by viewModel.username.observeAsState(initial = "")
     val lastname: String by viewModel.lastname.observeAsState(initial = "")
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
-    val checkbox: Boolean by viewModel.checkbox.observeAsState(initial = false)
-    val signupenable: Boolean by viewModel.signupEnable.observeAsState(initial = false)
+
+    val checkbox: Boolean by viewModel.checkBox.observeAsState(initial = false)
 
     val coroutineScope = rememberCoroutineScope()
 
+    val isWrongInputName: Boolean by viewModel.isValidUsername.observeAsState(initial = false)
+    val isWrongInputLastName: Boolean by viewModel.isValidLastname.observeAsState(initial = false)
+    val isWrongInputEmail: Boolean by viewModel.isValidEmail.observeAsState(initial = false)
+    val isWrongInputPassword: Boolean by viewModel.isValidPassword.observeAsState(initial = false)
 
-    val isWrongInputName: Boolean by viewModel.isWrongInputName.observeAsState(initial = false)
-    val isWrongInputLastName: Boolean by viewModel.isWrongInputLastname.observeAsState(initial = false)
-    val isWrongInputEmail: Boolean by viewModel.isWrongInputEmail.observeAsState(initial = false)
-    val isWrongInputPassword: Boolean by viewModel.isWrongInputPassword.observeAsState(initial = false)
-    val isWrongInputCheckbox: Boolean by viewModel.isWrongInputChecked.observeAsState(initial = false)
+    val signUpEnable: Boolean by viewModel.isSignUpButton1.observeAsState(initial = false)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         SignUpHeaderText()
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        NameField(modifier = Modifier.align(Alignment.CenterHorizontally),
-            name,
+        NameField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            username,
             isWrongInputName,
-        ) { viewModel.onNameChanged(it) }
+        ) {
+            viewModel.onUsernameChange(it)
+        }
 
 
-        LastNameField(modifier = Modifier.align(Alignment.CenterHorizontally),
+        LastNameField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             lastname,
             isWrongInputLastName,
-        ) { viewModel.onLastnameChanged(it) }
+        ) {
+            viewModel.onLastnameChange(it)
+        }
 
 
         EmailField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             email,
             isWrongInputEmail
-        ) { viewModel.onEmailChanged(it) }
+        ) {
+            viewModel.onEmailChange(it)
+        }
 
 
         PasswordField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
+            password,
             isWrongInputPassword
-        ) { viewModel.onPasswordChanged(it) }
-
+        ) {
+            viewModel.onPasswordChange(it)
+        }
 
         TermsAndConditionText(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            isWrongInputCheckbox
-        ){ viewModel.onCheckboxChanged(it)}
-
+            checkbox,
+        ) {
+            viewModel.onCheckboxChanged(it)
+        }
 
         SignUpButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            signupenable
+            signUpEnable
         ) {
             coroutineScope.launch {
-                viewModel.onSingupSelected()
+                // We set the dat  -> name, lastname, email, password
+                navController.navigate(AuthRoutes.PERSONAL_INFO_SCREEN)
             }
         }
 
-        GoogleLogin(modifier = Modifier.align(Alignment.CenterHorizontally))
-
-
-
-
-
-
+        GoogleLogin(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            navController
+        )
     }
 
 }
-
-
-
 
 
 // -----------
@@ -174,7 +191,7 @@ fun SignUpView(modifier: Modifier, viewModel: SignUpViewModel){
 
 @Composable
 fun SignUpHeaderText(
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -185,9 +202,11 @@ fun SignUpHeaderText(
         Text(text = "Hey!")
 
 
-        Text(text = "Crea una cuenta",
+        Text(
+            text = "Crea una cuenta",
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold)
+            fontWeight = FontWeight.Bold
+        )
 
 
     }
@@ -203,11 +222,12 @@ fun NameField(
     name: String,
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
-){
-
+) {
     TextField(
         value = name,
-        onValueChange = { onTextFieldChanged(it)},
+        onValueChange = {
+            onTextFieldChanged(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -244,7 +264,6 @@ fun NameField(
                 )
             }
         },
-
         modifier = modifier
             .width(315.dp),
         singleLine = true,
@@ -266,11 +285,11 @@ fun LastNameField(
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
 
-){
+) {
 
     TextField(
         value = lastname,
-        onValueChange = { onTextFieldChanged(it)  },
+        onValueChange = { onTextFieldChanged(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -328,7 +347,7 @@ fun EmailField(
     email: String,
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
-){
+) {
 
     TextField(
         value = email,
@@ -383,24 +402,23 @@ fun EmailField(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordField(
     modifier: Modifier,
+    password: String,
     isWrongInput: Boolean,
     onTextSelected: (String) -> Unit
-){
-    val password = remember { mutableStateOf("") }
-
-    val passwordVisible = remember{
+) {
+    val passwordVisible = remember {
         mutableStateOf(false)
     }
 
-    TextField(value = password.value,
+    TextField(
+        value = password,
         onValueChange = {
-            password.value = it
-            onTextSelected(it) },
+            onTextSelected(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -420,33 +438,31 @@ fun PasswordField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         isError = isWrongInput,
         trailingIcon = {
-            val iconImage = if (passwordVisible.value){
+            val iconImage = if (passwordVisible.value) {
                 Icons.Outlined.Visibility
-            }else {
+            } else {
                 Icons.Outlined.VisibilityOff
             }
-            var description = if(passwordVisible.value){
+            var description = if (passwordVisible.value) {
                 "Hide password"
-            }else{
+            } else {
                 "Show password"
             }
-
-            IconButton(onClick = {passwordVisible.value = !passwordVisible.value}){
+            IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                 Icon(imageVector = iconImage, contentDescription = description)
-
             }
         },
         supportingText = {
             if (isWrongInput) {
                 Text(
-                    text = "La contraseña debe tener al menos 8 caracteres",
+                    text = "La contraseña debe de tener entre 8 y 32 chars, y al menos 1 M, 1 m y 1 #",
                     color = Color.Red,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
                 )
             }
         },
-        visualTransformation = if(passwordVisible.value) VisualTransformation.None else
+        visualTransformation = if (passwordVisible.value) VisualTransformation.None else
             PasswordVisualTransformation(),
 
         modifier = modifier
@@ -465,18 +481,16 @@ fun PasswordField(
 }
 
 
-
-
-
-
-
 @Composable
-fun SignUpButton(modifier: Modifier,
-                 signupEnabled: Boolean,
-                 onSignupSelected: () -> Unit
+fun SignUpButton(
+    modifier: Modifier,
+    signupEnabled: Boolean,
+    onSignupSelected: () -> Unit
 ) {
     Button(
-        onClick = { onSignupSelected() },
+        onClick = {
+            onSignupSelected()
+        },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
@@ -504,37 +518,38 @@ fun SignUpButton(modifier: Modifier,
 @Composable
 fun TermsAndConditionText(
     modifier: Modifier,
-    isWrongInput: Boolean,
+    checkbox: Boolean,
     onCheckedChanged: (Boolean) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(5.dp, 10.dp, 0.dp, 0.dp)
+        modifier =
+        Modifier
+            .padding(0.dp, 5.dp, 0.dp, 5.dp)
+            .width(320.dp)
     ) {
-
-        val checkedState = remember { mutableStateOf(false) }
         Checkbox(
-            checked = checkedState.value,
-            onCheckedChange = { checkedState.value = it
-                onCheckedChanged(it) },
+            checked = checkbox,
+            onCheckedChange = {
+                onCheckedChanged(it)
+            },
             colors = CheckboxDefaults.colors(Color.DarkGray),
         )
-
-
         Text(
             text = "Si continúa navegando, consideramos que acepta nuestra Politica de Privacidad y Terminos de Uso.",
             fontSize = 12.sp,
             color = Color(0xFF565E71),
             fontWeight = FontWeight.Normal,
         )
-
     }
-
 }
 
 @Composable
-fun GoogleLogin(modifier: Modifier) {
+fun GoogleLogin(
+    modifier: Modifier,
+    navController: NavController
+) {
     Image(
         painter = painterResource(id = R.drawable.or),
         contentDescription = "Google Login",
@@ -565,7 +580,10 @@ fun GoogleLogin(modifier: Modifier) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF034189),
-            modifier = modifier.clickable { /*TODO*/ }
+            modifier = modifier.clickable {
+                // Navigate lo Log In
+                navController.navigate(AuthRoutes.LOGIN_SCREEN)
+            }
         )
     }
 }

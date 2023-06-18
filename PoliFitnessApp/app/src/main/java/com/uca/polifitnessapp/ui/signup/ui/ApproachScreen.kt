@@ -1,5 +1,7 @@
-package com.uca.polifitnessapp.ui.signup.approachscreen.ui
+package com.uca.polifitnessapp.ui.signup.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,26 +24,44 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.signup.approachscreen.data.ApproachData
-
+import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
+import com.uca.polifitnessapp.ui.signup.data.ApproachData
+import com.uca.polifitnessapp.ui.signup.validation.SignUpUiStatus
+import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainFunction(){
+fun MainFunction(
+    onApproachChange: (String) -> Unit,
+) {
     val items = arrayListOf<ApproachData>()
 
+    // ---
+    // Items for the carousel (Approach)
+    // ---
+
+    // Item 1
     items.add(
         ApproachData(
             image = R.drawable.approachimg1,
@@ -50,6 +70,7 @@ fun MainFunction(){
         )
     )
 
+    // Item 2
     items.add(
         ApproachData(
             image = R.drawable.approachimg2,
@@ -60,18 +81,49 @@ fun MainFunction(){
 
     val pagerState = rememberPagerState(
         initialPage = 0,
-    ) { items.size}
+    ) { items.size }
 
     CarouselCard(
         item = items,
         pagerState = pagerState,
     )
+
+    // Current page
+    val currentPage = pagerState.currentPage
+
+    // Validation to set te approach
+    if (currentPage == 0) {
+        onApproachChange("Ganar masa muscular")
+    } else {
+        onApproachChange("Perder grasa")
+    }
 }
 
-
-@Preview(showSystemUi = true)
 @Composable
-fun SignUpGoalScreen(){
+fun SignUpGoalScreen(
+    navController: NavController,
+    viewModel: SignUpGoalViewModel,
+    userViewModel: UserViewModel
+) {
+
+    // ---
+    // Variables
+    // ---
+    // Is wrong ?
+    val isEnabled: Boolean by viewModel.isEnabled.observeAsState(initial = false)
+
+    // ---
+    // Auxiliary variables
+    // ---
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    // ---
+    // viewModel
+    // ---
+    // Get the user from the view model
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,19 +134,70 @@ fun SignUpGoalScreen(){
         verticalArrangement = Arrangement.spacedBy(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        // ---
+        // Tittle
+        // ---
         SignUpGoalText()
-        MainFunction()
-        ConfirmGoalButton(modifier = Modifier.align(Alignment.CenterHorizontally))
+        // ---
+        // Carousel
+        // ---
+        MainFunction(){
+            // Set the approach on the view model
+            viewModel.onApproachChange(it)
+        }
+        // ---
+        // Button
+        // ---
+        ConfirmGoalButton(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            confirmGoal = isEnabled,
+        ) {
+            coroutineScope.launch {
+                viewModel.status.observe(lifecycleOwner) { status ->
+                    handleUiStatus(
+                        status,
+                        navController,
+                        context
+                    )
+                }
+                viewModel.onSignUp()
+            }
+        }
     }
 }
 
-
-
+// ---
+// Handle status changes
+//
+fun handleUiStatus(
+    status: SignUpUiStatus,
+    navController: NavController,
+    context: Context,
+) {
+    when (status) {
+        is SignUpUiStatus.Error -> {
+            Toast.makeText(context, "Error de conexion", Toast.LENGTH_SHORT).show()
+        }
+        is SignUpUiStatus.ErrorWithMessage -> {
+            Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
+        }
+        is SignUpUiStatus.Success -> {
+            Toast.makeText(context, "done", Toast.LENGTH_SHORT).show()
+            // We nagivate to "main_flow"
+            navController.navigate(MainRoutes.MAIN_ROUTE) {
+                popUpTo(AuthRoutes.NEW_USER_FLOW) {
+                    inclusive = true
+                }
+            }
+        }
+        else -> {}
+    }
+}
 
 @Composable
 fun SignUpGoalText(
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -104,22 +207,22 @@ fun SignUpGoalText(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "¿Cuál es tu meta?",
+        Text(
+            text = "¿Cuál es tu meta?",
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold)
+            fontWeight = FontWeight.Bold
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Text(text = "Nos ayudará a elegir el mejor programa para ti.",
+        Text(
+            text = "Nos ayudará a elegir el mejor programa para ti.",
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .width(200.dp),
         )
-
-
     }
 }
-
 
 
 //@Preview(showSystemUi = true)
@@ -128,7 +231,7 @@ fun SignUpGoalText(
 fun CarouselCard(
     item: List<ApproachData>,
     pagerState: PagerState,
-){
+) {
     Column(
     ) {
         HorizontalPager(
@@ -136,7 +239,7 @@ fun CarouselCard(
             contentPadding = PaddingValues(horizontal = 30.dp),
             modifier = Modifier.height(478.dp),
             verticalAlignment = Alignment.CenterVertically,
-        ) {page ->
+        ) { page ->
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(22.dp))
@@ -146,7 +249,6 @@ fun CarouselCard(
                     .padding(10.dp)
                     .width(375.dp)
                     .height(578.dp)
-
             ) {
 
                 Box(
@@ -158,7 +260,7 @@ fun CarouselCard(
                         .padding(10.dp)
                         .width(275.dp)
                         .height(478.dp)
-                ){
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -199,7 +301,6 @@ fun CarouselCard(
                             fontWeight = FontWeight.Light
 
                         )
-
                     }
                 }
 
@@ -209,10 +310,15 @@ fun CarouselCard(
 
     }
 }
+
 @Composable
-fun ConfirmGoalButton(modifier: Modifier) {
+fun ConfirmGoalButton(
+    modifier: Modifier,
+    confirmGoal: Boolean,
+    onConfirm: () -> Unit
+) {
     Button(
-        onClick = { "/*TODO*/ "},
+        onClick = { onConfirm() },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
@@ -225,8 +331,8 @@ fun ConfirmGoalButton(modifier: Modifier) {
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
         ),
-
-        )
+        enabled = confirmGoal
+    )
     {
         Text(
             text = "Confirmar",

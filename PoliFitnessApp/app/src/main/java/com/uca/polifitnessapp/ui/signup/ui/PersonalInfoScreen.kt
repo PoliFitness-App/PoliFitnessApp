@@ -1,6 +1,7 @@
-package com.uca.polifitnessapp.ui.signup.personalinfoscreen
+package com.uca.polifitnessapp.ui.signup.ui
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,9 +21,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Height
-import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Male
 import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Straighten
@@ -29,7 +31,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -39,7 +40,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -52,33 +52,36 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpPersonalInfoViewModel
+import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.signup.validation.SignUpUiStatus
+import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SignUpPersonalInfoSCreen(){
+fun SignUpPersonalInfoScreen(
+    navController: NavController,
+    viewModel: SignUpGoalViewModel,
+    userViewModel: UserViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,110 +89,166 @@ fun SignUpPersonalInfoSCreen(){
                 colorResource(id = R.color.white)
             )
             .padding(50.dp, 0.dp, 30.dp, 0.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        // ---
+        // Header Image
+        //
         HeaderImage(modifier = Modifier.fillMaxWidth())
-        SignUpPersonalInfoView(viewModel = SignUpPersonalInfoViewModel())
 
+        // ---
+        // Personal Info
+        // ---
+        SignUpPersonalInfoView(
+            viewModel,
+            navController
+        )
 
     }
 }
 
 
 @Composable
-fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
+fun SignUpPersonalInfoView(
+    viewModel: SignUpGoalViewModel,
+    navController: NavController
+) {
+
+    // ---
+    // Variables
+    // ---
 
     val gender: String by viewModel.gender.observeAsState(initial = "")
-    val birthdate: String by viewModel.birthdate.observeAsState(initial = "")
+    val birthdate: String by viewModel.dateOfBirth.observeAsState(initial = "")
     val weight: String by viewModel.weight.observeAsState(initial = "")
     val height: String by viewModel.height.observeAsState(initial = "")
-    val waist: String by viewModel.waist.observeAsState(initial = "")
-    val hip: String by viewModel.hip.observeAsState(initial = "")
+    val waistP: String by viewModel.waistP.observeAsState(initial = "")
+    val hipP: String by viewModel.hipP.observeAsState(initial = "")
 
-    val signupenable: Boolean by viewModel.signupEnable.observeAsState(initial = true)
+    // ---
+    // States
+    // ---
 
+    val isValidWeight: Boolean by viewModel.isValidWeight.observeAsState(initial = false)
+    val isValidHeight: Boolean by viewModel.isValidHeight.observeAsState(initial = false)
+    val isValidWaistP: Boolean by viewModel.isValidWaistP.observeAsState(initial = false)
+    val isValidHipP: Boolean by viewModel.isValidHipP.observeAsState(initial = false)
+
+    // Button
+    val isEnabled: Boolean by viewModel.isSignUpButton2.observeAsState(initial = false)
 
     val coroutineScope = rememberCoroutineScope()
 
-
-
     Column(
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
 
-
+        // ---
+        // GenderField
+        // ---
         GenderField(
-            gender,
-        ){ viewModel.onRegisterChange()}
+            gender
+        ) {
+            viewModel.onGenderChange(it)
+        }
 
-        BirthdayField(birthdate, onDateChange = {})
+        // ---
+        // BirthdateField
+        // ---
+        BirthdayField(
+            birthdate
+        ) {
+            viewModel.onAgeChange(it)
+        }
 
-
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            weightField(
+        // ---
+        // WeightField
+        // ---
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            WeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                weight
-            ){ viewModel.onRegisterChange()}
+                weight,
+                isValidWeight
+            ) {
+                viewModel.onWeightChange(it)
+            }
             kgicon()
-
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            heightField(
+        // ---
+        // HeightField
+        // ---
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            HeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                height
-            ){ viewModel.onRegisterChange()}
+                height,
+                isValidHeight
+            ) {
+                viewModel.onHeightChange(it)
+            }
             cmicon()
-
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            waistField(
+        // ---
+        // WaistField
+        // ---
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            WaistField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                waist
-            ){ viewModel.onRegisterChange()}
+                waistP,
+                isValidWaistP
+            ) {
+                viewModel.onWaistPChange(it)
+            }
             cmicon()
-
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
+        // ---
+        // HipField
+        // ---
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
 
             hipField(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                hip
-            ){ viewModel.onRegisterChange()}
+                hipP,
+                isValidHipP
+            ) {
+                viewModel.onHipPChange(it)
+            }
 
             cmicon()
 
         }
-        Spacer(modifier = Modifier.height(1.dp))
-
+        // ---
+        // Button
+        // ---
         SaveButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            signupenable,
-        ){
+            modifier = Modifier.align(
+                Alignment.CenterHorizontally
+            ),
+            isEnabled
+        ) {
             coroutineScope.launch {
-                viewModel.onSingupSelected()
+                navController.navigate(AuthRoutes.GOAL_SCREEN)
             }
         }
-
-
-
-
     }
-
 }
-
 
 
 // -----------
@@ -202,15 +261,17 @@ fun SignUpPersonalInfoView(viewModel: SignUpPersonalInfoViewModel){
 @Composable
 fun HeaderImage(
     modifier: Modifier
-){
+) {
     Box(
         modifier = Modifier
             .size(200.dp)
-    ){
-        Image(painter = painterResource(id = R.drawable.editprofileimg),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.editprofileimg),
             modifier = Modifier.fillMaxSize(),
             alignment = Alignment.Center,
-            contentDescription = "Imagen " )
+            contentDescription = "Imagen "
+        )
     }
 
 }
@@ -222,21 +283,17 @@ fun HeaderImage(
 // ------------
 
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun weightField(
+fun WeightField(
     modifier: Modifier,
     weight: String,
-    onWeightChange: (Number) -> Unit
-){
-
-    val weight = remember { mutableStateOf("") }
-
+    isValidWeight: Boolean,
+    onWeightChange: (String) -> Unit
+) {
     TextField(
-        value = weight.value,
-        onValueChange = { weight.value = it },
+        value = weight,
+        onValueChange = { onWeightChange(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -253,6 +310,25 @@ fun weightField(
                 fontSize = 12.sp
             )
         },
+        isError = isValidWeight,
+        trailingIcon = {
+            if (isValidWeight) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Error Icon"
+                )
+            }
+        },
+        supportingText = {
+            if (isValidWeight) {
+                Text(
+                    text = "Formato incorrecto (Ej: 70.5 kg)",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            }
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
             .width(240.dp),
@@ -261,25 +337,24 @@ fun weightField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
-
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun heightField(
+fun HeightField(
     modifier: Modifier,
     height: String,
+    isWrongHeight: Boolean,
     onHeightChange: (String) -> Unit
-){
-    val height = remember { mutableStateOf("") }
-
+) {
     TextField(
-        value = height.value,
-        onValueChange = { height.value = it},
+        value = height,
+        onValueChange = {
+            onHeightChange(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -296,6 +371,25 @@ fun heightField(
                 fontSize = 12.sp
             )
         },
+        isError = isWrongHeight,
+        trailingIcon = {
+            if (isWrongHeight) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Error Icon"
+                )
+            }
+        },
+        supportingText = {
+            if (isWrongHeight) {
+                Text(
+                    text = "Formato incorrecto (ej: 1.70 m)",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            }
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
             .width(240.dp),
@@ -304,7 +398,6 @@ fun heightField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
 
@@ -313,15 +406,17 @@ fun heightField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun waistField(
+fun WaistField(
     modifier: Modifier,
     waist: String,
+    isValidWaist: Boolean,
     onWaistChange: (String) -> Unit
-){
-    val waist = remember { mutableStateOf("") }
+) {
     TextField(
-        value = waist.value,
-        onValueChange = { waist.value = it},
+        value = waist,
+        onValueChange = {
+            onWaistChange(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -338,6 +433,25 @@ fun waistField(
                 fontSize = 12.sp
             )
         },
+        isError = isValidWaist,
+        trailingIcon = {
+            if (isValidWaist) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Error Icon"
+                )
+            }
+        },
+        supportingText = {
+            if (isValidWaist) {
+                Text(
+                    text = "Formato incorrecto (Ej: 70.5 cm)",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            }
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
             .width(240.dp),
@@ -353,18 +467,19 @@ fun waistField(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun hipField(
     modifier: Modifier,
     hip: String,
+    isValidHip: Boolean,
     onHipChange: (String) -> Unit
-){
-    val hip = remember { mutableStateOf("") }
+) {
     TextField(
-        value = hip.value,
-        onValueChange = { hip.value = it},
+        value = hip,
+        onValueChange = {
+            onHipChange(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -381,6 +496,25 @@ fun hipField(
                 fontSize = 12.sp
             )
         },
+        isError = isValidHip,
+        trailingIcon = {
+            if (isValidHip) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Error Icon"
+                )
+            }
+        },
+        supportingText = {
+            if (isValidHip) {
+                Text(
+                    text = "Formato incorrecto (Ej: 70.5 cm)",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            }
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = modifier
             .width(240.dp),
@@ -389,42 +523,44 @@ fun hipField(
             focusedBorderColor = Color(0xFF565E71),
             unfocusedBorderColor = Color.Transparent,
             containerColor = Color(0xFFD7E2FF)
-
         )
     )
-
 }
 
 @Composable
-fun kgicon(){
+fun kgicon() {
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
             .width(48.dp),
-        shape = RoundedCornerShape(10.dp),colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
-    ){
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(text = "KG", color = Color.White)
-
+            Text(
+                text = "KG",
+                color = Color.White
+            )
         }
 
     }
 }
 
 @Composable
-fun cmicon(){
+fun cmicon() {
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
-            .width(48.dp),
+            .width(48.dp)
+        ,
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
-    ){
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -432,47 +568,42 @@ fun cmicon(){
 
         ) {
             Text(text = "CM", color = Color.White)
-
         }
 
     }
 }
 
 
-
 @Composable
 fun SaveButton(
     modifier: Modifier,
-    signupEnabled: Boolean,
+    isEnabled: Boolean,
     onSignupSelected: () -> Unit
 ) {
     Button(
-        onClick = { onSignupSelected()},
+        onClick = { onSignupSelected() },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
             pressedElevation = 10.dp,
             disabledElevation = 0.dp
         ),
+        enabled = isEnabled,
         modifier = modifier
             .width(315.dp)
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
         ),
-        enabled = signupEnabled
     )
     {
         Text(
-            text = "SIguiente >",
+            text = "Siguiente",
             fontSize = 16.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
         )
-
     }
-
-
 }
 
 
@@ -482,23 +613,21 @@ fun GenderField(
     gender: String,
     onGenderChange: (String) -> Unit
 ) {
-
-
     var isExpanded by remember {
         mutableStateOf(false)
     }
 
-    var gender by remember {
-        mutableStateOf("")
-    }
-
     ExposedDropdownMenuBox(
         expanded = isExpanded,
-        onExpandedChange = { isExpanded = it}
+        onExpandedChange = {
+            isExpanded = it
+        }
     ) {
         TextField(
             value = gender,
-            onValueChange = {onGenderChange(it)},
+            onValueChange = {
+                onGenderChange(it)
+            },
             shape = MaterialTheme.shapes.small,
             readOnly = true,
             leadingIcon = {
@@ -522,8 +651,6 @@ fun GenderField(
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color(0xFF565E71),
                 unfocusedBorderColor = Color.Transparent,
-                //containerColor = Color(0xFFD7E2FF)
-
             ),
             modifier = Modifier
                 .menuAnchor()
@@ -532,34 +659,26 @@ fun GenderField(
                 .width(300.dp)
         )
 
-
-
         ExposedDropdownMenu(
             expanded = isExpanded,
             onDismissRequest = { isExpanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text(text = "Femenino")},
+                text = { Text(text = "Femenino") },
                 onClick = {
-                    gender = "Femenino"
+                    onGenderChange("Femenino")
                     isExpanded = false
-
                 }
             )
-
             DropdownMenuItem(
-                text = { Text(text = "Masculino")},
+                text = { Text(text = "Masculino") },
                 onClick = {
-                    gender = "Masculino"
+                    onGenderChange("Masculino")
                     isExpanded = false
-
                 }
             )
-
         }
-
     }
-
 }
 
 
@@ -567,21 +686,25 @@ fun GenderField(
 @Composable
 fun BirthdayField(
     dateCalendar: String,
-    onDateChange: (String) -> Unit) {
+    onDateChange: (String) -> Unit
+) {
 
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(dateCalendar) }
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
 
-    if(openDialog.value) {
+    if (openDialog.value) {
         DatePickerDialog(
             onDismissRequest = { openDialog.value = false },
             confirmButton = {
                 TextButton(
                     onClick = {
                         openDialog.value = false
-                        date = SimpleDateFormat("dd/MM/yyyy").format(datePickerState.selectedDateMillis)
-                            .toString()
+                        date =
+                            SimpleDateFormat("yyyy/dd/MM").format(datePickerState.selectedDateMillis)
+                                .toString()
+                        onDateChange(date)
                     },
                 ) {
                     Text(
@@ -610,21 +733,23 @@ fun BirthdayField(
                     todayDateBorderColor = Color(0xFF034189),
                 )
             )
-
         }
-
     }
-    LaunchedEffect(date){
-        onDateChange(date)
+    LaunchedEffect(dateCalendar) {
+        onDateChange(dateCalendar)
     }
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable { openDialog.value = true },
-    ){
+            .width(300.dp)
+            .clickable {
+                openDialog.value = true
+            },
+    ) {
         TextField(
-            value = date,
-            onValueChange = {},
+            value = dateCalendar,
+            onValueChange = {
+                onDateChange(dateCalendar)
+            },
             shape = MaterialTheme.shapes.small,
             leadingIcon = {
                 Icon(
@@ -658,7 +783,6 @@ fun BirthdayField(
             )
         )
     }
-
 
 
 }

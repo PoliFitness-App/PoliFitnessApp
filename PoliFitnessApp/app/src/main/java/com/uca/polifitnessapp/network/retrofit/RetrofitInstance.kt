@@ -1,7 +1,6 @@
 package com.uca.polifitnessapp.network.retrofit
 
 import com.uca.polifitnessapp.data.db.models.UserModel
-import com.uca.polifitnessapp.network.interceptor.LoginInterceptor
 import com.uca.polifitnessapp.network.service.AuthService
 import com.uca.polifitnessapp.network.service.NewsService
 import okhttp3.OkHttpClient
