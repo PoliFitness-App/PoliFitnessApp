@@ -12,6 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.uca.polifitnessapp.ui.navigation.NavigationHost
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -52,6 +53,10 @@ fun MainScalfold() {
         }
 
         AuthRoutes.GOAL_SCREEN ->{
+            bottomBarState.value = false
+        }
+
+        MainRoutes.MAIN_NEW_INFO ->{
             bottomBarState.value = false
         }
 

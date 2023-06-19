@@ -1,20 +1,30 @@
 package com.uca.polifitnessapp.ui.navigation.flows
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import com.uca.polifitnessapp.ui.calculator.ui.CalculatorScreen
 import com.uca.polifitnessapp.ui.user.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.ui.ProfileScreen
 import com.uca.polifitnessapp.ui.navigation.PreviewScreens
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems
+import com.uca.polifitnessapp.ui.news.ui.NewItemBox
+import com.uca.polifitnessapp.ui.news.ui.NewItemScreen
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 // ---
 // Main flow
@@ -29,7 +39,7 @@ fun NavGraphBuilder.mainGraph(
     editProfileViewModel: EditProfileViewModel,
     newsScreenViewModel: NewsScreenViewModel,
     userViewModel: UserViewModel
-){
+) {
     navigation(
         startDestination = ButtomNavItems.Home.rute,
         route = MainRoutes.MAIN_ROUTE
@@ -41,7 +51,8 @@ fun NavGraphBuilder.mainGraph(
         // News route
         composable(ButtomNavItems.News.rute) {
             NewsListScreen(
-                newsScreenViewModel
+                newsScreenViewModel,
+                navController
             )
         }
         // Routine route
@@ -55,6 +66,9 @@ fun NavGraphBuilder.mainGraph(
                 userViewModel
             )
         }
+        composable(MainRoutes.MAIN_CALCULATOR_SCREEN) {
+            CalculatorScreen()
+        }
         // Edit profile route
         composable(MainRoutes.MAIN_USER_EDIT) {
             EditProfileScreen(
@@ -63,14 +77,25 @@ fun NavGraphBuilder.mainGraph(
                 editProfileViewModel
             )
         }
+        // New info route
+        composable(MainRoutes.MAIN_NEW_INFO
+        ) {
+            NewItemBox(
+                newsScreenViewModel,
+                navController
+            )
+        }
     }
 }
+
 
 // ---
 // Routes
 // ---
 
-object MainRoutes{
+object MainRoutes {
     const val MAIN_ROUTE = "main_flow"
     const val MAIN_USER_EDIT = "edit_profile_screen"
+    const val MAIN_NEW_INFO = "new_info_screen"
+    const val MAIN_CALCULATOR_SCREEN = "calculator_screen"
 }

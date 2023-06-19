@@ -79,20 +79,14 @@ fun CalculatorScreen(){
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(30.dp, 0.dp, 20.dp, 0.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+            .padding(8.dp, 0.dp, 8.dp, 16.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
-        Spacer(modifier = Modifier.width(90.dp))
         CalculatorView(viewModel = CalculatorViewModel())
-
-
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HeaderText( viewModel: CalculatorViewModel = CalculatorViewModel()){
     Column {
@@ -102,147 +96,11 @@ fun HeaderText( viewModel: CalculatorViewModel = CalculatorViewModel()){
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
-                .padding(16.dp, 8.dp, 16.dp, 8.dp)
+                .padding(16.dp, 8.dp, 16.dp, 4.dp)
                 .align(Alignment.Start),
         )
-
-        
     }
 }
-
-@Composable
-fun HeaderImageCards( viewModel: CalculatorViewModel = CalculatorViewModel()
-){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-
-
-        CalculatorCard(viewModel = viewModel)
-
-        Spacer(modifier = Modifier.width(20.dp))
-
-        Image(
-            painter = painterResource(id = R.drawable.calculator_header_img),
-            contentDescription = null,
-            modifier = Modifier
-                .width(139.dp)
-                .height(178.dp)
-        )
-        
-    }
-}
-
-
-@Composable
-fun CalculatorCard( viewModel: CalculatorViewModel = CalculatorViewModel()){
-
-    Column() {
-
-        //IMC CARD
-        ElevatedCard(
-            modifier = Modifier
-                .padding(10.dp)
-                .height(80.dp)
-                .width(152.dp),
-            elevation = CardDefaults.elevatedCardElevation(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            shape = RoundedCornerShape(10.dp),
-        ){
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-                Text(text = "%.2f".format(viewModel.bmi),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    style = MaterialTheme.typography.labelSmall,
-                    fontSize = 16.sp,
-                )
-
-                //
-                Text(text = viewModel.messageIbm,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier
-                        .padding(0.dp, 8.dp, 0.dp, 0.dp),
-                    fontSize = 14.sp,
-                )
-
-                //
-                Text(text = "IMC",
-                    fontWeight = FontWeight.ExtraLight,
-                    color = MaterialTheme.colorScheme.scrim,
-                    style = MaterialTheme.typography.labelSmall,
-                    fontSize = 12.sp,
-                    modifier = Modifier
-                        .padding(8.dp, 8.dp, 8.dp, 8.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-        }
-
-        //ICC CARD
-        ElevatedCard(
-            modifier = Modifier
-                .padding(10.dp)
-                .height(80.dp)
-                .width(152.dp),
-            elevation = CardDefaults.elevatedCardElevation(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            shape = RoundedCornerShape(10.dp),
-        ){
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-                Text(text = "%.2f".format(viewModel.icc),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    style = MaterialTheme.typography.labelSmall,
-                    fontSize = 16.sp,
-                )
-
-                //
-                Text(text = viewModel.messageIcc,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier
-                        .padding(0.dp, 8.dp, 0.dp, 0.dp),
-                    fontSize = 14.sp,
-                )
-
-                //
-                Text(text = "ICC",
-                    fontWeight = FontWeight.ExtraLight,
-                    color = MaterialTheme.colorScheme.scrim,
-                    style = MaterialTheme.typography.labelSmall,
-                    fontSize = 12.sp,
-                    modifier = Modifier
-                        .padding(8.dp, 8.dp, 8.dp, 8.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-        }
-
-    }
-
-}
-
-
-
-
-
 
 @Composable
 fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
@@ -250,21 +108,18 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
     val coroutineScope = rememberCoroutineScope()
 
     Column(
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        modifier = Modifier.padding(25.dp, 0.dp, 0.dp, 0.dp)
     ) {
 
         HeaderText()
 
-
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Center
         ) {
-
-
             // Tarjetas con los resultados IMC e ICC
 
             Column() {
@@ -360,12 +215,10 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                             textAlign = TextAlign.Center
                         )
                     }
-
                 }
-
             }
 
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(10.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.calculator_header_img),
@@ -374,7 +227,6 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                     .width(139.dp)
                     .height(178.dp)
             )
-
         }
 
         GenderField(
@@ -437,14 +289,14 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(16.dp, 12.dp)
                 .fillMaxWidth(),
         ) {
             CalculateButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                text = "Calculate",
+                text = "Calcular",
                 onClick = {
                     coroutineScope.launch {
                         viewModel.calculate()
@@ -452,46 +304,15 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                 }
             )
         }
-
-
-
-
     }
-
 }
 
-
-
-// -----------
-
-// HEADER IMAGE
-
-// ------------
-
-
-@Composable
-fun HeaderImage(
-    modifier: Modifier
-){
-    Box(
-        modifier = Modifier
-            .size(200.dp)
-    ){
-        Image(painter = painterResource(id = R.drawable.editprofileimg),
-            modifier = Modifier.fillMaxSize(),
-            alignment = Alignment.Center,
-            contentDescription = "Imagen " )
-    }
-
-}
 
 // -----------
 
 // HEADER TEXT
 
 // ------------
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -842,106 +663,6 @@ fun GenderField(
 
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BirthdayField(
-    dateCalendar: String,
-    onDateChange: (String) -> Unit) {
-
-    val openDialog = remember { mutableStateOf(false) }
-    var date by remember { mutableStateOf(dateCalendar) }
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
-
-    if(openDialog.value) {
-        DatePickerDialog(
-            onDismissRequest = { openDialog.value = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                        date = SimpleDateFormat("dd/MM/yyyy").format(datePickerState.selectedDateMillis)
-                            .toString()
-                    },
-                ) {
-                    Text(
-                        text = "Aceptar",
-                        color = Color(0xFF034189)
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                    }
-                ) {
-                    Text(
-                        text = "Cancelar",
-                        color = Color(0xFF034189)
-                    )
-                }
-            }
-        ) {
-            DatePicker(
-                state = datePickerState,
-                colors = DatePickerDefaults.colors(
-                    selectedDayContainerColor = Color(0xFF034189),
-                    todayDateBorderColor = Color(0xFF034189),
-                )
-            )
-
-        }
-
-    }
-    LaunchedEffect(date){
-        onDateChange(date)
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { openDialog.value = true },
-    ){
-        TextField(
-            value = date,
-            onValueChange = {},
-            shape = MaterialTheme.shapes.small,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.CalendarMonth,
-                    contentDescription = "null",
-                    tint = Color(0xFF565E71)
-                )
-            },
-            label = {
-                Text(
-                    text = "Fecha de nacimiento",
-                    color = Color(0xFF565E71),
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            },
-            modifier = Modifier
-                .pointerInput(Unit) {}
-                .width(300.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) { openDialog.value = true },
-            readOnly = true,
-            enabled = false,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF565E71),
-                unfocusedBorderColor = Color.Transparent,
-                containerColor = Color(0xFFD7E2FF)
-
-            )
-        )
-    }
-
-
-
-}
 
 
 

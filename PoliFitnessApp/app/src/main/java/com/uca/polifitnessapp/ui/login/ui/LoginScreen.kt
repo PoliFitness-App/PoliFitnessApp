@@ -137,11 +137,13 @@ fun LoginView(
                 Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
             }
             is LoginUiStatus.Success -> {
-                // login view model action -> clear status, and clear datao
+                // login view model action -> clear status, and clear data
                 viewModel.clearStatus()
                 viewModel.clearData()
                 // then we save the token
                 app.saveAuthToken(token = status.token)
+                // and we set the user state
+                app.saveUserState(UserState.LOGGED_IN)
                 // information about the state
                 Toast.makeText(context, "Inicio de sesion correcto", Toast.LENGTH_SHORT).show()
 
@@ -150,11 +152,10 @@ fun LoginView(
 
                 userViewModel.getUser()
 
-
                 // we nagivate to "main_flow"
                 navController.navigate(MainRoutes.MAIN_ROUTE) {
                     // we delete the login route from the backstack
-                    popUpTo(AuthRoutes.NEW_USER_FLOW) {
+                    popUpTo(AuthRoutes.AUTH_ROUTE) {
                         inclusive = true
                     }
                 }

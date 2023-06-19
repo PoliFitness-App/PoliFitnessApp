@@ -1,5 +1,8 @@
 package com.uca.polifitnessapp.ui.user.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,23 +19,42 @@ class UserViewModel(
     private val repository: CredentialsRepository
 ) : ViewModel() {
 
-    // UserViewModel
-    // User instance
-    private val _user = MutableLiveData<UserModel>()
-    val user: MutableLiveData<UserModel>
-        get() = _user
+    // ---
+    // User View Model
+    //
 
-    // password
-    private val _password = MutableLiveData("")
-    val password: MutableLiveData<String>
-        get() = _password
+    // User instance
+    var user by mutableStateOf(
+        UserModel(
+            "",
+            "",
+            "",
+            0F,
+            0F,
+            0F,
+            0F,
+            ""
+        )
+    )
+        private set
+
 
     // Function to get the user
     fun getUser() {
         viewModelScope.launch {
             val response = repository.whoami()
             if (response is ApiResponse.Success) {
-                user.value = response.data
+                user = response.data
+            }
+        }
+    }
+
+    fun getUserInfo() {
+        viewModelScope.launch {
+            val response = repository.getUserDAO()
+            if (response != null) {
+                user = response
+                println(user)
             }
         }
     }

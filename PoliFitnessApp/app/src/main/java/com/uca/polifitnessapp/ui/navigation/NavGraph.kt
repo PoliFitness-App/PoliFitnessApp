@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems.*
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.authGraph
 import com.uca.polifitnessapp.ui.navigation.flows.loginGraph
 import com.uca.polifitnessapp.ui.navigation.flows.mainGraph
@@ -56,15 +60,29 @@ fun NavigationHost(navController: NavHostController) {
         factory = SignUpGoalViewModel.Factory
     )
 
+    // Application Instance
+    val app: PoliFitnessApplication = LocalContext.current.applicationContext
+            as PoliFitnessApplication
+
     // ---
     // Nav Host
     // ---
 
+    // First thing to do is to get the user info, we use launched effect to do this
+    // This will be executed only once when the app is launched
+    LaunchedEffect(Unit) {
+        // get user info
+        userViewModel.getUserInfo()
+    }
+
     NavHost(
         navController = navController,
-        startDestination = AuthRoutes.NEW_USER_FLOW
+        startDestination = if (app.getUserState()){
+            MainRoutes.MAIN_ROUTE
+        } else {
+            AuthRoutes.AUTH_ROUTE
+        }
     ) {
-
         // ---
         // Main flow
         // ---

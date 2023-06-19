@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -49,6 +51,10 @@ fun EditProfileScreen(
     userViewModel: UserViewModel,
     viewModel: EditProfileViewModel
 ) {
+    LaunchedEffect(Unit) {
+        userViewModel.getUserInfo()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -352,9 +358,6 @@ fun combine(
     userViewModel: UserViewModel
 ) {
 
-    // get the user from the view model
-    val user = userViewModel.user.value!!
-
     // Set the variable to remember the state of the text's field
     // weight, height, waistP and hipP
     val weight: String by viewModel.weight.observeAsState(initial = "")
@@ -439,6 +442,8 @@ fun combine(
 
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -449,7 +454,7 @@ fun combine(
                     .align(Alignment.CenterVertically),
                 isValidForm
             ) {
-                viewModel.onUpdate(user)
+                viewModel.onUpdate(userViewModel.user)
                 viewModel.clearData()
                 viewModel.clearStatus()
             }
@@ -471,20 +476,18 @@ fun SaveButton(
         },
         enabled = isValidForm,
         shape = RoundedCornerShape(10.dp),
-
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
             pressedElevation = 10.dp,
             disabledElevation = 0.dp
         ),
         modifier = modifier
-            .width(315.dp)
+            .width(330.dp)
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
         ),
-
-        )
+    )
     {
         Text(
             text = "Guardar",
@@ -494,11 +497,5 @@ fun SaveButton(
         )
     }
 }
-
-// ---
-// Preview
-// ---
-
-
 
 

@@ -22,6 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
@@ -48,9 +53,6 @@ fun ProfileScreen(
     // user view model
     userViewModel: UserViewModel
 ){
-    // get the user from the view model
-    val user = userViewModel.user.value!!
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,15 +61,14 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         UserCard(
-            user = user,
+            user = userViewModel.user,
             navController
         )
-        generalInfoUser(user = user)
-        specificlInfoUser(user = user)
+        generalInfoUser(user = userViewModel.user)
+        specificlInfoUser(user = userViewModel.user)
         contactCard()
     }
 }
-
 
 @Composable
 fun UserCard(
@@ -204,7 +205,6 @@ fun generalInfoUser(user: UserModel){
         val datOfBirth = LocalDate.parse(user.birthday, formatter)
 
         val age = Period.between(datOfBirth, LocalDate.now()).years
-
 
         ElevatedCard(
             modifier = Modifier
@@ -443,9 +443,6 @@ fun contactCard() {
 
                     )
             }
-
-
         }
-
     }
 }
