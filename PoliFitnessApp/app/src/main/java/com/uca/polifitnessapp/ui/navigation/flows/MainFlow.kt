@@ -13,6 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.uca.polifitnessapp.ui.calculator.ui.CalculatorScreen
+import com.uca.polifitnessapp.ui.contactscreen.ui.Contact
+import com.uca.polifitnessapp.ui.homeScreen.ui.Home
 import com.uca.polifitnessapp.ui.user.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.ui.ProfileScreen
@@ -22,6 +24,7 @@ import com.uca.polifitnessapp.ui.news.ui.NewItemBox
 import com.uca.polifitnessapp.ui.news.ui.NewItemScreen
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
+import com.uca.polifitnessapp.ui.politicscreen.ui.privacyPoliticsScreen
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -46,7 +49,7 @@ fun NavGraphBuilder.mainGraph(
     ) {
         // Home route
         composable(ButtomNavItems.Home.rute) {
-            PreviewScreens(greeting = "Home Screen")
+            Home()
         }
         // News route
         composable(ButtomNavItems.News.rute) {
@@ -85,6 +88,24 @@ fun NavGraphBuilder.mainGraph(
                 navController
             )
         }
+
+        // ---
+        // Auxiliary routes
+        // ---
+        composable(
+            MainRoutes.MAIN_CONTACT_INFO
+        ){
+            Contact(
+                navController
+            )
+        }
+        composable(
+            MainRoutes.MAIN_TERMS_AND_CONDITIONS
+        ){
+            privacyPoliticsScreen(
+                navController
+            )
+        }
     }
 }
 
@@ -98,4 +119,6 @@ object MainRoutes {
     const val MAIN_USER_EDIT = "edit_profile_screen"
     const val MAIN_NEW_INFO = "new_info_screen"
     const val MAIN_CALCULATOR_SCREEN = "calculator_screen"
+    const val MAIN_CONTACT_INFO = "contact_screen"
+    const val MAIN_TERMS_AND_CONDITIONS = "terms_and_conditions_screen"
 }

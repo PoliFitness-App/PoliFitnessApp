@@ -3,6 +3,7 @@ package com.uca.polifitnessapp.ui.user.ui
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,7 +54,7 @@ fun ProfileScreen(
     navController: NavController,
     // user view model
     userViewModel: UserViewModel
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +68,9 @@ fun ProfileScreen(
         )
         generalInfoUser(user = userViewModel.user)
         specificlInfoUser(user = userViewModel.user)
-        contactCard()
+        ContactCard(
+            navController
+        )
     }
 }
 
@@ -75,20 +79,23 @@ fun UserCard(
     user: UserModel,
     navController: NavController
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp, 20.dp, 8.dp, 8.dp),
     ) {
-        Image(painter = painterResource(id = R.drawable.profilepic),
+        Image(
+            painter = painterResource(id = R.drawable.profilepic),
             modifier = Modifier.size(50.dp),
             contentDescription = stringResource(
                 id = R.string.description,
-                )
+            )
         )
-        Column(){
-            Text(text= user.username,
+        Column() {
+            Text(
+                text = user.username,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.scrim,
                 style = MaterialTheme.typography.labelMedium,
@@ -97,7 +104,8 @@ fun UserCard(
                 fontSize = 14.sp,
             )
 
-            Text(text = user.approach,
+            Text(
+                text = user.approach,
                 fontWeight = FontWeight.ExtraLight,
                 color = MaterialTheme.colorScheme.scrim,
                 style = MaterialTheme.typography.labelMedium,
@@ -116,8 +124,10 @@ fun UserCard(
                 navController.navigate(MainRoutes.MAIN_USER_EDIT)
             }
         ) {
-            Text(text = "Editar",
-                fontSize = 12.sp)
+            Text(
+                text = "Editar",
+                fontSize = 12.sp
+            )
 
         }
 
@@ -126,11 +136,12 @@ fun UserCard(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun generalInfoUser(user: UserModel){
+fun generalInfoUser(user: UserModel) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround) {
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
 
         ElevatedCard(
             modifier = Modifier
@@ -140,21 +151,23 @@ fun generalInfoUser(user: UserModel){
             elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
-        ){
+        ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = user.height.toString() +" cm",
+                Text(
+                    text = user.height.toString() + " cm",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 14.sp,
                 )
 
-                Text(text = "Altura",
+                Text(
+                    text = "Altura",
                     fontWeight = FontWeight.ExtraLight,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
@@ -175,20 +188,22 @@ fun generalInfoUser(user: UserModel){
             elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
-        ){
+        ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = user.weight.toString() + " kg",
+                Text(
+                    text = user.weight.toString() + " kg",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 14.sp,
                 )
-                Text(text = "Peso",
+                Text(
+                    text = "Peso",
                     fontWeight = FontWeight.ExtraLight,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
@@ -214,19 +229,21 @@ fun generalInfoUser(user: UserModel){
             elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
-        ){
+        ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "$age años",
+                Text(
+                    text = "$age años",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 14.sp,
                 )
-                Text(text = "Edad",
+                Text(
+                    text = "Edad",
                     fontWeight = FontWeight.ExtraLight,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
@@ -243,11 +260,10 @@ fun generalInfoUser(user: UserModel){
 }
 
 
-
 @Composable
 fun specificlInfoUser(
     user: UserModel
-){
+) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -263,14 +279,15 @@ fun specificlInfoUser(
             elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
-        ){
+        ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
 
                 ) {
-                Text(text = user.imc.toString(),
+                Text(
+                    text = user.imc.toString(),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -278,7 +295,8 @@ fun specificlInfoUser(
                 )
 
                 //
-                Text(text = "Normal",
+                Text(
+                    text = "Normal",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -288,7 +306,8 @@ fun specificlInfoUser(
                 )
 
                 //
-                Text(text = "IMC (Indice de masa corporal)",
+                Text(
+                    text = "IMC (Indice de masa corporal)",
                     fontWeight = FontWeight.ExtraLight,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
@@ -309,14 +328,15 @@ fun specificlInfoUser(
             elevation = CardDefaults.elevatedCardElevation(12.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(10.dp),
-        ){
+        ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = user.icc.toString(),
+                Text(
+                    text = user.icc.toString(),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -324,7 +344,8 @@ fun specificlInfoUser(
                 )
 
                 //
-                Text(text = "Normal",
+                Text(
+                    text = "Normal",
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -334,14 +355,16 @@ fun specificlInfoUser(
                 )
 
                 //
-                Text(text = "ICC (Indice cintura - cadera)",
+                Text(
+                    text = "ICC (Indice cintura - cadera)",
                     fontWeight = FontWeight.ExtraLight,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
                     modifier = Modifier
                         .padding(8.dp, 8.dp, 8.dp, 8.dp),
-                    textAlign = TextAlign.Center)
+                    textAlign = TextAlign.Center
+                )
 
             }
 
@@ -354,8 +377,9 @@ fun specificlInfoUser(
 
 
 @Composable
-fun contactCard() {
-
+fun ContactCard(
+    navController: NavController
+) {
     ElevatedCard(
         modifier = Modifier
             .padding(8.dp)
@@ -373,24 +397,26 @@ fun contactCard() {
                 .padding(20.dp)
 
         ) {
-            Text(text = "Otros",
+            Text(
+                text = "Otros",
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,)
+                fontSize = 16.sp,
+            )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .fillMaxWidth(),
-
-
-                ) {
+                    .fillMaxWidth()
+                    .clickable {
+                        navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+                    },
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.mail),
                     contentDescription = null,
                     modifier = Modifier.size(28.dp)
                 )
-
 
                 Text(
                     text = "Contáctanos",
@@ -408,8 +434,7 @@ fun contactCard() {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
                     contentDescription = null,
-
-                    )
+                )
             }
 
             Row(
@@ -417,6 +442,9 @@ fun contactCard() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable {
+                        navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+                    }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.admin_panel_settings),
@@ -440,8 +468,7 @@ fun contactCard() {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
                     contentDescription = null,
-
-                    )
+                )
             }
         }
     }
