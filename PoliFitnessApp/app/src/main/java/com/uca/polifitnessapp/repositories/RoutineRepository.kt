@@ -32,7 +32,7 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
     suspend fun getRoutinesByLevelAndCategory(level: String, category: String) = routineDao.getRoutinesByLevelAndCategory(level, category)
 
 
-    // Insertar pager para obtener las rutinas, todas
+    // Insertar pager para obtener las rutinas, categoria
     @ExperimentalPagingApi
     fun getRoutinesPage(pageSize: Int, query: String) = Pager(
         config = PagingConfig(
@@ -101,4 +101,34 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
         routineDao.pagingSourceByLevel(query)
     }.flow
 
+    // insertar pager para obtener rutinas por nivel, enfoque y categoria
+    @ExperimentalPagingApi
+    fun getRoutinesPageByApproachAndCategoryAndLevel(pageSize: Int, approach: String, category: String, level: String) = Pager(
+        config = PagingConfig(
+            pageSize = pageSize,
+            prefetchDistance = (0.10 * pageSize).toInt()
+        ),
+        // Concateno ambas querys para guardarlo en claves remotas
+
+        remoteMediator = RoutinesMediator(database, service,"$approach $category $level")
+    ) {
+        // recibe la query que se le manda desde la vista
+        println("ANTES DE LLAMAR EL RUTINEDAO")
+        println("$approach $category $level")
+        routineDao.pagingSourceByApproachAndCategoryAndLevel(approach, category, level)
+
+    }.flow
+
+    // Insertar pager para obtener las rutinas, todas
+    @ExperimentalPagingApi
+    fun getAllRoutinesPage(pageSize: Int, query: String) = Pager(
+        config = PagingConfig(
+            pageSize = pageSize
+        ),
+        remoteMediator = RoutinesMediator(database, service, query)
+    ) {
+        // recibe la query que se le manda desde la vista
+        println("ANTES DEL DAO")
+        routineDao.getAllRoutinesPaging()
+    }.flow
 }

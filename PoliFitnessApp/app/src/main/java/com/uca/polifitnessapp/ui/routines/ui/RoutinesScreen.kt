@@ -109,7 +109,8 @@ fun RoutinesList(
 
         // Filter's for news list
         // Filter by level
-        if (level == "") {
+        /*
+        * if (level == "") {
             // TODO REVISAR, obtengo los items de la pagina
             indexsize = viewModel.getRoutinesByLevel(level).collectAsLazyPagingItems().itemCount
         } else
@@ -121,13 +122,11 @@ fun RoutinesList(
             indexsizefilter = viewModel.getRoutines("%").collectAsLazyPagingItems().itemCount
         } else
             indexsizefilter = viewModel.getRoutines(category).collectAsLazyPagingItems().itemCount
+        * */
 
         // TODO REVISAR SI ESTA BUENO
-
-        val routinesByLevel = viewModel.getRoutinesByLevel(level).collectAsLazyPagingItems()
-
-        val routinesByCategory = viewModel.getRoutines(category).collectAsLazyPagingItems()
-
+        // TODO SACAR EL APPROACH DEL USUARIO
+        val routinesByFilters = viewModel.getAllRoutines("All").collectAsLazyPagingItems()
 
         // Recomended routines list
         LazyColumn(
@@ -166,10 +165,12 @@ fun RoutinesList(
 
             // List of recomended routines
             // TODO REVISAR COMO TENGO Q CAMBIAR ESTO
-            items(count = routinesByLevel.itemCount) { index ->
-                val item = routinesByLevel[index]
+            items(count = routinesByFilters.itemCount) { index ->
+                val item = routinesByFilters[index]
+                println(item)
 
                 if(item != null){
+                    println(item)
                     // Filter item
                     RoutineItem(
                         routine = item,
@@ -194,7 +195,8 @@ fun RoutinesList(
             }
 
             // List of general routines
-            items(count = routinesByCategory.itemCount) { index ->
+            /*
+            * items(count = routinesByCategory.itemCount) { index ->
                 val item = routinesByCategory[index]
 
                 if(item != null){
@@ -207,6 +209,7 @@ fun RoutinesList(
                     )
                 }
             }
+            * */
         }
     }
 }
@@ -368,6 +371,7 @@ fun FilterItem(
                     onClick = {
                         expanded = false
                         when (label) {
+                            "" -> level = "%"
                             "Todos" -> level = "%"
                             "Fácil" -> level = "Facil"
                             "Medio" -> level = "Medio"

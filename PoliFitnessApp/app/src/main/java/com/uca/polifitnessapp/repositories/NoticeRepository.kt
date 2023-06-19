@@ -23,8 +23,7 @@ class NoticeRepository(private val database: PoliFitnessDatabase, private val re
 
     suspend fun toggleNotice(noticeId: Int, hidden: Boolean) = noticeDao.toggleNotice(noticeId, hidden)
 
-    //TODO: agregar pagination
-    //TODO cambiar en la api las rutas para agregar pagination
+
 
     @ExperimentalPagingApi
     fun getNewsPage(pageSize: Int, query: String) = Pager(

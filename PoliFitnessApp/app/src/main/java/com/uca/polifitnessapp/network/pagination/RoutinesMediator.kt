@@ -47,22 +47,21 @@ class RoutinesMediator(private val database: PoliFitnessDatabase, private val se
             // Retrofit's Coroutine CallAdapter dispatches on a worker
             // thread.
 
-            println("ANTES DE HACER LA PETICION")
-            println(loadKey)
-            println(state.config.pageSize)
+
+
             val response = service.getRoutinesByBlocks(
-                page = loadKey , limit = 1//state.config.pageSize
+                page = loadKey , limit = state.config.pageSize
             )
-
-            println("RESPUESTA DE LAS RUTINAAAAAAAAAAAAAAAAAS")
+            println("RESPONSE DEL SERVICIO")
+            println(response.routines.size)
             println(response.routines)
-
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     database.routineDao().clearAll()
                     database.remoteKeysRoutineDao().remoteKeyByQuery(query)// le mando la query para saber a q clave remota acceder
                 }
+
 
                 // Insert new users into database, which invalidates the
                 // current PagingData, allowing Paging to present the updates
