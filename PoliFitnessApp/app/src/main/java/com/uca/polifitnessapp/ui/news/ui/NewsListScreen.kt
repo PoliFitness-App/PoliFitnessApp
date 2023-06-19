@@ -44,6 +44,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import kotlinx.coroutines.launch
 
@@ -268,10 +269,10 @@ fun NewsList(
                     NewItem(
                         new = item,
                         viewModel
-                    ){noticeId ->
+                    ) { noticeId ->
                         coroutineScope.launch {
                             viewModel.fetchNewById(noticeId)
-                            navController.navigate("new_info_screen/${noticeId}")
+                            navController.navigate(MainRoutes.MAIN_NEW_INFO)
                         }
                     }
                 }

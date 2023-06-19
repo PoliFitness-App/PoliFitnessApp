@@ -2,6 +2,7 @@ package com.uca.polifitnessapp.ui.news.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +12,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.ExperimentalPagingApi
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.data.db.models.NoticeModel
+import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.repositories.NoticeRepository
 import com.uca.polifitnessapp.ui.news.status.NewStatusUi
 import kotlinx.coroutines.launch
@@ -24,9 +26,20 @@ class NewsScreenViewModel(
     // ---
 
     var category = MutableLiveData("%")
-    var new = MutableLiveData<NoticeModel>()
-    val status: NewStatusUi by mutableStateOf(NewStatusUi.Resume)
+    private var status: NewStatusUi by mutableStateOf(NewStatusUi.Resume)
     val isLoading = mutableStateOf(false)
+
+    // User instance
+    var new by mutableStateOf(
+        NoticeModel(
+            "",
+            "",
+            "",
+            "",
+            false
+        )
+    )
+        private set
 
     // ---
     // News functions
@@ -35,22 +48,25 @@ class NewsScreenViewModel(
     // Get News
     @OptIn(ExperimentalPagingApi::class)
     fun getNews(query: String) =
-        repository.getNewsPage(5, query)
+        repository.getNewsPage(3, query)
 
-    fun fetchNewById(id: String):NoticeModel? {
-        // Fetch new by id
-        // Set loading
-        setLoading(true)
-        // Launch coroutine
-        viewModelScope.launch{
-            // Call repository function
-            new.value = repository.getNoticeById(id)
+    fun fetchNewById(id: String) {
+
+        viewModelScope.launch {
+            setLoading(true)
+            try {
+                // Call repository function
+                val notice = repository.getNoticeById(id)
+                new = notice!!
+                // Set success status
+                status = NewStatusUi.Success("Success")
+            } catch (e: Exception) {
+
+                // Set error status
+                status = NewStatusUi.Error(e)
+            }
+            setLoading(false)
         }
-
-        // Set loading
-        setLoading(false)
-
-        return new.value
     }
 
     // On category change
