@@ -49,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -263,7 +264,9 @@ fun someRoutines() {
 
             content = {
 
-                Row(modifier = Modifier
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
                     .fillMaxWidth()
                     .padding(17.dp)) {
 
@@ -292,11 +295,9 @@ fun someRoutines() {
                             color = md_theme_light_outline
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ProgressBarDemo()
                     }
 
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(60.dp))
 
                     Box(
                         modifier = Modifier
@@ -431,7 +432,7 @@ fun someNews() {
 
 /*
 Versión estática de barra de progreso
-*/
+
 
 @Composable
 fun ProgressBarDemo() {
@@ -447,6 +448,8 @@ fun ProgressBarDemo() {
         )
 }
 
+ */
+
 
 
 @Composable
@@ -459,7 +462,7 @@ fun Spotifytitle() {
         ) {
 
             Text(
-                text = "Poscast",
+                text = "Podcast",
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
             )
@@ -507,13 +510,13 @@ fun SpotifyCard(
                 ) {
 
                     Text(
-                        text = "Ponte en Cintura",
+                        text = stringResource(R.string.podcast_name),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
 
                     Text(
-                        text = "Escucha nuestro podcast en spotify.",
+                        text = stringResource(R.string.podcast_description),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Light,
                     )
