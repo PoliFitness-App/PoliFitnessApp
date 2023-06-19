@@ -293,7 +293,7 @@ fun someRoutines() {
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
-                        //ProgressBarDemo()
+                        ProgressBarDemo()
                     }
 
                     Spacer(modifier = Modifier.width(20.dp))
@@ -370,9 +370,9 @@ fun someNews() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.5.dp, 0.dp),
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 2.dp
+                defaultElevation = 12.dp
             ),
             colors = CardDefaults.cardColors (
                 containerColor = md_theme_light_onPrimary,
@@ -431,6 +431,7 @@ fun someNews() {
 
 /*
 Versión estática de barra de progreso
+*/
 
 @Composable
 fun ProgressBarDemo() {
@@ -445,7 +446,7 @@ fun ProgressBarDemo() {
             color = md_theme_light_primary // Color de la barra de progreso
         )
 }
-*/
+
 
 
 @Composable
@@ -552,7 +553,8 @@ fun SpotifyPodcastButton(podcastUri: String) {
             .border(
                 width = 1.dp,
                 color = spotify_color,
-                shape = CircleShape,)
+                shape = CircleShape,
+            )
     ) {
         FloatingActionButton(
             backgroundColor = colorResource(R.color.white),
