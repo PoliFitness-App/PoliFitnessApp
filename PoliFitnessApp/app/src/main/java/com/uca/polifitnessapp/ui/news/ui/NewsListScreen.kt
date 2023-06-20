@@ -271,8 +271,7 @@ fun NewsList(
                         viewModel
                     ) { noticeId ->
                         coroutineScope.launch {
-                            viewModel.fetchNewById(noticeId)
-                            navController.navigate(MainRoutes.MAIN_NEW_INFO)
+                            navController.navigate("new_info_screen/${noticeId}")
                         }
                     }
                 }

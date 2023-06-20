@@ -17,6 +17,7 @@ import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.authGraph
 import com.uca.polifitnessapp.ui.navigation.flows.loginGraph
 import com.uca.polifitnessapp.ui.navigation.flows.mainGraph
+import com.uca.polifitnessapp.ui.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
@@ -40,6 +41,10 @@ fun NavigationHost(navController: NavHostController) {
     // News view model
     val newsScreenViewModel: NewsScreenViewModel = viewModel(
         factory = NewsScreenViewModel.Factory
+    )
+
+    val newsItemViewModel: NewsItemViewModel = viewModel(
+        factory = NewsItemViewModel.Factory
     )
 
     // User view model (global)
@@ -97,6 +102,7 @@ fun NavigationHost(navController: NavHostController) {
             navController,
             editProfileViewModel,
             newsScreenViewModel,
+            newsItemViewModel,
             userViewModel,
             routinesViewModel
         )
@@ -122,13 +128,4 @@ fun NavigationHost(navController: NavHostController) {
             userViewModel
         )
     }
-}
-
-
-// TODO - Remove this function
-@Composable
-fun PreviewScreens(
-    greeting: String,
-) {
-    //
 }
