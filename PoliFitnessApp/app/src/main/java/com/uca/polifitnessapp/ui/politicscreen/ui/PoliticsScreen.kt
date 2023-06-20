@@ -36,6 +36,7 @@ import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
 import com.uca.polifitnessapp.ui.theme.md_theme_light_scrim
 
+
 @Composable
 fun privacyPoliticsScreen(
     navController: NavController
@@ -103,7 +104,7 @@ fun politicTittle(){
     Text(modifier = Modifier
         .fillMaxWidth()
         .padding(35.dp, 0.dp),
-        text = "Política de privacidad de PoliFitness App",
+        text = "Política de privacidad de Centro Deportivo App",
         style = TextStyle(fontWeight = FontWeight.Bold),
         fontSize = 20.sp,
     )
@@ -114,7 +115,7 @@ fun politicsDescription() {
     Text(modifier = Modifier
         .fillMaxWidth()
         .padding(35.dp, 0.dp),
-        text = "La aplicación \"PolitFitness App\" es propiedad de la Universidad Centroamericana José Simeón Cañas (UCA) con sede  en Bulevar Los Próceres, Antiguo Cuscatlán, La Libertad, El Salvador, Centroamérica. Si tiene alguna pregunta sobre nuestras políticas de privacidad, puede comunicarse con nosotros por correo electrónico a support@polifitness.com",
+        text = "La aplicación \"Centro Deportivo App\" es propiedad de la Universidad Centroamericana José Simeón Cañas (UCA) con sede  en Bulevar Los Próceres, Antiguo Cuscatlán, La Libertad, El Salvador, Centroamérica. Si tiene alguna pregunta sobre nuestras políticas de privacidad, puede comunicarse con nosotros por correo electrónico a politnessuca@gmail.com",
         fontWeight = FontWeight(236),
         fontSize = 12.sp,
         color = md_theme_light_outline
@@ -126,7 +127,7 @@ fun infoCollectedTittle(){
     Text(modifier = Modifier
         .fillMaxWidth()
         .padding(35.dp, 0.dp),
-        text = "La aplicación \"PoliFitness App\" recopila algunos datos personales de los usuarios",
+        text = "La aplicación \"Centro Deportivo  App\" recopila algunos datos personales de los usuarios",
         style = TextStyle(fontWeight = FontWeight.Bold),
         fontSize = 20.sp,
     )
@@ -137,7 +138,7 @@ fun infoCollectedTittleDescription() {
     Text(modifier = Modifier
         .fillMaxWidth()
         .padding(35.dp, 0.dp),
-        text = "PoliFitness App recopila información personal del usuario como: su altura, genero, fecha de nacimiento, peso, indice de masa corporal, perimetro de cintura y cadera; Además otros datos relacionados a las cuentas de los usuarios como: el nombre y apellido del usuario y su dirección de correo electrónico",
+        text = "Centro Deportivo App recopila información personal del usuario como: su altura, genero, fecha de nacimiento, peso, indice de masa corporal, perimetro de cintura y cadera; Además otros datos relacionados a las cuentas de los usuarios como: el nombre y apellido del usuario y su dirección de correo electrónico",
         fontWeight = FontWeight(236),
         fontSize = 12.sp,
         color = md_theme_light_outline

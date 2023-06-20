@@ -8,5 +8,7 @@
     <string name="description_updated_card">Hemos actualizado todos los campos que nos has indicado, sigue así.</string>
     <string name="contact_card_description">¡Nos has enviado un mensaje, pronto nos comunicaremos contigo!</string>
     <string name="title_contact_card">Tu mensaje ha sido enviado</string>
+    <string name="podcast_name">Ponte en Cintura</string>
+    <string name="podcast_description">Escucha nuestro podcast en spotify.</string>
 
 </resources>
