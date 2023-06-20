@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">PoliFitnessApp</string>
     <string name="description">Description</string>
+    <string name="title_error_card">Oh no!</string>
+    <string name="button_text_error_card">Intentar de nuevo</string>
+    <string name="description_error_card">No fue posible conectar con su servidor. Comprueba su conexión a Internet e inténtalo de nuevo.</string>
+    <string name="title_updated_profile_card">¡Felcidades, has actualizado tu perfil!</string>
+    <string name="description_updated_card">Hemos actualizado todos los campos que nos has indicado, sigue así.</string>
+    <string name="contact_card_description">¡Nos has enviado un mensaje, pronto nos comunicaremos contigo!</string>
+    <string name="title_contact_card">Tu mensaje ha sido enviado</string>
+    <string name="podcast_name">Ponte en Cintura</string>
+    <string name="podcast_description">Escucha nuestro podcast en spotify.</string>
 
 </resources>
