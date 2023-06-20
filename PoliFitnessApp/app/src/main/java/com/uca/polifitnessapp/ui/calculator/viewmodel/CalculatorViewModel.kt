@@ -14,9 +14,6 @@ class CalculatorViewModel: ViewModel() {
     var icc by mutableStateOf(0.0)
         private set
 
-    var gender by mutableStateOf("")
-        private set
-
     var messageIbm by mutableStateOf("")
         private set
 
@@ -114,9 +111,5 @@ class CalculatorViewModel: ViewModel() {
                 else -> error("Invalid params")
             }
         }
-
-
-
-
     }
 }

@@ -11,40 +11,46 @@ import com.uca.polifitnessapp.data.db.models.NoticeModel
 @Dao
 interface NoticeDao {
 
-    //Funcion para obtener todas las noticias
-    @Query("SELECT * FROM notice_table")//cambiar por el de pagination
-    suspend fun getAllNotices(): List<NoticeModel>
-
-    //funcion para obtener todas las noticias por bloques
+    // ---
+    // Get all news (Pagination)
+    // ---
     @Query("SELECT * FROM notice_table WHERE category like :query")
     fun pagingSource(query: String): PagingSource<Int, NoticeModel>
 
-
-    //Funcion para insertar una noticia
+    // ---
+    // Insert new
+    // ---
     @Transaction
     @Insert
     suspend fun insertNotice(notice: NoticeModel)
 
-    //Funcion para obtener noticias por categoria
+    // ---
+    // Get New by category
+    // ---
     @Query("SELECT * FROM notice_table WHERE category = :category")
     suspend fun getNoticeByCategory(category: String): List<NoticeModel>
 
-    //Funcion para obtener una noticia por id
+    // ---
+    // Get New by id
+    // ---
     @Query("SELECT * FROM notice_table WHERE noticeId = :noticeId")
-    suspend fun getNoticeById(noticeId: Int): NoticeModel?
+    suspend fun getNoticeById(noticeId: String): NoticeModel?
 
-    //Funcion de toggle para ocultar una noticia
+    // ---
+    // Toggle New (hidden)
+    // ---
     @Query("UPDATE notice_table SET hidden = :hidden WHERE noticeId = :noticeId")
     suspend fun toggleNotice(noticeId: Int, hidden: Boolean)
 
-    // funcion para el pagination limpiar base
+    // ---
+    // Clear all news
+    // ---
     @Query("DELETE FROM notice_table")
     suspend fun clearAll()
 
-    // funcion para el pagination insertar lista
+    // ---
+    // Insert all news
+    // ---
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(users: List<NoticeModel>)
-
-
-
 }

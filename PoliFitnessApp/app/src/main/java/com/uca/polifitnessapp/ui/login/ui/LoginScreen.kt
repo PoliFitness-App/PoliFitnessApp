@@ -53,14 +53,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation.findNavController
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
-import com.uca.polifitnessapp.ui.viewmodel.UserViewModel
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
+import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -121,9 +120,6 @@ fun LoginView(
 
     val isLoginLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
 
-    // Status
-    val status: LoginUiStatus? by viewModel.status.observeAsState(initial = null)
-
     // Application Instance
     val app: PoliFitnessApplication = LocalContext.current.applicationContext as PoliFitnessApplication
     // Context and LifecycleOwner
@@ -141,11 +137,13 @@ fun LoginView(
                 Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
             }
             is LoginUiStatus.Success -> {
-                // login view model action -> clear status, and clear datao
+                // login view model action -> clear status, and clear data
                 viewModel.clearStatus()
                 viewModel.clearData()
                 // then we save the token
                 app.saveAuthToken(token = status.token)
+                // and we set the user state
+                app.saveUserState(UserState.LOGGED_IN)
                 // information about the state
                 Toast.makeText(context, "Inicio de sesion correcto", Toast.LENGTH_SHORT).show()
 
@@ -155,7 +153,12 @@ fun LoginView(
                 userViewModel.getUser()
 
                 // we nagivate to "main_flow"
-                navController.navigate("main_flow")
+                navController.navigate(MainRoutes.MAIN_ROUTE) {
+                    // we delete the login route from the backstack
+                    popUpTo(AuthRoutes.AUTH_ROUTE) {
+                        inclusive = true
+                    }
+                }
             }
             else -> {}
         }
@@ -168,12 +171,16 @@ fun LoginView(
     } else {
         Column(modifier = modifier) {
 
-            // HEADER
+            // ---
+            // Header
+            // ---
 
             HeaderImage(Modifier.align(Alignment.CenterHorizontally))
             Spacer(modifier = Modifier.padding(16.dp))
 
-            // LOGIN FORM
+            // ---
+            // Login form
+            // ---
 
             EmailField(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -265,7 +272,6 @@ fun EmailField(
     isWrongInput: Boolean,
     onTextFieldChanged: (String) -> Unit
 ) {
-
     TextField(
         value = email,
         onValueChange = { onTextFieldChanged(it) },
