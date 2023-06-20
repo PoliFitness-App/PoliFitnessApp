@@ -52,9 +52,6 @@ class RoutinesMediator(private val database: PoliFitnessDatabase, private val se
             val response = service.getRoutinesByBlocks(
                 page = loadKey , limit = state.config.pageSize
             )
-            println("RESPONSE DEL SERVICIO")
-            println(response.routines.size)
-            println(response.routines)
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {

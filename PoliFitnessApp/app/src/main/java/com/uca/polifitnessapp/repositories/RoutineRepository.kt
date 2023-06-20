@@ -97,7 +97,6 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
         remoteMediator = RoutinesMediator(database, service, query)
     ) {
         // recibe la query que se le manda desde la vista
-        println("ANTES DE LLAMAR EL RUTINEDAO")
         routineDao.pagingSourceByLevel(query)
     }.flow
 
@@ -113,8 +112,6 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
         remoteMediator = RoutinesMediator(database, service,"$approach $category $level")
     ) {
         // recibe la query que se le manda desde la vista
-        println("ANTES DE LLAMAR EL RUTINEDAO")
-        println("$approach $category $level")
         routineDao.pagingSourceByApproachAndCategoryAndLevel(approach, category, level)
 
     }.flow
@@ -128,7 +125,6 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
         remoteMediator = RoutinesMediator(database, service, query)
     ) {
         // recibe la query que se le manda desde la vista
-        println("ANTES DEL DAO")
         routineDao.getAllRoutinesPaging()
     }.flow
 }
