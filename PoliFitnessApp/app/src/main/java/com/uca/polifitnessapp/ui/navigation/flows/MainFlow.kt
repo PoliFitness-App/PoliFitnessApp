@@ -25,6 +25,7 @@ import com.uca.polifitnessapp.ui.news.ui.NewItemScreen
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.politicscreen.ui.privacyPoliticsScreen
+import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -41,7 +42,8 @@ fun NavGraphBuilder.mainGraph(
     navController: NavHostController,
     editProfileViewModel: EditProfileViewModel,
     newsScreenViewModel: NewsScreenViewModel,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    routinesViewModel: RoutinesViewModel
 ) {
     navigation(
         startDestination = ButtomNavItems.Home.rute,
@@ -60,7 +62,9 @@ fun NavGraphBuilder.mainGraph(
         }
         // Routine route
         composable(ButtomNavItems.Rutine.rute) {
-            RoutinesListScreen()
+            RoutinesListScreen(
+                routinesViewModel
+            )
         }
         // Profile route
         composable(ButtomNavItems.Profile.rute) {
