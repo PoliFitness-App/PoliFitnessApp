@@ -34,15 +34,15 @@ class RoutinesViewModel(private val repository: RoutineRepository): ViewModel(){
             }
 
             "Tren superior" -> {
-                category.value = "Fácil"
+                category.value = "Tren superior"
             }
 
             "Tren inferior" -> {
-                category.value = "Medio"
+                category.value = "Tren inferior"
             }
 
             "Cuerpo completo" -> {
-                category.value = "Difícil"
+                category.value = "Cuerpo completo"
             }
         }
     }

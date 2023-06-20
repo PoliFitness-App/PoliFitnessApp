@@ -38,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,8 +80,8 @@ fun RoutinesListScreen(
 }
 
 // States for routines list
-var level by mutableStateOf("")
-var category by mutableStateOf("")
+//var level by mutableStateOf("%")
+//var category by mutableStateOf("%")
 
 // Routine list component
 @Composable
@@ -93,13 +94,16 @@ fun RoutinesList(
     val onItemClick = { index: Int ->
         selectedIndex = index
     }
+    // Initialize states for filters
+    val category: String by viewModel.category.observeAsState(initial = "%")
+    val level: String by viewModel.level.observeAsState(initial = "%")
 
     // Filter's for news list
     // Filter by level
 
     // TODO REVISAR SI ESTA BUENO
     // TODO SACAR EL APPROACH DEL USUARIO
-    val routinesByFilters = viewModel.getAllRoutines("All").collectAsLazyPagingItems()
+    val routinesByFilters = viewModel.getRoutinesByApproachAndCategoryAndLevel("%", category, level).collectAsLazyPagingItems()
 
     // Recomended routines list
     LazyColumn(
@@ -139,6 +143,7 @@ fun RoutinesList(
             FilterItem(
                 "Filtrar por categoria",
                 items = listOf(
+                    "Todos",
                     "Tren superior",
                     "Tren inferior",
                     "Cuerpo completo"
@@ -149,13 +154,10 @@ fun RoutinesList(
         }
 
         // List of recomended routines
-        // TODO REVISAR COMO TENGO Q CAMBIAR ESTO
         items(count = routinesByFilters.itemCount) { index ->
             val item = routinesByFilters[index]
-            println(item)
 
             if (item != null) {
-                println(item)
                 // Filter item
                 RoutineItem(
                     routine = item,
