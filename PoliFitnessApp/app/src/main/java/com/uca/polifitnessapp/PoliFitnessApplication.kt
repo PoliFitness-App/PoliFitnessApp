@@ -76,9 +76,8 @@ class PoliFitnessApplication: Application(){
 
     // Routines repository
     val routineRepository: RoutineRepository by lazy {
-        RoutineRepository(database.routineDao())
+        RoutineRepository(database, retrofitInstance.getPoliFitnessAPIRoutines())
     }
-
 
     companion object {
         const val USER_TOKEN = "user_token"

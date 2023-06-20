@@ -18,6 +18,7 @@ class NoticeRepository(
 
     suspend fun getNoticeByCategory(category: String) = noticeDao.getNoticeByCategory(category)
 
+    suspend fun toggleNotice(noticeId: Int, hidden: Boolean) = noticeDao.toggleNotice(noticeId, hidden)
     suspend fun getNoticeById(noticeId: String) = noticeDao.getNoticeById(noticeId)
 
     // --
