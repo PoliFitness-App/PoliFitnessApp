@@ -95,14 +95,7 @@ fun Home() {
             SpotifyCard()
         }
 
-        item {
-            Spacer(modifier = Modifier.height(25.dp))
-            newsTittle()
-        }
 
-        items(3) {
-            someNews()
-        }
 
         item {
             Spacer(modifier = Modifier.height(30.dp))
