@@ -17,14 +17,60 @@ class RoutinesViewModel(private val repository: RoutineRepository): ViewModel(){
     // ---
 
     // Inicializadas en % para recibir todos los datos de cada una
+
     var category = MutableLiveData("%")
     var level = MutableLiveData("%")
     var approach = MutableLiveData("%")
 
-
     // ---
     // Routines functions
     // ---
+
+    // On Category change
+    fun onCategoryChange(label: String){
+        when (label) {
+            "Todos" -> {
+                category.value = "%"
+            }
+
+            "Tren superior" -> {
+                category.value = "Fácil"
+            }
+
+            "Tren inferior" -> {
+                category.value = "Medio"
+            }
+
+            "Cuerpo completo" -> {
+                category.value = "Difícil"
+            }
+        }
+    }
+
+    //// On level change
+    fun onLevelChange(label: String){
+        when (label) {
+            "Todos" -> {
+                level.value = "%"
+            }
+
+            "Fácil" -> {
+                level.value = "Fácil"
+            }
+
+            "Medio" -> {
+                level.value = "Medio"
+            }
+
+            "Difícil" -> {
+                level.value = "Difícil"
+            }
+
+            "Muy difícil" -> {
+                level.value = "Muy difícil"
+            }
+        }
+    }
 
     // Get Routines by query
 

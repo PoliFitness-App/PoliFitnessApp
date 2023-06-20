@@ -58,8 +58,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
-//import com.uca.polifitnessapp.ui.routines.data.routinesList
-
 
 // Main Screen for Routines
 @Composable
@@ -75,14 +73,12 @@ fun RoutinesListScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // routines list
-        RoutinesList( viewModel)
+        RoutinesList(viewModel)
     }
 
 }
 
 // States for routines list
-var indexsize by mutableStateOf(0)
-var indexsizefilter by mutableStateOf(0)
 var level by mutableStateOf("")
 var category by mutableStateOf("")
 
@@ -92,124 +88,82 @@ fun RoutinesList(
     // TODO revisar
     viewModel: RoutinesViewModel
 ) {
-    // Container
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        //Center items horizontally in the column
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    // States for news list
+    var selectedIndex by remember { mutableStateOf(0) }
+    val onItemClick = { index: Int ->
+        selectedIndex = index
+    }
 
-        // States for news list
-        var selectedIndex by remember { mutableStateOf(0) }
-        val onItemClick = { index: Int ->
-            selectedIndex = index
+    // Filter's for news list
+    // Filter by level
+
+    // TODO REVISAR SI ESTA BUENO
+    // TODO SACAR EL APPROACH DEL USUARIO
+    val routinesByFilters = viewModel.getAllRoutines("All").collectAsLazyPagingItems()
+
+    // Recomended routines list
+    LazyColumn(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp, 0.dp, 0.dp, 64.dp)
+    ) {
+        item {
+            // Tittle
+            Text(
+                modifier = Modifier
+                    .padding(16.dp, 8.dp, 16.dp, 8.dp),
+                text = "Rutinas",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineSmall
+            )
         }
 
-        // Filter's for news list
-        // Filter by level
-        /*
-        * if (level == "") {
-            // TODO REVISAR, obtengo los items de la pagina
-            indexsize = viewModel.getRoutinesByLevel(level).collectAsLazyPagingItems().itemCount
-        } else
-            // TODO CORROBORAR COMO SE MANEJA EL NIVEL, SI SON NUMEROS O NO
-            indexsize = viewModel.getRoutinesByLevel(level).collectAsLazyPagingItems().itemCount
-
-        // Filter by category
-        if (category == "") {
-            indexsizefilter = viewModel.getRoutines("%").collectAsLazyPagingItems().itemCount
-        } else
-            indexsizefilter = viewModel.getRoutines(category).collectAsLazyPagingItems().itemCount
-        * */
-
-        // TODO REVISAR SI ESTA BUENO
-        // TODO SACAR EL APPROACH DEL USUARIO
-        val routinesByFilters = viewModel.getAllRoutines("All").collectAsLazyPagingItems()
-
-        // Recomended routines list
-        LazyColumn(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp, 0.dp, 0.dp, 64.dp)
-        ) {
-            item {
-                // Tittle
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(16.dp, 8.dp, 16.dp, 8.dp),
-                    text = "Rutinas",
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.headlineSmall
+        // ---
+        // Filter
+        // ---
+        item {
+            FilterItem(
+                "Filtrar por nivel",
+                items = listOf(
+                    "Todos",
+                    "Fácil",
+                    "Medio",
+                    "Difícil",
+                    "Muy difícil"
                 )
+            ){
+                viewModel.onLevelChange(it)
             }
-
-            // Filter por recomended routines
-            // TODO revisar1
-            item {
-                FilterItem(
-                    text = "Rutinas recomendadas",
-                    items = listOf(
-                        "Todos",
-                        "Fácil",
-                        "Medio",
-                        "Difícil",
-                        "Muy difícil"
-                    ),
-                )
+            FilterItem(
+                "Filtrar por categoria",
+                items = listOf(
+                    "Tren superior",
+                    "Tren inferior",
+                    "Cuerpo completo"
+                ),
+            ){
+                viewModel.onCategoryChange(it)
             }
+        }
 
-            // List of recomended routines
-            // TODO REVISAR COMO TENGO Q CAMBIAR ESTO
-            items(count = routinesByFilters.itemCount) { index ->
-                val item = routinesByFilters[index]
+        // List of recomended routines
+        // TODO REVISAR COMO TENGO Q CAMBIAR ESTO
+        items(count = routinesByFilters.itemCount) { index ->
+            val item = routinesByFilters[index]
+            println(item)
+
+            if (item != null) {
                 println(item)
-
-                if(item != null){
-                    println(item)
-                    // Filter item
-                    RoutineItem(
-                        routine = item,
-                        index = index,
-                        selected = selectedIndex == index,
-                        onClick = onItemClick
-                    )
-                }
-            }
-
-            // Filter por general routines
-
-            item {
-                FilterItem(
-                    text = "Rutinas de ejercicio",
-                    items = listOf(
-                        "Cuerpo completo",
-                        "Tren superior",
-                        "Tren inferior"
-                    ),
+                // Filter item
+                RoutineItem(
+                    routine = item,
+                    index = index,
+                    selected = selectedIndex == index,
+                    onClick = onItemClick
                 )
             }
-
-            // List of general routines
-            /*
-            * items(count = routinesByCategory.itemCount) { index ->
-                val item = routinesByCategory[index]
-
-                if(item != null){
-                    // Filter item
-                    RoutineItem(
-                        routine = item,
-                        index = index,
-                        selected = selectedIndex == index,
-                        onClick = onItemClick
-                    )
-                }
-            }
-            * */
         }
     }
 }
@@ -231,8 +185,7 @@ fun RoutineItem(
         modifier = Modifier
             .padding(16.dp)
             .width(500.dp)
-            .height(155.dp)
-        ,
+            .height(155.dp),
         // Card colors
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -324,25 +277,24 @@ fun RoutineItem(
 
 @Composable
 fun FilterItem(
-    text: String,
+    text:String,
     items: List<String>,
+    onClick: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .padding(16.dp, 0.dp, 16.dp, 0.dp)
-            .fillMaxSize(),
+            .width(200.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         // Title
         Text(
             text = text,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
         )
-
         // Icon button for filter
         IconButton(
             onClick = { expanded = true }
@@ -359,8 +311,7 @@ fun FilterItem(
             modifier = Modifier
                 .wrapContentSize(Alignment.TopEnd)
                 .background(MaterialTheme.colorScheme.primaryContainer)
-                .animateContentSize()
-            ,
+                .animateContentSize(),
             expanded = expanded,
             onDismissRequest = { expanded = false },
             properties = PopupProperties(clippingEnabled = false),
@@ -370,17 +321,8 @@ fun FilterItem(
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
-                        when (label) {
-                            "" -> level = "%"
-                            "Todos" -> level = "%"
-                            "Fácil" -> level = "Facil"
-                            "Medio" -> level = "Medio"
-                            "Difícil" -> level = "Dificil"
-                            "Muy difícil" -> level = "Muy Dificil"
-                            "Cuerpo completo" -> category = "Cuerpo completo"
-                            "Tren superior" -> category = "Tren superior"
-                            "Tren inferior" -> category = "Tren inferior"
-                        }
+                        // On Category change
+                        onClick(label)
                     }
                 ) {
                     Text(
@@ -392,15 +334,4 @@ fun FilterItem(
             }
         }
     }
-}
-
-
-// ----
-// Preview
-// ------
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewNewsListScreen() {
-    //RoutinesList()
 }
