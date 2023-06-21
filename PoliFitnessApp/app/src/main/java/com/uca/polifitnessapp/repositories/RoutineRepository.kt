@@ -21,7 +21,7 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
 
     suspend fun getRoutinesByCategory(category: String) = routineDao.getRoutinesByCategory(category)
 
-    suspend fun getRoutineById(routineId: Int) = routineDao.getRoutineById(routineId)
+    suspend fun getRoutineById(routineId: String) = routineDao.getRoutineById(routineId)
 
     suspend fun deleteRoutine(routine: RoutineModel) = routineDao.deleteRoutine(routine)
 

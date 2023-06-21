@@ -1,5 +1,6 @@
 package com.uca.polifitnessapp.ui.news.viewmodel
 
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,6 +29,12 @@ class NewsScreenViewModel(
     var category = MutableLiveData("%")
     private var status: NewStatusUi by mutableStateOf(NewStatusUi.Resume)
     val isLoading = mutableStateOf(false)
+    // Selected index
+    val selectedIndex = mutableStateOf(0)
+    // Scroll state
+    var scrollState = mutableStateOf(0)
+    // Is Refresh needed?
+    var isRefreshNeeded = mutableStateOf(false)
 
     // User instance
     var new by mutableStateOf(
@@ -48,27 +55,7 @@ class NewsScreenViewModel(
     // Get News
     @OptIn(ExperimentalPagingApi::class)
     fun getNews(query: String) =
-        repository.getNewsPage(3, query)
-
-    fun fetchNewById(id: String) {
-
-        viewModelScope.launch {
-            setLoading(true)
-            try {
-                // Call repository function
-                val notice = repository.getNoticeById(id)
-                new = notice!!
-                // Set success status
-                status = NewStatusUi.Success("Success")
-            } catch (e: Exception) {
-
-                // Set error status
-                status = NewStatusUi.Error(e)
-            }
-            setLoading(false)
-        }
-    }
-
+        repository.getNewsPage(10, query, isRefreshNeeded.value)
     // On category change
     fun onCategoryChange(index:Int){
         when (index) {
@@ -97,6 +84,20 @@ class NewsScreenViewModel(
                 category.value = "Actividades"
             }
         }
+    }
+
+    // ---
+    // On index change
+    // ---
+    fun onIndexChange(index: Int) {
+        selectedIndex.value = index
+    }
+
+    // ---
+    // On scroll state change
+    // ---
+    fun onScrollChange(int: Int) {
+        scrollState.value = int
     }
 
     // ---

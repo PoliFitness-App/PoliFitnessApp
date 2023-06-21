@@ -1,7 +1,7 @@
+@file:OptIn(FlowPreview::class)
+
 package com.uca.polifitnessapp.ui.news.ui
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material3.Card
@@ -21,22 +24,20 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -44,8 +45,10 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
-import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 // -----
@@ -135,13 +138,9 @@ fun HeaderSection(
                 .align(Alignment.Start),
         )
 
-        // States for filter
-        var selectedIndex by remember { mutableStateOf(0) }
-
         // on item click
         val onItemClick = { index: Int ->
-            selectedIndex = index
-            // filter news
+            viewModel.onIndexChange(index)
             viewModel.onCategoryChange(index)
         }
 
@@ -158,10 +157,9 @@ fun HeaderSection(
                 FilterItem(
                     icon = icon[index],
                     index = index,
-                    selected = selectedIndex == index,
+                    selected = viewModel.selectedIndex.value == index,
                     onClick = onItemClick
                 )
-
             }
         }
 
@@ -242,39 +240,70 @@ fun NewsList(
         //Center items horizontally in the column
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // header (News filter)
+        // ---
+        // Header (News filter)
+        // ---
+
         HeaderSection(
             viewModel
         )
-
         val coroutineScope = rememberCoroutineScope()
-        // category
-        val category: String by viewModel.category.observeAsState(initial = "%")
+        // ---
+        // Category
+        // ---
 
+        val category: String by viewModel.category.observeAsState(initial = "%")
         // List of news, comes from the viewModel
         val news = viewModel.getNews(category).collectAsLazyPagingItems()
 
-        // News items
+        val scrollState = rememberLazyGridState()
+        // ---
+        // Vertical Grid
+        // ---
+
         LazyVerticalGrid(
+            state = scrollState,
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(0.dp, 0.dp, 0.dp, 64.dp),
-            columns = GridCells.Adaptive(minSize = 350.dp)
+            columns = GridCells.Adaptive(minSize = 350.dp),
         ) {
-            items(news.itemCount) { index ->
+            items(
+                news.itemCount,
+                key = { index -> news[index]?.noticeId ?: index }
+            ) { index ->
                 val item = news[index]
                 // Filter item
                 if (item != null) {
+                    // New Item
                     NewItem(
                         new = item,
-                        viewModel
                     ) { noticeId ->
                         coroutineScope.launch {
                             navController.navigate("new_info_screen/${noticeId}")
                         }
                     }
                 }
+            }
+        }
+
+        // Save scroll state
+        LaunchedEffect(scrollState) {
+            snapshotFlow {
+                scrollState.firstVisibleItemIndex
+            }
+                .debounce(500L)
+                .collectLatest { index ->
+                    println("Scroll index: $index")
+                    viewModel.onScrollChange(index)
+                }
+        }
+
+        // Restore scroll state
+        LaunchedEffect(Unit) {
+            if (viewModel.scrollState.value != scrollState.firstVisibleItemIndex) {
+                scrollState.scrollToItem(viewModel.scrollState.value)
             }
         }
     }
@@ -288,7 +317,6 @@ fun NewsList(
 @Composable
 fun NewItem(
     new: NoticeModel,
-    viewModel: NewsScreenViewModel,
     onClick: (String) -> Unit
 ) {
     Card(
@@ -300,8 +328,7 @@ fun NewItem(
             .height(285.dp)
             .clickable {
                 onClick(new.noticeId)
-            }
-        ,
+            },
         // Card colors
         colors = CardDefaults.cardColors(
             containerColor = Color.White,

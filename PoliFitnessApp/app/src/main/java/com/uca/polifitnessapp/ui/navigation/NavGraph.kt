@@ -20,6 +20,7 @@ import com.uca.polifitnessapp.ui.navigation.flows.mainGraph
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.routines.viewmodel.RoutineItemViewModel
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
@@ -60,6 +61,11 @@ fun NavigationHost(navController: NavHostController) {
     // Routines view model
     val routinesViewModel: RoutinesViewModel = viewModel(
         factory = RoutinesViewModel.Factory
+    )
+
+    // Routine Item ViewModel
+    val routineItemViewModel: RoutineItemViewModel = viewModel(
+        factory = RoutineItemViewModel.Factory
     )
 
     // ---
@@ -104,7 +110,8 @@ fun NavigationHost(navController: NavHostController) {
             newsScreenViewModel,
             newsItemViewModel,
             userViewModel,
-            routinesViewModel
+            routinesViewModel,
+            routineItemViewModel
         )
 
         // ---

@@ -58,7 +58,7 @@ interface RoutineDao {
 
     //Funcion para obtener una rutina por su id
     @Query("SELECT * FROM routine_table WHERE routineId = :routineId")
-    suspend fun getRoutineById(routineId: Int): RoutineModel?
+    suspend fun getRoutineById(routineId: String): RoutineModel?
 
     //funcion para eliminar rutina por id
     @Transaction

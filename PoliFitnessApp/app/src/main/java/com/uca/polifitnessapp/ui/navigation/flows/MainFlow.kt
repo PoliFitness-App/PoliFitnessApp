@@ -18,7 +18,9 @@ import com.uca.polifitnessapp.ui.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.politicscreen.ui.privacyPoliticsScreen
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.routines.ui.RoutineItemScreen
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
+import com.uca.polifitnessapp.ui.routines.viewmodel.RoutineItemViewModel
 import com.uca.polifitnessapp.ui.user.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.user.ui.ProfileScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
@@ -38,7 +40,8 @@ fun NavGraphBuilder.mainGraph(
     newsScreenViewModel: NewsScreenViewModel,
     newsItemViewModel: NewsItemViewModel,
     userViewModel: UserViewModel,
-    routinesViewModel: RoutinesViewModel
+    routinesViewModel: RoutinesViewModel,
+    routineItemViewModel: RoutineItemViewModel,
 ) {
     navigation(
         startDestination = ButtomNavItems.Home.rute,
@@ -64,7 +67,9 @@ fun NavGraphBuilder.mainGraph(
         // ---
         composable(ButtomNavItems.Rutine.rute) {
             RoutinesListScreen(
-                routinesViewModel
+                routinesViewModel,
+                userViewModel,
+                navController
             )
         }
         // ---
@@ -113,18 +118,39 @@ fun NavGraphBuilder.mainGraph(
         }
 
         // ---
+        // Routine info route
+        // ---
+
+        composable(
+            "routine_info_screen/{routineId}",
+            arguments = listOf(
+                navArgument("routineId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getString("routineId")?.let {
+                RoutineItemScreen(
+                    routineItemViewModel,
+                    navController,
+                    it
+                )
+            }
+        }
+
+        // ---
         // Auxiliary routes
         // ---
         composable(
             MainRoutes.MAIN_CONTACT_INFO
-        ){
+        ) {
             Contact(
                 navController
             )
         }
         composable(
             MainRoutes.MAIN_TERMS_AND_CONDITIONS
-        ){
+        ) {
             privacyPoliticsScreen(
                 navController
             )

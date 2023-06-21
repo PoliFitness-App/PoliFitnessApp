@@ -25,14 +25,17 @@ class NoticeRepository(
     // Get new with pagination
     // --
     @ExperimentalPagingApi
-    fun getNewsPage(pageSize: Int, query: String) = Pager(
+    fun getNewsPage(
+        pageSize: Int,
+        query: String,
+        isRefreshState: Boolean
+    ) = Pager(
         config = PagingConfig(
             pageSize = pageSize,
             prefetchDistance = (0.10 * pageSize).toInt()
         ),
-        remoteMediator = NewsMediator(database, retrofitInstance, query)
+        remoteMediator = NewsMediator(database, retrofitInstance, query, isRefreshState)
     ) {
-        // recibe la query q se le manda desde la vista
         noticeDao.pagingSource(query)
     }.flow
 }
