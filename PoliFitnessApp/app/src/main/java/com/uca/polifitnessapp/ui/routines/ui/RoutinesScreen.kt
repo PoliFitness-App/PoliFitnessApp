@@ -120,7 +120,7 @@ fun RoutinesList(
     // Filter by level
 
     val routinesByFilters = viewModel.getRoutinesByApproachAndCategoryAndLevel(
-        userViewModel.user.approach, category, level
+        "%", category, level
     ).collectAsLazyPagingItems()
 
     // Recommended routines list
@@ -180,8 +180,7 @@ fun RoutinesList(
             if (item != null) {
                 // Filter item
                 RoutineItem(
-                    routine = item,
-                    index = index
+                    routine = item
                 ) { routineId ->
                     coroutineScope.launch {
                         navController.navigate("routine_info_screen/${routineId}")
@@ -218,7 +217,6 @@ fun RoutinesList(
 @Composable
 fun RoutineItem(
     routine: RoutineModel,
-    index: Int,
     onClick: (String) -> Unit
 ) {
     Card(

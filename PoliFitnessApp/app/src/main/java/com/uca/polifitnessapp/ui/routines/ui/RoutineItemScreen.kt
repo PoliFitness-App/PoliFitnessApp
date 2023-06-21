@@ -1,8 +1,11 @@
 package com.uca.polifitnessapp.ui.routines.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -18,17 +23,26 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.data.db.models.RoutineModel
@@ -55,14 +69,13 @@ fun RoutineItemScreen(
     // ---
     // Loading State
     // --
+
     if (routineItemViewModel.isLoading.value) {
         LoadingScreen()
-    }
-    else {
+    } else {
         // New item screen
         val routine = routineItemViewModel.routine
 
-        // ---
         // New item screen
         // ---
         Column(
@@ -79,7 +92,7 @@ fun RoutineItemScreen(
                 navController = navController
             )
             RoutineItemBox(
-                routine
+                routine = routine
             )
         }
     }
@@ -112,8 +125,6 @@ fun BackButton(
         )
     }
 }
-
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun RoutineItemBox(
     routine: RoutineModel,
@@ -122,33 +133,40 @@ fun RoutineItemBox(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.elevatedCardElevation(12.dp),
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxWidth()
-            .height(460.dp),
+            .padding(8.dp, 0.dp, 8.dp, 0.dp)
+            .aspectRatio(16f / 9f)
+        ,
         // Card colors
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = Color.Black,
         ),
     ) {
+        CustomExoPlayer(url = "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4")
+    }
+}
 
-        // Column with title, description, category
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.Top,
-        ) {
-            // Title
-            Text(
-                text = routine.title,
-                fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.scrim,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.Start),
-                style = MaterialTheme.typography.bodySmall
-            )
+
+@Composable
+fun CustomExoPlayer(
+    url: String
+) {
+    val context = LocalContext.current
+
+    val exoPlayer = ExoPlayer.Builder(context).build()
+    val mediaItem = MediaItem.fromUri(Uri.parse(url))
+
+    exoPlayer.setMediaItem(mediaItem)
+
+    val playerView = StyledPlayerView(context)
+    playerView.player = exoPlayer
+
+    DisposableEffect(AndroidView(factory = { playerView })) {
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+
+        onDispose {
+            exoPlayer.release()
         }
     }
 }
