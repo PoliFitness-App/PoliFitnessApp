@@ -178,6 +178,11 @@ fun SignUpView(
             }
         }
 
+        GoogleLogin(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            navController = navController.navigate(AuthRoutes.LOGIN_SCREEN)
+        )
+
     }
 
 }
