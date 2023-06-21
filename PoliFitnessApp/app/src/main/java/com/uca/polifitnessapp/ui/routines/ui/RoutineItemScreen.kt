@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -94,6 +95,9 @@ fun RoutineItemScreen(
             RoutineItemBox(
                 routine = routine
             )
+            Routineinfo(
+                routine = routine
+            )
         }
     }
 }
@@ -135,7 +139,7 @@ fun RoutineItemBox(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp, 0.dp, 8.dp, 0.dp)
-            .aspectRatio(16f / 9f)
+            .aspectRatio(16 / 9f)
         ,
         // Card colors
         colors = CardDefaults.cardColors(
@@ -146,6 +150,53 @@ fun RoutineItemBox(
     }
 }
 
+@Composable
+fun Routineinfo(
+    routine: RoutineModel
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        // center items horizontally in the column
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Text(
+            text = routine.title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(0.dp, 16.dp, 0.dp, 0.dp)
+        )
+        Text(
+            text = "Dificultad: ${routine.level}",
+            modifier = Modifier
+                .padding(0.dp, 16.dp, 0.dp, 0.dp),
+            fontWeight = FontWeight.Light,
+            color = MaterialTheme.colorScheme.scrim,
+            style = MaterialTheme.typography.labelLarge
+        )
+
+        Text(
+            text = "Descripción",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(0.dp, 16.dp, 0.dp, 0.dp)
+        )
+
+        Text(
+            text = routine.description,
+            fontWeight = FontWeight.Light,
+            color = MaterialTheme.colorScheme.scrim,
+            modifier = Modifier
+                .padding(0.dp, 16.dp, 0.dp, 0.dp)
+                .width(315.dp),
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
 
 @Composable
 fun CustomExoPlayer(
@@ -163,7 +214,9 @@ fun CustomExoPlayer(
 
     DisposableEffect(AndroidView(factory = { playerView })) {
         exoPlayer.prepare()
-        exoPlayer.playWhenReady = true
+
+        // Start playing after the user has seen the preview
+        exoPlayer.play()
 
         onDispose {
             exoPlayer.release()
