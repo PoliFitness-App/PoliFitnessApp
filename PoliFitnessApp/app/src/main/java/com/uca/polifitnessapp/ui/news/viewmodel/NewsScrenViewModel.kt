@@ -1,22 +1,19 @@
 package com.uca.polifitnessapp.ui.news.viewmodel
 
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.ExperimentalPagingApi
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.data.db.models.NoticeModel
-import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.repositories.NoticeRepository
 import com.uca.polifitnessapp.ui.news.status.NewStatusUi
-import kotlinx.coroutines.launch
 
 class NewsScreenViewModel(
     private val repository: NoticeRepository
@@ -27,14 +24,19 @@ class NewsScreenViewModel(
     // ---
 
     var category = MutableLiveData("%")
+    // Status
     private var status: NewStatusUi by mutableStateOf(NewStatusUi.Resume)
-    val isLoading = mutableStateOf(false)
+    // Loading
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    // ---
+    // States for the screen
+    // ---
     // Selected index
     val selectedIndex = mutableStateOf(0)
     // Scroll state
     var scrollState = mutableStateOf(0)
-    // Is Refresh needed?
-    var isRefreshNeeded = mutableStateOf(false)
 
     // User instance
     var new by mutableStateOf(
@@ -53,9 +55,11 @@ class NewsScreenViewModel(
     // ---
 
     // Get News
+
     @OptIn(ExperimentalPagingApi::class)
-    fun getNews(query: String) =
-        repository.getNewsPage(10, query, isRefreshNeeded.value)
+    fun getNews(query: String)=
+            repository.getNewsPage(30, query)
+
     // On category change
     fun onCategoryChange(index:Int){
         when (index) {
@@ -103,9 +107,6 @@ class NewsScreenViewModel(
     // ---
     // Loading functions
     // ---
-    private fun setLoading(loading: Boolean) {
-        isLoading.value = loading
-    }
 
     // ---
     // Companion object

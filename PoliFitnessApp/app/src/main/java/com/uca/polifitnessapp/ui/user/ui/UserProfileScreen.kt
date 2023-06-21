@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import java.time.LocalDate
@@ -53,8 +54,18 @@ fun ProfileScreen(
     // navController
     navController: NavController,
     // user view model
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    userId:String,
 ) {
+
+    // ---
+    // Fetch user from the userId
+    // ---
+
+    LaunchedEffect(userId) {
+        userViewModel.fetchUserById(userId)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,15 +73,28 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
+
+        // New item screen
+        val user = userViewModel.user
+
         UserCard(
-            user = userViewModel.user,
+            user,
             navController
         )
-        generalInfoUser(user = userViewModel.user)
-        specificlInfoUser(user = userViewModel.user)
+        generalInfoUser(user)
+        specificlInfoUser(user)
         ContactCard(
             navController
         )
+
+        try {
+        } catch (e: Exception) {
+            navController.navigate(AuthRoutes.LOGIN_SCREEN) {
+                popUpTo(AuthRoutes.LOGIN_SCREEN) {
+                    inclusive = true
+                }
+            }
+        }
     }
 }
 

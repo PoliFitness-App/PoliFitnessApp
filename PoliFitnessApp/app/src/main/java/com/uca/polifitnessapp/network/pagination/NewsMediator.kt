@@ -19,7 +19,6 @@ class NewsMediator(
     private val database: PoliFitnessDatabase,
     private val service: NewsService,
     private val query: String,
-    private val isRefreshState: Boolean
 ) : RemoteMediator<Int, NoticeModel>() {
     override suspend fun load(
         loadType: LoadType,
@@ -27,12 +26,7 @@ class NewsMediator(
     ): MediatorResult {
         return try {
             val loadKey = when (loadType) {
-                LoadType.REFRESH ->
-                    if (isRefreshState) {
-                        return MediatorResult.Success(endOfPaginationReached = true)
-                    } else {
-                       1
-                    }
+                LoadType.REFRESH -> 1
                 LoadType.PREPEND ->
                     return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {

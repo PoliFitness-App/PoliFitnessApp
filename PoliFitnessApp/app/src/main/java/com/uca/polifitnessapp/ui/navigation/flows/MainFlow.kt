@@ -78,7 +78,8 @@ fun NavGraphBuilder.mainGraph(
         composable(ButtomNavItems.Profile.rute) {
             ProfileScreen(
                 navController,
-                userViewModel
+                userViewModel,
+                userId = userViewModel.user._id?: ""
             )
         }
         // ---

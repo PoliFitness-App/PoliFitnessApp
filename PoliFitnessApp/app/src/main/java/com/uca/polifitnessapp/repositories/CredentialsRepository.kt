@@ -32,6 +32,9 @@ class CredentialsRepository(
     // Function DAO to get a user
     suspend fun getUserDAO(): UserModel? = userDao.getUser()
 
+    // Function DAO to get a user by id
+    suspend fun getUserById(id: String): UserModel? = userDao.getUserById(id)
+
     // ---
     // API functions
     // ---

@@ -13,12 +13,6 @@ class NoticeRepository(
     private val retrofitInstance: NewsService
 ) {
     private val noticeDao = database.noticeDao()
-
-    suspend fun insertNotice(notice: NoticeModel) = noticeDao.insertNotice(notice)
-
-    suspend fun getNoticeByCategory(category: String) = noticeDao.getNoticeByCategory(category)
-
-    suspend fun toggleNotice(noticeId: Int, hidden: Boolean) = noticeDao.toggleNotice(noticeId, hidden)
     suspend fun getNoticeById(noticeId: String) = noticeDao.getNoticeById(noticeId)
 
     // --
@@ -28,13 +22,12 @@ class NoticeRepository(
     fun getNewsPage(
         pageSize: Int,
         query: String,
-        isRefreshState: Boolean
     ) = Pager(
         config = PagingConfig(
             pageSize = pageSize,
-            prefetchDistance = (0.10 * pageSize).toInt()
+            enablePlaceholders = false
         ),
-        remoteMediator = NewsMediator(database, retrofitInstance, query, isRefreshState)
+        remoteMediator = NewsMediator(database, retrofitInstance, query),
     ) {
         noticeDao.pagingSource(query)
     }.flow
