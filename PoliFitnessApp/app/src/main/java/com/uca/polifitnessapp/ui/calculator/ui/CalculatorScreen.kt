@@ -538,7 +538,8 @@ fun cmicon(){
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
-            .width(48.dp),
+            .width(48.dp)
+            .clickable {  }
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
