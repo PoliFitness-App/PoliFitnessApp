@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -68,6 +70,7 @@ fun SignUpScreen(
             .background(
                 colorResource(id = R.color.white)
             )
+            .verticalScroll(rememberScrollState())
             .padding(25.dp, 0.dp, 25.dp, 0.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -80,6 +83,8 @@ fun SignUpScreen(
             viewModel,
             navController
         )
+
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 

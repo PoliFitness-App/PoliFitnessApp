@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -87,11 +88,13 @@ fun CalculatorScreen(){
                 colorResource(id = R.color.white)
             )
             .verticalScroll(scrollState)
-            .padding(8.dp, 0.dp, 8.dp, 16.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(30.dp, 0.dp, 30.dp, 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        Spacer(modifier = Modifier.height(40.dp))
         HeaderText()
+        Spacer(modifier = Modifier.height(30.dp))
 
         CalculatorView( viewModel = CalculatorViewModel())
 
@@ -106,22 +109,14 @@ fun CalculatorScreen(){
 
 @Composable
 fun HeaderText(
+
 ) {
-    Column {
-
-        Spacer(modifier = Modifier.height(20.dp))
-
         Text(
             text = "Calculadora IMC e ICC",
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier
-                .padding(35.dp, 0.dp,0.dp,0.dp)
-                .align(Alignment.Start),
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
-    }
 }
 
 
