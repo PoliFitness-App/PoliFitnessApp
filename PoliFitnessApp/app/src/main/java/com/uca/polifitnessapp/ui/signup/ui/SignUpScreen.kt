@@ -178,9 +178,9 @@ fun SignUpView(
             }
         }
 
-        GoogleLogin(
+        LogInOption(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            navController = navController.navigate(AuthRoutes.LOGIN_SCREEN)
+            navController
         )
 
     }
@@ -551,29 +551,14 @@ fun TermsAndConditionText(
 }
 
 @Composable
-fun GoogleLogin(
+fun LogInOption(
     modifier: Modifier,
     navController: NavController
 ) {
-    Image(
-        painter = painterResource(id = R.drawable.or),
-        contentDescription = "Google Login",
-        modifier = modifier
-            .width(315.dp)
-            .height(18.dp)
-    )
+
 
     Spacer(modifier = Modifier.padding(2.dp))
 
-    Image(
-        painter = painterResource(id = R.drawable.google),
-        contentDescription = "Google Login",
-        modifier = modifier
-            .padding(4.dp)
-            .width(50.dp)
-            .height(50.dp)
-            .clickable { /*TODO*/ }
-    )
 
     Row(modifier = modifier.padding(2.dp)) {
         Text(
@@ -591,5 +576,7 @@ fun GoogleLogin(
             }
         )
     }
+
+    Spacer(modifier = Modifier.padding(10.dp))
 }
 

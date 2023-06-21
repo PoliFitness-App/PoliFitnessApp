@@ -55,6 +55,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
@@ -221,7 +222,11 @@ fun LoginView(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
-            // GOOGLE LOGIN
+            // Sign un option
+            SignUpOption(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                navController
+            )
 
 
         }
@@ -456,26 +461,10 @@ fun LoginButton(
 // ------------
 
 @Composable
-fun GoogleLogin(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.or),
-        contentDescription = "Google Login",
-        modifier = modifier
-            .width(315.dp)
-            .height(18.dp)
-    )
-
-    Spacer(modifier = Modifier.padding(8.dp))
-
-    Image(
-        painter = painterResource(id = R.drawable.google),
-        contentDescription = "Google Login",
-        modifier = modifier
-            .padding(4.dp)
-            .width(50.dp)
-            .height(50.dp)
-            .clickable { /*TODO*/ }
-    )
+fun SignUpOption(
+    modifier: Modifier,
+    navController: NavController
+) {
 
     Spacer(modifier = Modifier.padding(8.dp))
 
@@ -489,9 +478,13 @@ fun GoogleLogin(modifier: Modifier) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF034189),
-            modifier = modifier.clickable { /*TODO*/ }
+            modifier = modifier.clickable {
+            navController.navigate(AuthRoutes.SIGN_UP_SCREEN)
+            }
         )
     }
+
+    Spacer(modifier = Modifier.padding(10.dp))
 }
 
 
