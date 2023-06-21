@@ -223,9 +223,6 @@ fun LoginView(
 
             // GOOGLE LOGIN
 
-            GoogleLogin(
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
 
         }
     }
@@ -268,6 +265,7 @@ fun HeaderImage(modifier: Modifier) {
 
 // ------------
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailField(
     modifier: Modifier,

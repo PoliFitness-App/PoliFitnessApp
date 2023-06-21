@@ -178,11 +178,6 @@ fun SignUpView(
             }
         }
 
-        GoogleLogin(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally),
-            navController
-        )
     }
 
 }
