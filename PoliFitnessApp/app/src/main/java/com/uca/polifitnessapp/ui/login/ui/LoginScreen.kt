@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
@@ -53,6 +55,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
@@ -68,14 +71,15 @@ fun LoginScreen(
     userViewModel: UserViewModel,
     navController: NavHostController
 ) {
-    Box(
+    Column(
         Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LoginView(
-            Modifier.align(Alignment.Center),
+            Modifier.align(Alignment.CenterHorizontally),
             viewModel,
             userViewModel,
             navController
@@ -218,11 +222,12 @@ fun LoginView(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
-            // GOOGLE LOGIN
-
-            GoogleLogin(
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+            // Sign un option
+            SignUpOption(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                navController
             )
+
 
         }
     }
@@ -265,6 +270,7 @@ fun HeaderImage(modifier: Modifier) {
 
 // ------------
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailField(
     modifier: Modifier,
@@ -455,26 +461,10 @@ fun LoginButton(
 // ------------
 
 @Composable
-fun GoogleLogin(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.or),
-        contentDescription = "Google Login",
-        modifier = modifier
-            .width(315.dp)
-            .height(18.dp)
-    )
-
-    Spacer(modifier = Modifier.padding(8.dp))
-
-    Image(
-        painter = painterResource(id = R.drawable.google),
-        contentDescription = "Google Login",
-        modifier = modifier
-            .padding(4.dp)
-            .width(50.dp)
-            .height(50.dp)
-            .clickable { /*TODO*/ }
-    )
+fun SignUpOption(
+    modifier: Modifier,
+    navController: NavController
+) {
 
     Spacer(modifier = Modifier.padding(8.dp))
 
@@ -488,9 +478,13 @@ fun GoogleLogin(modifier: Modifier) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF034189),
-            modifier = modifier.clickable { /*TODO*/ }
+            modifier = modifier.clickable {
+            navController.navigate(AuthRoutes.SIGN_UP_SCREEN)
+            }
         )
     }
+
+    Spacer(modifier = Modifier.padding(10.dp))
 }
 
 

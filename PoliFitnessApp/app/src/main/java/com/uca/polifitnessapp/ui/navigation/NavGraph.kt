@@ -98,7 +98,8 @@ fun NavigationHost(navController: NavHostController) {
             editProfileViewModel,
             newsScreenViewModel,
             userViewModel,
-            routinesViewModel
+            routinesViewModel,
+
         )
 
         // ---
