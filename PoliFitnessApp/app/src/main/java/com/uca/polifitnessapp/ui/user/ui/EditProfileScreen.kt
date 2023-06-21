@@ -13,16 +13,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Height
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.MonitorWeight
+import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -45,6 +52,9 @@ import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
+
+
+
 @Composable
 fun EditProfileScreen(
     navController: NavController,
@@ -61,16 +71,24 @@ fun EditProfileScreen(
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(25.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(25.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
+        com.uca.polifitnessapp.ui.news.ui.BackButton(
+            modifier = Modifier
+                .align(Alignment.Start),
+            navController = navController
+        )
         HeaderImage()
         EditProfileText()
+        Spacer(modifier = Modifier.height(10.dp))
         combine(
             viewModel,
             userViewModel
         )
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
@@ -150,7 +168,7 @@ fun WeightField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.MonitorWeight,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -194,7 +212,7 @@ fun heightField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.Height,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -238,7 +256,7 @@ fun waistField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.Straighten,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -282,7 +300,7 @@ fun hipField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.Straighten,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -494,6 +512,33 @@ fun SaveButton(
             fontSize = 16.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun BackButton(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        // center items horizontally in the row
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        IconButton(
+            onClick = { navController.popBackStack() }
+        ) {
+            Icon(
+                Icons.Outlined.ArrowBack,
+                contentDescription = "Back button"
+            )
+        }
+        Text(
+            text = "Regresar",
+            style = MaterialTheme.typography.titleSmall
         )
     }
 }
