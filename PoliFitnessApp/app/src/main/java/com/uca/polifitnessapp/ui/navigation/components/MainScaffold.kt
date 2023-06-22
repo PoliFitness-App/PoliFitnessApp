@@ -65,6 +65,10 @@ fun MainScalfold() {
             bottomBarState.value = false
         }
 
+        "routine_info_screen/{routineId}" ->{
+            bottomBarState.value = false
+        }
+
         // default
         else -> {
             bottomBarState.value = true
