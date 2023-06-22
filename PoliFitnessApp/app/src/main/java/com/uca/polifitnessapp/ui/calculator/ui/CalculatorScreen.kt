@@ -224,29 +224,9 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            if(viewModel.weightUnitState == "Femenino"){
+            HeaderImage(viewModel.genderState)
 
-                Image(
-                    painter = painterResource(id = R.drawable.calculator_header_img),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(139.dp)
-                        .height(178.dp)
-                )
 
-            }
-
-            else{
-
-                Image(
-                    painter = painterResource(id = R.drawable.frame),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(139.dp)
-                        .height(178.dp)
-                )
-
-            }
         }
 
         GenderField(
@@ -338,6 +318,34 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 // HEADER TEXT
 
 // ------------
+
+@Composable
+fun HeaderImage(
+    state: ValueState
+){
+    if(state.value == "Femenino" || state.value == null ){
+
+        Image(
+            painter = painterResource(id = R.drawable.calculator_header_img),
+            contentDescription = null,
+            modifier = Modifier
+                .width(139.dp)
+                .height(178.dp)
+        )
+    }
+    else{
+
+        Image(
+            painter = painterResource(id = R.drawable.calculator_header_img),
+            contentDescription = null,
+            modifier = Modifier
+                .width(139.dp)
+                .height(178.dp)
+        )
+
+    }
+
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

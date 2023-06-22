@@ -182,7 +182,17 @@ class CalculatorViewModel: ViewModel() {
             }
         }
 
+        clearData()
 
+
+    }
+
+    fun clearData(){
+        genderState = genderState.copy(value = "", error = null)
+        heightState = heightState.copy(value = "", error = null)
+        weightState = weightState.copy(value = "", error = null)
+        waistState = waistState.copy(value = "", error = null)
+        hipState = hipState.copy(value = "", error = null)
 
     }
 }
