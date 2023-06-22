@@ -198,15 +198,11 @@ fun RoutinesList(
             .debounce(500L)
             .collectLatest { index ->
                 println("Scroll index: $index")
-                viewModel.onScrollStateChange(index)
+                if (index == 0 && viewModel.scrollState.value != 0) {
+                    scrollState.animateScrollToItem(viewModel.scrollState.value)
+                }
+                viewModel.onScrollChange(index)
             }
-    }
-
-    // Restore scroll state
-    LaunchedEffect(Unit) {
-        if (viewModel.scrollState.value != scrollState.firstVisibleItemIndex) {
-            scrollState.scrollToItem(viewModel.scrollState.value!!)
-        }
     }
 }
 

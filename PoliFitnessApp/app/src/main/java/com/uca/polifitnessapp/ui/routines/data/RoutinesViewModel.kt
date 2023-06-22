@@ -1,5 +1,6 @@
 package com.uca.polifitnessapp.ui.routines.data
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +22,8 @@ class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel()
     var category = MutableLiveData("%")
     var level = MutableLiveData("%")
     var approach = MutableLiveData("%")
-    var scrollState = MutableLiveData(0)
+    // Scroll state
+    var scrollState = mutableStateOf(0)
 
     // ---
     // Routines functions
@@ -73,8 +75,11 @@ class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel()
         }
     }
 
-    fun onScrollStateChange(state: Int) {
-        scrollState.value = state
+    // ---
+    // On scroll state change
+    // ---
+    fun onScrollChange(int: Int) {
+        scrollState.value = int
     }
 
     // Get Routines by query
