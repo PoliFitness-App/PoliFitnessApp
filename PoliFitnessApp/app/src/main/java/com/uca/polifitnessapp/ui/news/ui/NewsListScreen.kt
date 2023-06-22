@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun NewsListScreen(
     viewModel: NewsScreenViewModel,
-    navController: NavHostController
+    onNavigateToNews: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -76,7 +76,7 @@ fun NewsListScreen(
     ) {
         NewsList(
             viewModel,
-            navController
+            onNavigateToNews
         )
     }
 }
@@ -231,7 +231,7 @@ fun FilterItem(
 @Composable
 fun NewsList(
     viewModel: NewsScreenViewModel,
-    navController: NavHostController
+    onNavigateToNews: (String) -> Unit
 ) {
     // Container
     Column(
@@ -264,9 +264,7 @@ fun NewsList(
         // ---
         val scrollState = rememberLazyGridState()
         if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(Modifier.align(Alignment.Center))
-            }
+            LoadingScreen()
         } else {
             LazyVerticalGrid(
                 state = scrollState,
@@ -290,15 +288,11 @@ fun NewsList(
                     val item = news[index]
                     // Filter item
                     if (item != null) {
-
                         NewItem(
                             new = item,
                         ) { noticeId ->
-                            coroutineScope.launch {
-                                navController.navigate("new_info_screen/${noticeId}")
-                            }
+                            onNavigateToNews(noticeId)
                         }
-
                     }
                 }
             }
@@ -311,7 +305,6 @@ fun NewsList(
             }
                 .debounce(500L)
                 .collectLatest { index ->
-                    println("Scroll index: $index")
                     if (index == 0 && viewModel.scrollState.value != 0) {
                         scrollState.animateScrollToItem(viewModel.scrollState.value)
                     }

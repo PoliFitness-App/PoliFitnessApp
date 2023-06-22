@@ -60,7 +60,9 @@ fun NavGraphBuilder.mainGraph(
         composable(ButtomNavItems.News.rute) {
             NewsListScreen(
                 newsScreenViewModel,
-                navController
+                onNavigateToNews = { noticeId ->
+                    navController.navigate("new_info_screen/${noticeId}")
+                }
             )
         }
         // ---
@@ -70,7 +72,9 @@ fun NavGraphBuilder.mainGraph(
             RoutinesListScreen(
                 routinesViewModel,
                 userViewModel,
-                navController
+                onNavigateToRoutine = { routineId ->
+                    navController.navigate("routine_info_screen/${routineId}")
+                }
             )
         }
         // ---
@@ -78,11 +82,20 @@ fun NavGraphBuilder.mainGraph(
         // ---
         composable(ButtomNavItems.Profile.rute) {
             ProfileScreen(
-                navController,
                 userViewModel,
-                userId = userViewModel.user._id?: ""
+                userId = userViewModel.user._id?: "",
+                onNavigateToEditProfile = { userId ->
+                    navController.navigate("edit_profile_screen/${userId}")
+                },
+                onNavigateToTermsAndConditions = {
+                    navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+                },
+                onNavigateToContactUs = {
+                    navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+                }
             )
         }
+
         // ---
         // Calculator screen
         // ----
@@ -92,12 +105,24 @@ fun NavGraphBuilder.mainGraph(
         // ---
         // Edit profile route
         // ---
-        composable(MainRoutes.MAIN_USER_EDIT) {
-            EditProfileScreen(
-                navController,
-                userViewModel,
-                editProfileViewModel
+        composable(
+            "edit_profile_screen/{userId}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.StringType
+                }
             )
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getString("userId")?.let {
+                EditProfileScreen(
+                    userViewModel,
+                    editProfileViewModel,
+                    it,
+                    onBackPress = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
         // ---
         // New info route
