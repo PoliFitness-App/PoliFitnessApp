@@ -4,13 +4,11 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.room.paging.util.getOffset
 import androidx.room.withTransaction
-import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
+import com.uca.polifitnessapp.data.PoliFitnessDatabase
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.data.db.models.RemoteKey
 import com.uca.polifitnessapp.network.service.NewsService
-import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import retrofit2.HttpException
 import java.io.IOException
 

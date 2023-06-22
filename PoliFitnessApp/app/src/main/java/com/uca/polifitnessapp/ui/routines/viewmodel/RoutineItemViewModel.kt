@@ -3,16 +3,14 @@ package com.uca.polifitnessapp.ui.routines.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import androidx.paging.ExperimentalPagingApi
 import com.uca.polifitnessapp.PoliFitnessApplication
-import com.uca.polifitnessapp.data.db.models.NoticeModel
-import com.uca.polifitnessapp.data.db.models.RoutineModel
+import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
+import com.uca.polifitnessapp.data.db.models.routine.StepModel
 import com.uca.polifitnessapp.repositories.RoutineRepository
 import com.uca.polifitnessapp.ui.news.status.NewStatusUi
 import kotlinx.coroutines.launch
@@ -38,7 +36,8 @@ class RoutineItemViewModel(
             "",
             "",
             false,
-            ""
+            "",
+            listOf()
         )
     )
         private set

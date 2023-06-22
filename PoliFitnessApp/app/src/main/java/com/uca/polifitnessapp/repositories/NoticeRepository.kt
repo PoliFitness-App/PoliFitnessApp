@@ -3,8 +3,7 @@ package com.uca.polifitnessapp.repositories
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
-import com.uca.polifitnessapp.data.db.models.NoticeModel
+import com.uca.polifitnessapp.data.PoliFitnessDatabase
 import com.uca.polifitnessapp.network.pagination.NewsMediator
 import com.uca.polifitnessapp.network.service.NewsService
 

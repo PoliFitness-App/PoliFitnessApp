@@ -539,7 +539,7 @@ fun cmicon(){
         modifier = Modifier
             .height(56.dp)
             .width(48.dp)
-            .clickable {  }
+            .clickable {  },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
@@ -654,8 +654,6 @@ fun GenderField(
                 .background(Color(0xFFD7E2FF))
                 .width(300.dp)
         )
-
-
 
         ExposedDropdownMenu(
             expanded = isExpanded,

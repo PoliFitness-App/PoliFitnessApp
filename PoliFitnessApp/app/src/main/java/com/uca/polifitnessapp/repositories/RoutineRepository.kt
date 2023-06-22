@@ -3,10 +3,8 @@ package com.uca.polifitnessapp.repositories
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
-import com.uca.polifitnessapp.data.db.dao.RoutineDao
-import com.uca.polifitnessapp.data.db.models.RoutineModel
-import com.uca.polifitnessapp.network.pagination.NewsMediator
+import com.uca.polifitnessapp.data.PoliFitnessDatabase
+import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.network.pagination.RoutinesMediator
 import com.uca.polifitnessapp.network.service.RoutineService
 
@@ -104,8 +102,7 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
     @ExperimentalPagingApi
     fun getRoutinesPageByApproachAndCategoryAndLevel(pageSize: Int, approach: String, category: String, level: String) = Pager(
         config = PagingConfig(
-            pageSize = pageSize,
-            prefetchDistance = (0.10 * pageSize).toInt()
+            pageSize = pageSize
         ),
         // Concateno ambas querys para guardarlo en claves remotas
 
@@ -113,7 +110,6 @@ class RoutineRepository(private val database: PoliFitnessDatabase, private val s
     ) {
         // recibe la query que se le manda desde la vista
         routineDao.pagingSourceByApproachAndCategoryAndLevel(approach, category, level)
-
     }.flow
 
     // Insertar pager para obtener las rutinas, todas
