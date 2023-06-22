@@ -67,6 +67,7 @@ class CalculatorViewModel: ViewModel() {
         genderState = genderState.copy(value = it, error = null)
     }
 
+
     fun changeUnit() {
         if (weightUnitState == "KG")
             weightUnitState = "LB"

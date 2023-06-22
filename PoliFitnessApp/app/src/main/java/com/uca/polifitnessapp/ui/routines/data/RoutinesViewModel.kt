@@ -1,5 +1,6 @@
 package com.uca.polifitnessapp.ui.routines.data
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +11,7 @@ import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.repositories.RoutineRepository
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 
-class RoutinesViewModel(private val repository: RoutineRepository): ViewModel(){
+class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel() {
 
     // ---
     // States for the screen
@@ -21,13 +22,15 @@ class RoutinesViewModel(private val repository: RoutineRepository): ViewModel(){
     var category = MutableLiveData("%")
     var level = MutableLiveData("%")
     var approach = MutableLiveData("%")
+    // Scroll state
+    var scrollState = mutableStateOf(0)
 
     // ---
     // Routines functions
     // ---
 
     // On Category change
-    fun onCategoryChange(label: String){
+    fun onCategoryChange(label: String) {
         when (label) {
             "Todos" -> {
                 category.value = "%"
@@ -48,7 +51,7 @@ class RoutinesViewModel(private val repository: RoutineRepository): ViewModel(){
     }
 
     //// On level change
-    fun onLevelChange(label: String){
+    fun onLevelChange(label: String) {
         when (label) {
             "Todos" -> {
                 level.value = "%"
@@ -72,38 +75,21 @@ class RoutinesViewModel(private val repository: RoutineRepository): ViewModel(){
         }
     }
 
+    // ---
+    // On scroll state change
+    // ---
+    fun onScrollChange(int: Int) {
+        scrollState.value = int
+    }
+
     // Get Routines by query
-
-    // All routines
-    @OptIn(ExperimentalPagingApi::class)
-    fun getRoutines(query: String) = repository.getRoutinesPage(2, query)
-
-    // Routines by approach
-    @OptIn(ExperimentalPagingApi::class)
-    fun getRoutinesByApproach(query: String) = repository.getRoutinesPageByAproach(5, query)
-
-    // Routines by approach and category
-    @OptIn(ExperimentalPagingApi::class)
-    fun getRoutinesByApproachAndCategory(query: String, query2: String) = repository.getRoutinesPageByAproachAndCategory(5, query, query2)
-
-    // Routines by approach and level
-    @OptIn(ExperimentalPagingApi::class)
-    fun getRoutinesByApproachAndLevel(query: String, query2: String) = repository.getRoutinesPageByAproachAndLevel(5, query, query2)
-
-    // Routines by level
-    @OptIn(ExperimentalPagingApi::class)
-    fun getRoutinesByLevel(query: String) = repository.getRoutinesPageByLevel(2, query)
-
     // Routines by level and category and approach
     @OptIn(ExperimentalPagingApi::class)
-    fun getRoutinesByApproachAndCategoryAndLevel(query: String, query2: String, query3: String) = repository.getRoutinesPageByApproachAndCategoryAndLevel(4, query, query2, query3)
-
-    // Routines all
-    @OptIn(ExperimentalPagingApi::class)
-    fun getAllRoutines(query: String) = repository.getAllRoutinesPage(2, query)
+    fun getRoutinesByApproachAndCategoryAndLevel(query: String, query2: String, query3: String) =
+        repository.getRoutinesPageByApproachAndCategoryAndLevel(4, query, query2, query3)
 
     // Creating factory for this viewmodel
-    companion object{
+    companion object {
         val Factory = viewModelFactory {
             initializer {
                 val app =
@@ -112,5 +98,4 @@ class RoutinesViewModel(private val repository: RoutineRepository): ViewModel(){
             }
         }
     }
-
 }

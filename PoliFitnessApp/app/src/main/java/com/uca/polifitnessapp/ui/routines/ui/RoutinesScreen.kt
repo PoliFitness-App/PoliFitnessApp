@@ -1,3 +1,5 @@
+@file:OptIn(FlowPreview::class)
+
 package com.uca.polifitnessapp.ui.routines.ui
 
 import androidx.compose.animation.AnimatedVisibility
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
@@ -37,11 +40,14 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,16 +61,23 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.RoutineModel
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 
 // Main Screen for Routines
 @Composable
 fun RoutinesListScreen(
-    // TODO REVISAR
-    viewModel: RoutinesViewModel
+    viewModel: RoutinesViewModel,
+    userViewModel: UserViewModel,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -74,26 +87,31 @@ fun RoutinesListScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // routines list
-        RoutinesList(viewModel)
+        RoutinesList(
+            viewModel,
+            userViewModel,
+            navController
+        )
     }
-
 }
-
-// States for routines list
-//var level by mutableStateOf("%")
-//var category by mutableStateOf("%")
 
 // Routine list component
 @Composable
 fun RoutinesList(
-    // TODO revisar
-    viewModel: RoutinesViewModel
+    viewModel: RoutinesViewModel,
+    userViewModel: UserViewModel,
+    navController: NavController
 ) {
     // States for news list
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int ->
         selectedIndex = index
     }
+
+    // Scroll state
+    val scrollState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     // Initialize states for filters
     val category: String by viewModel.category.observeAsState(initial = "%")
     val level: String by viewModel.level.observeAsState(initial = "%")
@@ -101,12 +119,14 @@ fun RoutinesList(
     // Filter's for news list
     // Filter by level
 
-    // TODO REVISAR SI ESTA BUENO
-    // TODO SACAR EL APPROACH DEL USUARIO
-    val routinesByFilters = viewModel.getRoutinesByApproachAndCategoryAndLevel("%", category, level).collectAsLazyPagingItems()
+    val routinesByFilters = viewModel.getRoutinesByApproachAndCategoryAndLevel(
+        "%", category, level
+    ).collectAsLazyPagingItems()
 
-    // Recomended routines list
+    // Recommended routines list
+
     LazyColumn(
+        state = scrollState,
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
@@ -137,7 +157,7 @@ fun RoutinesList(
                     "Difícil",
                     "Muy difícil"
                 )
-            ){
+            ) {
                 viewModel.onLevelChange(it)
             }
             FilterItem(
@@ -148,7 +168,7 @@ fun RoutinesList(
                     "Tren inferior",
                     "Cuerpo completo"
                 ),
-            ){
+            ) {
                 viewModel.onCategoryChange(it)
             }
         }
@@ -160,13 +180,29 @@ fun RoutinesList(
             if (item != null) {
                 // Filter item
                 RoutineItem(
-                    routine = item,
-                    index = index,
-                    selected = selectedIndex == index,
-                    onClick = onItemClick
-                )
+                    routine = item
+                ) { routineId ->
+                    coroutineScope.launch {
+                        navController.navigate("routine_info_screen/${routineId}")
+                    }
+                }
             }
         }
+    }
+
+    // Save scroll state
+    LaunchedEffect(scrollState) {
+        snapshotFlow {
+            scrollState.firstVisibleItemIndex
+        }
+            .debounce(500L)
+            .collectLatest { index ->
+                println("Scroll index: $index")
+                if (index == 0 && viewModel.scrollState.value != 0) {
+                    scrollState.animateScrollToItem(viewModel.scrollState.value)
+                }
+                viewModel.onScrollChange(index)
+            }
     }
 }
 
@@ -174,12 +210,11 @@ fun RoutinesList(
 // New Item
 // ------
 
+
 @Composable
 fun RoutineItem(
     routine: RoutineModel,
-    index: Int,
-    selected: Boolean,
-    onClick: (Int) -> Unit
+    onClick: (String) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
@@ -231,7 +266,9 @@ fun RoutineItem(
                 )
                 // Button
                 Button(
-                    onClick = { onClick.invoke(index) },
+                    onClick = {
+                        onClick(routine.routineId)
+                    },
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(8.dp),
                     modifier = Modifier
@@ -279,7 +316,7 @@ fun RoutineItem(
 
 @Composable
 fun FilterItem(
-    text:String,
+    text: String,
     items: List<String>,
     onClick: (String) -> Unit
 ) {
