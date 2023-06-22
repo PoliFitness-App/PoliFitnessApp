@@ -1,6 +1,7 @@
 package com.uca.polifitnessapp.ui.calculator.ui
 
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Female
 import androidx.compose.material.icons.outlined.Height
+import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Male
 import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Straighten
@@ -53,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
@@ -220,19 +224,35 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            Image(
-                painter = painterResource(id = R.drawable.calculator_header_img),
-                contentDescription = null,
-                modifier = Modifier
-                    .width(139.dp)
-                    .height(178.dp)
-            )
+            if(viewModel.weightUnitState == "Femenino"){
+
+                Image(
+                    painter = painterResource(id = R.drawable.calculator_header_img),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(139.dp)
+                        .height(178.dp)
+                )
+
+            }
+
+            else{
+
+                Image(
+                    painter = painterResource(id = R.drawable.frame),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(139.dp)
+                        .height(178.dp)
+                )
+
+            }
         }
 
         GenderField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             viewModel.genderState,
-            viewModel::updateGender
+            viewModel::updateGender,
         )
 
         //BirthdayField(birthdate, onDateChange = {})
@@ -247,7 +267,12 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                 ImeAction.Next,
                 viewModel::updateWeight
             )
-            kgicon()
+
+            kgicon(
+                viewModel.weightUnitState
+            ){
+                viewModel.changeUnit()
+            }
 
         }
 
@@ -260,7 +285,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                 ImeAction.Next,
                 viewModel::updateHeight
             )
-            cmicon()
+            MetersIcon()
 
         }
 
@@ -492,11 +517,17 @@ fun hipField(
 }
 
 @Composable
-fun kgicon(){
+fun kgicon(
+    unit : String,
+    onClick: () -> Unit
+){
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
-            .width(48.dp),
+            .width(48.dp)
+            .clickable {
+                onClick()
+            },
         shape = RoundedCornerShape(10.dp),colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
         Column(
@@ -505,7 +536,7 @@ fun kgicon(){
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(text = "KG", color = Color.White)
+            Text(text = unit , color = Color.White)
 
         }
 
@@ -513,7 +544,31 @@ fun kgicon(){
 }
 
 @Composable
-fun cmicon(){
+fun MetersIcon(
+){
+    ElevatedCard(
+        modifier = Modifier
+            .height(56.dp)
+            .width(48.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
+    ){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            Text(text = "M", color = Color.White)
+
+        }
+
+    }
+}
+
+@Composable
+fun cmicon(
+){
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
@@ -603,11 +658,20 @@ fun GenderField(
             shape = MaterialTheme.shapes.small,
             readOnly = true,
             leadingIcon = {
+
+                if( state.value == "Femenino" || state.value == null)
                 Icon(
-                    imageVector = Icons.Outlined.Male,
+                    imageVector = Icons.Outlined.Female,
                     contentDescription = "null",
                     tint = Color(0xFF565E71)
-                )
+                )else{
+                    Icon(
+                        imageVector = Icons.Outlined.Male,
+                        contentDescription = "null",
+                        tint = Color(0xFF565E71)
+                    )
+
+                }
             },
             label = {
                 Text(
@@ -639,29 +703,33 @@ fun GenderField(
             expanded = isExpanded,
             onDismissRequest = { isExpanded = false },
         ) {
+
             DropdownMenuItem(
-                text = { Text(text = "Femenino")},
+                text = { Text(text = "Femenino") },
                 onClick = {
                     state.value = "Femenino"
                     isExpanded = false
-
                 }
             )
 
+
+
             DropdownMenuItem(
-                text = { Text(text = "Masculino")},
+                text = { Text(text = "Masculino") },
                 onClick = {
                     state.value = "Masculino"
                     isExpanded = false
 
-                }
-            )
+                },
+
+                )
 
         }
 
     }
 
 }
+
 
 
 
