@@ -60,6 +60,7 @@ import androidx.navigation.NavHostController
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
+import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
@@ -87,19 +88,6 @@ fun LoginScreen(
     }
 
 }
-
-@Composable
-fun LoadingView() {
-    Box(
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(Modifier.align(Alignment.Center))
-    }
-}
-
 @Composable
 fun LoginView(
     modifier: Modifier,
@@ -171,7 +159,7 @@ fun LoginView(
     val coroutineScope = rememberCoroutineScope()
 
     if (isLoginLoading){
-        LoadingView()
+        LoadingScreen()
     } else {
         Column(modifier = modifier) {
 

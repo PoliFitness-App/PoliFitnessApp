@@ -10,5 +10,11 @@
     <string name="title_contact_card">Tu mensaje ha sido enviado</string>
     <string name="podcast_name">Ponte en Cintura</string>
     <string name="podcast_description">Escucha nuestro podcast en spotify.</string>
+    <string name="routine_level_easy">Fácil</string>
+    <string name="routine_level_medium">Medio</string>
+    <string name="routine_level_hard">Difícil</string>
+    <string name="routine_level_very_hard">Muy difícil</string>
+    <string name="steps_title">Pasos</string>
+    <string name="back_button_text">Regresar</string>
 
 </resources>

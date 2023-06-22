@@ -86,7 +86,7 @@ class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel()
     // Routines by level and category and approach
     @OptIn(ExperimentalPagingApi::class)
     fun getRoutinesByApproachAndCategoryAndLevel(query: String, query2: String, query3: String) =
-        repository.getRoutinesPageByApproachAndCategoryAndLevel(4, query, query2, query3)
+        repository.getRoutinesPageByApproachAndCategoryAndLevel(20, query, query2, query3)
 
     // Creating factory for this viewmodel
     companion object {

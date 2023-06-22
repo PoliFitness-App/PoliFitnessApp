@@ -1,9 +1,10 @@
-package com.uca.polifitnessapp.data.db
+package com.uca.polifitnessapp.data
 
 import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.uca.polifitnessapp.data.db.dao.NoticeDao
 import com.uca.polifitnessapp.data.db.dao.RemoteKeyDao
 import com.uca.polifitnessapp.data.db.dao.RemoteKeyRoutineDao
@@ -12,11 +13,21 @@ import com.uca.polifitnessapp.data.db.dao.UserDao
 import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.data.db.models.RemoteKey
 import com.uca.polifitnessapp.data.db.models.RemoteKeyRoutine
-import com.uca.polifitnessapp.data.db.models.RoutineModel
+import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.data.db.models.routine.StepConverter
 
-@Database(entities = [UserModel::class, RoutineModel::class, NoticeModel::class, RemoteKey::class, RemoteKeyRoutine::class], version = 12, exportSchema = false)
-abstract class PoliFitnessDatabase : RoomDatabase(){
+@TypeConverters(StepConverter::class)
+@Database(
+    entities = [UserModel::class,
+        RoutineModel::class,
+        NoticeModel::class,
+        RemoteKey::class,
+        RemoteKeyRoutine::class],
+    version = 15,
+    exportSchema = false
+)
+abstract class PoliFitnessDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
     abstract fun routineDao(): RoutineDao
@@ -26,12 +37,12 @@ abstract class PoliFitnessDatabase : RoomDatabase(){
     abstract fun remoteKeysDao(): RemoteKeyDao
     abstract fun remoteKeysRoutineDao(): RemoteKeyRoutineDao
 
-    companion object{
+    companion object {
         @Volatile
-        private var INSTANCE : PoliFitnessDatabase? = null
+        private var INSTANCE: PoliFitnessDatabase? = null
 
-        fun newInstance(application: Application): PoliFitnessDatabase{
-            return INSTANCE ?: synchronized(this){
+        fun newInstance(application: Application): PoliFitnessDatabase {
+            return INSTANCE ?: synchronized(this) {
 
                 val instance = Room.databaseBuilder(
                     application.applicationContext,
@@ -39,11 +50,9 @@ abstract class PoliFitnessDatabase : RoomDatabase(){
                     "poliFitness_app"
                 ).fallbackToDestructiveMigration().build()
 
-                INSTANCE= instance
+                INSTANCE = instance
                 instance
-
             }
-
         }
     }
 }

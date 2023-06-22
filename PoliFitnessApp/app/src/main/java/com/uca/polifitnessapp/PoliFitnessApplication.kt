@@ -3,13 +3,12 @@ package com.uca.polifitnessapp
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
-import com.uca.polifitnessapp.data.db.models.UserModel
+import androidx.room.TypeConverters
+import com.uca.polifitnessapp.data.PoliFitnessDatabase
 import com.uca.polifitnessapp.network.retrofit.RetrofitInstance
 import com.uca.polifitnessapp.repositories.CredentialsRepository
 import com.uca.polifitnessapp.repositories.NoticeRepository
 import com.uca.polifitnessapp.repositories.RoutineRepository
-import com.uca.polifitnessapp.repositories.UserRepository
 
 class PoliFitnessApplication: Application(){
 
