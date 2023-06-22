@@ -3,12 +3,17 @@ package com.uca.polifitnessapp.ui.calculator.viewmodel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Female
 import androidx.compose.material.icons.outlined.Male
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
+import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.calculator.ui.ValueState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class CalculatorViewModel: ViewModel() {
 
@@ -38,15 +43,9 @@ class CalculatorViewModel: ViewModel() {
 
     var weightUnitState by mutableStateOf("KG")
 
-    //Gender change icon selection
+    var imageGender by mutableStateOf(R.drawable.calculator_header_img)
 
-  /*  var iconGender  by mutableStateOf(Icons.Outlined.Male)
-    private set
 
-    fun setIconGender(icon: ImageVector){
-        iconGender = icon
-    }
-    */
     fun updateHeight(it: String) {
         heightState = heightState.copy(value = it, error = null)
     }
@@ -65,6 +64,16 @@ class CalculatorViewModel: ViewModel() {
 
     fun updateGender(it: String) {
         genderState = genderState.copy(value = it, error = null)
+        updateImage(it)
+
+    }
+
+    private fun updateImage(gender: String) {
+        imageGender = when (gender) {
+            "Femenino" -> R.drawable.calculator_header_img
+            "Masculino" -> R.drawable.frame
+            else -> R.drawable.calculator_header_img
+        }
     }
 
 

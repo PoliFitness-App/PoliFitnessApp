@@ -529,10 +529,6 @@ fun SpotifyCard(
                     )
 
                     Spacer(modifier = Modifier.height(5.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.musicoptions),
-                        contentDescription = null,
-                    )
 
                 }
 

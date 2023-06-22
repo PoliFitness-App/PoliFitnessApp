@@ -55,6 +55,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -250,7 +251,10 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            HeaderImage(viewModel.genderState)
+
+            HeaderImage(
+                viewModel.genderState,
+                viewModel = CalculatorViewModel())
 
 
         }
@@ -262,7 +266,6 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             viewModel::updateGender,
         )
 
-        //BirthdayField(birthdate, onDateChange = {})
 
 
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
@@ -351,16 +354,15 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 @Composable
 fun HeaderImage(
     state: ValueState,
+    viewModel: CalculatorViewModel
 
 ) {
-        Image (
-            painter = painterResource(when (state.value) {
-                "Femenino" -> R.drawable.calculator_header_img
-                "Masculino" -> R.drawable.frame
-                else -> R.drawable.calculator_header_img
-            }),
-            contentDescription = null
-        )
+
+    LaunchedEffect(state.value){
+        viewModel.updateGender(state.value)
+    }
+
+    Image(painter = painterResource(viewModel.imageGender), contentDescription = null)
 
 
 }
@@ -374,7 +376,6 @@ fun HeaderImage(
         imeAction: ImeAction,
         onValueChange: (String) -> Unit
     ) {
-        val focusManager = LocalFocusManager.current
 
         TextField(
             value = state.value,
