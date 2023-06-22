@@ -52,6 +52,7 @@ class CalculatorViewModel: ViewModel() {
         genderState = genderState.copy(value = it, error = null)
     }
 
+
     fun calculate() {
         val height = heightState.toNumber()
         val weight = weightState.toNumber()

@@ -71,12 +71,12 @@ fun Home() {
         .fillMaxSize()
         .background(Color.White)) {
 
-        item{
+        /*item{
             Spacer(modifier = Modifier.height(25.dp))
             home_tittle()
             Spacer(modifier = Modifier.height(25.dp))
             IMC_card()
-        }
+        }*/
 
         item {
             Spacer(modifier = Modifier.height(25.dp))
@@ -96,7 +96,14 @@ fun Home() {
         }
 
         item {
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(25.dp))
+            newsTittle()
+            Spacer(modifier = Modifier.height(25.dp))
+            someNews()
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(110.dp))
         }
 
     }
@@ -235,11 +242,11 @@ Show tree user routines
 */
 @Composable()
 fun someRoutines() {
-    Box(
+    Column(
         modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,)
+    {
 
         Card(
             modifier = Modifier
@@ -258,8 +265,8 @@ fun someRoutines() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(17.dp)) {
+                        .fillMaxSize()
+                        .padding(17.dp)) {
 
                     Image(modifier = Modifier
                         .clip(CircleShape)
@@ -288,32 +295,41 @@ fun someRoutines() {
 
                     }
 
-                    Spacer(modifier = Modifier.width(60.dp))
+                    Spacer(modifier = Modifier.width(30.dp))
+                    RoutineButtonHome()
 
-                    Box(
-                        modifier = Modifier
-                            .size(25.dp)
-                            .align(Alignment.CenterVertically)
-                            .border(
-                                width = 1.dp,
-                                color = md_theme_light_primary,
-                                shape = CircleShape,
-                            ),
-                    ) {
-                        FloatingActionButton(
-                            onClick = { /* Acción al hacer clic en el FAB */ },
-                            modifier = Modifier
-                                .matchParentSize(),
-                            backgroundColor = colorResource(R.color.white),
-                            content = {
-                                Icon(
-                                    painterResource(R.drawable.nav_to_icon),
-                                    contentDescription = "Ver rutina",
-                                    tint = md_theme_light_primary)
-                            }
-                        )
-                    }
+
+
+
+
+
                 }
+
+
+            }
+        )
+    }
+}
+
+@Composable
+fun RoutineButtonHome(){
+    Box(
+        modifier = Modifier
+            .size(25.dp)
+            .border(
+                width = 1.dp,
+                color = md_theme_light_primary,
+                shape = CircleShape,
+            ),
+    ) {
+        FloatingActionButton(
+            onClick = { /* Acción al hacer clic en el FAB */ },
+            backgroundColor = colorResource(R.color.white),
+            content = {
+                Icon(
+                    painterResource(R.drawable.nav_to_icon),
+                    contentDescription = "Ver rutina",
+                    tint = md_theme_light_primary)
             }
         )
     }
@@ -552,8 +568,6 @@ fun SpotifyPodcastButton(podcastUri: String) {
     ) {
         FloatingActionButton(
             backgroundColor = colorResource(R.color.white),
-            modifier = Modifier
-                .matchParentSize(),
             onClick = {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(podcastUri))
                 intent.putExtra(Intent.EXTRA_REFERRER, Uri.parse("android-app://${context.packageName}"))

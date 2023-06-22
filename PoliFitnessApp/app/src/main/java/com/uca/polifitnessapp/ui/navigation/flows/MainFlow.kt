@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.uca.polifitnessapp.ui.calculator.ui.CalculatorScreen
+import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
 import com.uca.polifitnessapp.ui.contactscreen.ui.Contact
 import com.uca.polifitnessapp.ui.homeScreen.ui.Home
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems
@@ -86,7 +87,7 @@ fun NavGraphBuilder.mainGraph(
         // Calculator screen
         // ----
         composable(MainRoutes.MAIN_CALCULATOR_SCREEN) {
-            CalculatorScreen()
+            CalculatorScreen(  )
         }
         // ---
         // Edit profile route

@@ -1,6 +1,7 @@
 package com.uca.polifitnessapp.ui.calculator.ui
 
 
+import android.content.ClipData.Item
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,14 +11,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Height
@@ -70,37 +75,50 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview
 @Composable
 fun CalculatorScreen(){
+
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(8.dp, 0.dp, 8.dp, 16.dp),
-        verticalArrangement = Arrangement.Center,
+            .verticalScroll(scrollState)
+            .padding(30.dp, 0.dp, 30.dp, 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CalculatorView(viewModel = CalculatorViewModel())
+
+        Spacer(modifier = Modifier.height(40.dp))
+        HeaderText()
+        Spacer(modifier = Modifier.height(30.dp))
+
+        CalculatorView( viewModel = CalculatorViewModel())
+
+        Spacer(modifier = Modifier.height(90.dp))
+
+
     }
 }
 
-@Composable
-fun HeaderText( viewModel: CalculatorViewModel = CalculatorViewModel()){
-    Column {
 
+
+
+@Composable
+fun HeaderText(
+
+) {
         Text(
             text = "Calculadora IMC e ICC",
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier
-                .padding(16.dp, 8.dp, 16.dp, 4.dp)
-                .align(Alignment.Start),
         )
-    }
+
 }
+
 
 @Composable
 fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
@@ -112,7 +130,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
 
-        HeaderText()
+
 
         Row(
             modifier = Modifier
@@ -229,6 +247,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             )
         }
 
+
         GenderField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             viewModel.genderState,
@@ -294,6 +313,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             modifier = Modifier
                 .fillMaxWidth(),
         ) {
+
             CalculateButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = "Calcular",
@@ -306,6 +326,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
         }
     }
 }
+
 
 
 // -----------
@@ -517,7 +538,8 @@ fun cmicon(){
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
-            .width(48.dp),
+            .width(48.dp)
+            .clickable {  }
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
     ){
