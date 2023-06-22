@@ -1,7 +1,9 @@
 package com.uca.polifitnessapp.ui.calculator.ui
 
 
+import android.content.Context
 import android.graphics.drawable.Icon
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,11 +53,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -72,6 +76,7 @@ import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+
 
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -321,422 +326,422 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
 @Composable
 fun HeaderImage(
-    state: ValueState
-){
-    if(state.value == "Femenino" || state.value == null ){
-
-        Image(
-            painter = painterResource(id = R.drawable.calculator_header_img),
-            contentDescription = null,
-            modifier = Modifier
-                .width(139.dp)
-                .height(178.dp)
-        )
-    }
-    else{
-
-        Image(
-            painter = painterResource(id = R.drawable.calculator_header_img),
-            contentDescription = null,
-            modifier = Modifier
-                .width(139.dp)
-                .height(178.dp)
-        )
-
-    }
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun weightField(
-    modifier: Modifier,
     state: ValueState,
-    imeAction: ImeAction,
-    onValueChange: (String) -> Unit
-){
-    val focusManager = LocalFocusManager.current
 
-    TextField(
-        value = state.value,
-        isError = state.error != null,
-        onValueChange = { onValueChange(it) },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.MonitorWeight,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Peso",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun heightField(
-    modifier: Modifier,
-    state: ValueState,
-    imeAction: ImeAction,
-    onValueChange: (String) -> Unit
-){
-    val focusManager = LocalFocusManager.current
-
-    TextField(
-        value = state.value,
-        isError = state.error != null,
-        onValueChange = { onValueChange(it) },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Height,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Altura",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun waistField(
-    modifier: Modifier,
-    state: ValueState,
-    imeAction: ImeAction,
-    onValueChange: (String) -> Unit
-){
-    TextField(
-        value = state.value,
-        isError = state.error != null,
-        onValueChange = { onValueChange(it) },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Straighten,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Perímetro de cintura",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun hipField(
-    modifier: Modifier,
-    state: ValueState,
-    imeAction: ImeAction,
-    onValueChange: (String) -> Unit
-){
-    TextField(
-        value = state.value,
-        isError = state.error != null,
-        onValueChange = { onValueChange(it) },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Straighten,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Perímetro de cadera",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = imeAction),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
-
-@Composable
-fun kgicon(
-    unit : String,
-    onClick: () -> Unit
-){
-    ElevatedCard(
-        modifier = Modifier
-            .height(56.dp)
-            .width(48.dp)
-            .clickable {
-                onClick()
-            },
-        shape = RoundedCornerShape(10.dp),colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
-    ){
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(text = unit , color = Color.White)
-
-        }
-
-    }
-}
-
-@Composable
-fun MetersIcon(
-){
-    ElevatedCard(
-        modifier = Modifier
-            .height(56.dp)
-            .width(48.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
-    ){
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(text = "M", color = Color.White)
-
-        }
-
-    }
-}
-
-@Composable
-fun cmicon(
-){
-    ElevatedCard(
-        modifier = Modifier
-            .height(56.dp)
-            .width(48.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors( containerColor = Color(0xFF034189))
-    ){
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(text = "CM", color = Color.White)
-
-        }
-
-    }
-}
-
-
-
-@Composable
-fun CalculateButton(
-    modifier: Modifier,
-    text: String,
-    onClick: () -> Unit
-)
-{
-    val focusManager = LocalFocusManager.current
-
-    Button(
-        onClick = { focusManager.clearFocus(); onClick()},
-        shape = RoundedCornerShape(10.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 20.dp,
-            pressedElevation = 10.dp,
-            disabledElevation = 0.dp
-        ),
-        modifier = modifier
-            .width(315.dp)
-            .height(56.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF034189)
-        ),
-    )
-    {
-        Text(
-            text,
-            fontSize = 16.sp,
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-        )
-
-    }
-
-
-}
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun GenderField(
-    modifier: Modifier,
-    state: ValueState,
-    onValueChange: (String) -> Unit,
 ) {
+        Image (
+            painter = painterResource(when (state.value) {
+                "Femenino" -> R.drawable.calculator_header_img
+                "Masculino" -> R.drawable.frame
+                else -> R.drawable.calculator_header_img
+            }),
+            contentDescription = null
+        )
 
 
-    var isExpanded by remember {
-        mutableStateOf(false)
-    }
-
-    /*var gender by remember {
-        mutableStateOf("")
-    }*/
+}
 
 
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = it}
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun weightField(
+        modifier: Modifier,
+        state: ValueState,
+        imeAction: ImeAction,
+        onValueChange: (String) -> Unit
     ) {
+        val focusManager = LocalFocusManager.current
+
         TextField(
             value = state.value,
-            onValueChange = {onValueChange(it)},
+            isError = state.error != null,
+            onValueChange = { onValueChange(it) },
             shape = MaterialTheme.shapes.small,
-            readOnly = true,
             leadingIcon = {
-
-                if( state.value == "Femenino" || state.value == null)
                 Icon(
-                    imageVector = Icons.Outlined.Female,
+                    imageVector = Icons.Outlined.MonitorWeight,
                     contentDescription = "null",
                     tint = Color(0xFF565E71)
-                )else{
-                    Icon(
-                        imageVector = Icons.Outlined.Male,
-                        contentDescription = "null",
-                        tint = Color(0xFF565E71)
-                    )
-
-                }
+                )
             },
             label = {
                 Text(
-                    text = "Escoge tu genero",
+                    text = "Peso",
                     color = Color(0xFF565E71),
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
                 )
             },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-            },
-            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction
+            ),
+            modifier = modifier
+                .width(240.dp),
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color(0xFF565E71),
                 unfocusedBorderColor = Color.Transparent,
-                //containerColor = Color(0xFFD7E2FF)
+                containerColor = Color(0xFFD7E2FF)
 
-            ),
-            modifier = Modifier
-                .menuAnchor()
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color(0xFFD7E2FF))
-                .width(300.dp)
+            )
         )
 
+    }
 
 
-        ExposedDropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun heightField(
+        modifier: Modifier,
+        state: ValueState,
+        imeAction: ImeAction,
+        onValueChange: (String) -> Unit
+    ) {
+        val focusManager = LocalFocusManager.current
+
+        TextField(
+            value = state.value,
+            isError = state.error != null,
+            onValueChange = { onValueChange(it) },
+            shape = MaterialTheme.shapes.small,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Height,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            label = {
+                Text(
+                    text = "Altura",
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction
+            ),
+            modifier = modifier
+                .width(240.dp),
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+                containerColor = Color(0xFFD7E2FF)
+
+            )
+        )
+
+    }
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun waistField(
+        modifier: Modifier,
+        state: ValueState,
+        imeAction: ImeAction,
+        onValueChange: (String) -> Unit
+    ) {
+        TextField(
+            value = state.value,
+            isError = state.error != null,
+            onValueChange = { onValueChange(it) },
+            shape = MaterialTheme.shapes.small,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Straighten,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            label = {
+                Text(
+                    text = "Perímetro de cintura",
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction
+            ),
+            modifier = modifier
+                .width(240.dp),
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+                containerColor = Color(0xFFD7E2FF)
+
+            )
+        )
+
+    }
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun hipField(
+        modifier: Modifier,
+        state: ValueState,
+        imeAction: ImeAction,
+        onValueChange: (String) -> Unit
+    ) {
+        TextField(
+            value = state.value,
+            isError = state.error != null,
+            onValueChange = { onValueChange(it) },
+            shape = MaterialTheme.shapes.small,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Straighten,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            label = {
+                Text(
+                    text = "Perímetro de cadera",
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction
+            ),
+            modifier = modifier
+                .width(240.dp),
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+                containerColor = Color(0xFFD7E2FF)
+
+            )
+        )
+
+    }
+
+    @Composable
+    fun kgicon(
+        unit: String,
+        onClick: () -> Unit
+    ) {
+        ElevatedCard(
+            modifier = Modifier
+                .height(56.dp)
+                .width(48.dp)
+                .clickable {
+                    onClick()
+                },
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
         ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
 
-            DropdownMenuItem(
-                text = { Text(text = "Femenino") },
-                onClick = {
-                    state.value = "Femenino"
-                    isExpanded = false
-                }
+            ) {
+                Text(text = unit, color = Color.White)
+
+            }
+
+        }
+    }
+
+    @Composable
+    fun MetersIcon(
+    ) {
+        ElevatedCard(
+            modifier = Modifier
+                .height(56.dp)
+                .width(48.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                Text(text = "M", color = Color.White)
+
+            }
+
+        }
+    }
+
+    @Composable
+    fun cmicon(
+    ) {
+        ElevatedCard(
+            modifier = Modifier
+                .height(56.dp)
+                .width(48.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                Text(text = "CM", color = Color.White)
+
+            }
+
+        }
+    }
+
+
+    @Composable
+    fun CalculateButton(
+        modifier: Modifier,
+        text: String,
+        onClick: () -> Unit
+    ) {
+        val focusManager = LocalFocusManager.current
+
+        Button(
+            onClick = { focusManager.clearFocus(); onClick() },
+            shape = RoundedCornerShape(10.dp),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 20.dp,
+                pressedElevation = 10.dp,
+                disabledElevation = 0.dp
+            ),
+            modifier = modifier
+                .width(315.dp)
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF034189)
+            ),
+        )
+        {
+            Text(
+                text,
+                fontSize = 16.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+
+        }
+
+
+    }
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun GenderField(
+        modifier: Modifier,
+        state: ValueState,
+        onValueChange: (String) -> Unit,
+    ) {
+
+
+        var isExpanded by remember {
+            mutableStateOf(false)
+        }
+
+        /*var gender by remember {
+        mutableStateOf("")
+    }*/
+
+
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = it }
+        ) {
+            TextField(
+                value = state.value,
+                onValueChange = { onValueChange(it) },
+                shape = MaterialTheme.shapes.small,
+                readOnly = true,
+                leadingIcon = {
+
+                    if (state.value == "Femenino" || state.value == "")
+                        Icon(
+                            imageVector = Icons.Outlined.Female,
+                            contentDescription = "null",
+                            tint = Color(0xFF565E71)
+                        ) else {
+                        Icon(
+                            imageVector = Icons.Outlined.Male,
+                            contentDescription = "null",
+                            tint = Color(0xFF565E71)
+                        )
+
+                    }
+                },
+                label = {
+                    Text(
+                        text = "Escoge tu genero",
+                        color = Color(0xFF565E71),
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp
+                    )
+                },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xFF565E71),
+                    unfocusedBorderColor = Color.Transparent,
+                    //containerColor = Color(0xFFD7E2FF)
+
+                ),
+                modifier = Modifier
+                    .menuAnchor()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color(0xFFD7E2FF))
+                    .width(300.dp)
             )
 
 
 
-            DropdownMenuItem(
-                text = { Text(text = "Masculino") },
-                onClick = {
-                    state.value = "Masculino"
-                    isExpanded = false
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false },
+            ) {
 
-                },
-
+                DropdownMenuItem(
+                    text = { Text(text = "Femenino") },
+                    onClick = {
+                        state.value = "Femenino"
+                        isExpanded = false
+                    }
                 )
+
+
+
+                DropdownMenuItem(
+                    text = { Text(text = "Masculino") },
+                    onClick = {
+                        state.value = "Masculino"
+                        isExpanded = false
+
+                    },
+
+                    )
+
+            }
+
 
         }
 
     }
 
-}
 
 
 
