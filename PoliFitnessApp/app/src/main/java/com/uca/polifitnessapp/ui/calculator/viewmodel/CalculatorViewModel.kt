@@ -9,6 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.calculator.ui.ValueState
@@ -43,38 +45,57 @@ class CalculatorViewModel: ViewModel() {
 
     var weightUnitState by mutableStateOf("KG")
 
-    var imageGender by mutableStateOf(R.drawable.calculator_header_img)
-
+    var isButtonEnabled by mutableStateOf(false)
 
     fun updateHeight(it: String) {
         heightState = heightState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateWeight(it: String) {
         weightState = weightState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateWaist(it: String) {
         waistState = waistState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateHip(it: String) {
         hipState = hipState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateGender(it: String) {
         genderState = genderState.copy(value = it, error = null)
-        updateImage(it)
+        checkButton()
+        //updateImage(it)
 
     }
 
+
+
+    fun checkButton(){
+        isButtonEnabled = genderState.value.isNotEmpty() &&
+                weightState.value.isNotEmpty()&&
+                weightState.value.isNotEmpty()&&
+                heightState.value.isNotEmpty()&&
+                hipState.value.isNotEmpty()&&
+                waistState.value.isNotEmpty()
+    }
+
+
+
+    /*
     private fun updateImage(gender: String) {
         imageGender = when (gender) {
             "Femenino" -> R.drawable.calculator_header_img
             "Masculino" -> R.drawable.frame
             else -> R.drawable.calculator_header_img
         }
-    }
+    }*/
+
 
 
     fun changeUnit() {
