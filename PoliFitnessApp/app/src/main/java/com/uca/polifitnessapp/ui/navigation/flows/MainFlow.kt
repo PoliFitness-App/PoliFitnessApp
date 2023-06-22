@@ -124,9 +124,11 @@ fun NavGraphBuilder.mainGraph(
                 )
             }
         }
+
         // ---
         // New info route
         // ---
+
         composable(
             "new_info_screen/{noticeId}",
             arguments = listOf(
@@ -138,8 +140,10 @@ fun NavGraphBuilder.mainGraph(
             backStackEntry.arguments?.getString("noticeId")?.let {
                 NewItemBox(
                     newsItemViewModel,
-                    navController,
-                    it
+                    it,
+                    onBackPress = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }
@@ -159,8 +163,10 @@ fun NavGraphBuilder.mainGraph(
             backStackEntry.arguments?.getString("routineId")?.let {
                 RoutineItemScreen(
                     routineItemViewModel,
-                    navController,
-                    it
+                    it,
+                    onBackPress = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }
@@ -172,14 +178,18 @@ fun NavGraphBuilder.mainGraph(
             MainRoutes.MAIN_CONTACT_INFO
         ) {
             Contact(
-                navController
+                onBackPress = {
+                    navController.popBackStack()
+                }
             )
         }
         composable(
             MainRoutes.MAIN_TERMS_AND_CONDITIONS
         ) {
             privacyPoliticsScreen(
-                navController
+                onBackPress = {
+                    navController.popBackStack()
+                }
             )
         }
     }

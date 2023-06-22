@@ -16,5 +16,6 @@
     <string name="routine_level_very_hard">Muy difícil</string>
     <string name="steps_title">Pasos</string>
     <string name="back_button_text">Regresar</string>
+    <string name="back_label">Regresar</string>
 
 </resources>

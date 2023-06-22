@@ -33,22 +33,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
 import com.uca.polifitnessapp.ui.theme.md_theme_light_scrim
 
 
 @Composable
 fun privacyPoliticsScreen(
-    navController: NavController
+    onBackPress: () -> Unit,
 ) {
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .background(Color.White)) {
 
         item {
-            com.uca.polifitnessapp.ui.contactscreen.ui.BackButton(
+            BackButton(
                 modifier = Modifier,
-                navController
+                onBackPress
             )
             Spacer(modifier = Modifier.height(25.dp))
             politicTittle()
@@ -71,30 +72,6 @@ fun privacyPoliticsScreen(
             Spacer(modifier = Modifier.height(25.dp))
             changePoliticsDescription()
             Spacer(modifier = Modifier.height(25.dp))
-        }
-    }
-}
-
-@Composable
-fun BackButton(
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        // center items horizontally in the row
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton(
-            onClick = { navController.popBackStack() }
-        ) {
-            Icon(
-                Icons.Outlined.ArrowBack,
-                contentDescription = "Back button"
-            )
         }
     }
 }
