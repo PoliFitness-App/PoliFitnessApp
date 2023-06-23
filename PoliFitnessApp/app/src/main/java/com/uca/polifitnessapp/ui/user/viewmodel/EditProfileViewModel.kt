@@ -1,5 +1,8 @@
 package com.uca.polifitnessapp.ui.user.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +35,8 @@ class EditProfileViewModel(
 
     // hipP
     var hipP = MutableLiveData("")
+
+    var weightUnitState by mutableStateOf("KG")
 
     // ---
     // States
@@ -140,6 +145,13 @@ class EditProfileViewModel(
     // Clear status function
     fun clearStatus() {
         _status.value = EditProfileUiStatus.Resume
+    }
+
+    fun changeUnit() {
+        if (weightUnitState == "KG")
+            weightUnitState = "LB"
+        else
+            weightUnitState = "KG"
     }
 
     // ---

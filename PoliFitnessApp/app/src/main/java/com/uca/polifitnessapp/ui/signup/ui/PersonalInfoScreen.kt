@@ -178,7 +178,11 @@ fun SignUpPersonalInfoView(
             ) {
                 viewModel.onWeightChange(it)
             }
-            kgicon()
+            kgicon(
+                viewModel.weightUnitState
+            ){
+                viewModel.changeUnit()
+            }
         }
 
         // ---
@@ -528,11 +532,15 @@ fun hipField(
 }
 
 @Composable
-fun kgicon() {
+fun kgicon(
+    unit: String,
+    onClick: () -> Unit
+) {
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
-            .width(48.dp),
+            .width(48.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
     ) {
@@ -543,7 +551,7 @@ fun kgicon() {
 
         ) {
             Text(
-                text = "KG",
+                text = unit,
                 color = Color.White
             )
         }
