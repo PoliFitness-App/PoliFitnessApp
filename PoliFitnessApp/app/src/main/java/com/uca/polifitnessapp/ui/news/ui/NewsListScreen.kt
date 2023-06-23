@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
@@ -46,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -257,7 +259,11 @@ fun NewsList(
         val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
 
         // List of news, comes from the viewModel
-        val news = viewModel.getNews(category).collectAsLazyPagingItems()
+        // recordar el estado del pager a menos que la categoria cambie
+        val news2 = remember(key1 = category) {
+            viewModel.getNews(category)
+        }
+        val news = news2.collectAsLazyPagingItems()
 
         // ---
         // Vertical Grid
