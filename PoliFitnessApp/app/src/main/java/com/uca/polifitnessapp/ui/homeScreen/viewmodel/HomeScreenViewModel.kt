@@ -74,7 +74,7 @@ class HomeScreenViewModel(
      * Get 3 routines
      */
 
-    private fun fetchRoutines(count: Int) {
+    fun fetchRoutines(count: Int) {
         viewModelScope.launch {
 
             _uiState.value = HomeUiStatus.Loading
@@ -91,7 +91,7 @@ class HomeScreenViewModel(
      * Get 3 news
      */
 
-    private fun fetchNews(count: Int) {
+    fun fetchNews(count: Int) {
         viewModelScope.launch {
 
             _uiState.value = HomeUiStatus.Loading

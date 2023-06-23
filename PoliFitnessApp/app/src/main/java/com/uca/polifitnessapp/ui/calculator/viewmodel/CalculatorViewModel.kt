@@ -112,9 +112,7 @@ class CalculatorViewModel: ViewModel() {
                 bmi in 33.0..38.9 -> "Alto"
                 bmi >= 39.0 -> "Muy Alto"
                 else -> error("Invalid params")
-
             }
-
             icc = (waist / hip) * 10
             messageIcc = when {
                 icc < 0.80 -> "Riesgo Bajo"
@@ -182,10 +180,7 @@ class CalculatorViewModel: ViewModel() {
                 else -> error("Invalid params")
             }
         }
-
         clearData()
-
-
     }
 
     fun clearData(){

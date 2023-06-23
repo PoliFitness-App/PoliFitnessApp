@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -287,7 +288,13 @@ fun RoutineItem(
             ) {
                 // Image
                 Image(
-                    painter = painterResource(R.drawable.fullbody_approach),
+                    painter = painterResource(
+                        when(routine.category){
+                            stringResource(R.string.full_body_category) -> R.drawable.fullbody_approach
+                            stringResource(R.string.upper_body_category) -> R.drawable.upper_body_approach
+                            stringResource(R.string.lower_boddy_category) -> R.drawable.lower_body_approach
+                            else -> R.drawable.fullbody_approach}
+                    ),
                     contentDescription = "Routines Image",
                     modifier = Modifier
                         .width(82.dp)

@@ -54,11 +54,14 @@ fun Contact(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
+            .padding(16.dp)
             .background(Color.White)
     ) {
         BackButton(
             modifier = Modifier
-                .align(Alignment.Start),
+                .align(Alignment.Start)
+                .padding(8.dp,16.dp,8.dp,16.dp)
+            ,
             onBackPress
         )
         Spacer(modifier = Modifier.height(25.dp))
@@ -80,8 +83,8 @@ fun Contact(
 fun ContactTitle() {
     Text(
         modifier = Modifier
-            .width(350.dp)
-            .padding(35.dp, 0.dp),
+            .width(380.dp)
+            .padding(20.dp, 0.dp),
         text = "¿Tienes alguna pregunta?",
         style = TextStyle(fontWeight = FontWeight.Bold),
         fontSize = 20.sp,
@@ -92,8 +95,8 @@ fun ContactTitle() {
 fun contactDescription() {
     Text(
         modifier = Modifier
-            .width(350.dp)
-            .padding(35.dp, 0.dp),
+            .width(380.dp)
+            .padding(20.dp, 0.dp),
         text = "Introduzca su dirección de correo electrónico y nos pondremos en contacto con usted si tiene algún problema.",
         fontWeight = FontWeight(236),
         fontSize = 12.sp,

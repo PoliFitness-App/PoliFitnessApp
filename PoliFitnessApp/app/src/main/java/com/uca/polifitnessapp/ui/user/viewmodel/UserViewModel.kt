@@ -54,9 +54,12 @@ class UserViewModel(
             val response = repository.getUserDAO()
             if (response != null) {
                 user = response
-                println(user)
             }
         }
+    }
+
+    init {
+        getUserInfo()
     }
 
     fun fetchUserById(id: String) {

@@ -53,19 +53,22 @@ fun NavGraphBuilder.mainGraph(
         // ---
         // Home route
         // ---
-        composable(ButtomNavItems.Home.rute) {
+        composable(
+            ButtomNavItems.Home.rute
+        ) {
             Home(
                 homeScreenViewModel,
+                userViewModel,
                 onRoutinesClick = {
-                    navController.navigate(ButtomNavItems.Rutine.rute){
-                        popUpTo(ButtomNavItems.Home.rute){
+                    navController.navigate(ButtomNavItems.Rutine.rute) {
+                        popUpTo(ButtomNavItems.Home.rute) {
                             inclusive = true
                         }
                     }
                 },
                 onNewsClick = {
-                    navController.navigate(ButtomNavItems.News.rute){
-                        popUpTo(ButtomNavItems.Home.rute){
+                    navController.navigate(ButtomNavItems.News.rute) {
+                        popUpTo(ButtomNavItems.Home.rute) {
                             inclusive = true
                         }
                     }
@@ -75,147 +78,155 @@ fun NavGraphBuilder.mainGraph(
                 },
                 onNavigateToRoutine = { routineId ->
                     navController.navigate("routine_info_screen/${routineId}")
-                }
-            )
-        }
-        // ---
-        // News route
-        // ---
-        composable(ButtomNavItems.News.rute) {
-            NewsListScreen(
-                newsScreenViewModel,
-                onNavigateToNews = { noticeId ->
-                    navController.navigate("new_info_screen/${noticeId}")
-                }
-            )
-        }
-        // ---
-        // Routine route
-        // ---
-        composable(ButtomNavItems.Rutine.rute) {
-            RoutinesListScreen(
-                routinesViewModel,
-                userViewModel,
-                onNavigateToRoutine = { routineId ->
-                    navController.navigate("routine_info_screen/${routineId}")
-                }
-            )
-        }
-        // ---
-        // Profile route
-        // ---
-        composable(ButtomNavItems.Profile.rute) {
-            ProfileScreen(
-                userViewModel,
-                userId = userViewModel.user._id?: "",
-                onNavigateToEditProfile = { userId ->
-                    navController.navigate("edit_profile_screen/${userId}")
                 },
-                onNavigateToTermsAndConditions = {
-                    navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+                onNavigateToProfile = {
+                    navController.navigate(ButtomNavItems.Profile.rute)
                 },
-                onNavigateToContactUs = {
-                    navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
-                }
+                userId = userViewModel.user._id ?: "",
             )
         }
-
-        // ---
-        // Calculator screen
-        // ----
-        composable(MainRoutes.MAIN_CALCULATOR_SCREEN) {
-            CalculatorScreen(  )
-        }
-        // ---
-        // Edit profile route
-        // ---
-        composable(
-            "edit_profile_screen/{userId}",
-            arguments = listOf(
-                navArgument("userId") {
-                    type = NavType.StringType
-                }
-            )
-        ) { backStackEntry ->
-            backStackEntry.arguments?.getString("userId")?.let {
-                EditProfileScreen(
-                    userViewModel,
-                    editProfileViewModel,
-                    it,
-                    onBackPress = {
-                        navController.popBackStack()
-                    }
-                )
+    }
+    // ---
+    // News route
+    // ---
+    composable(ButtomNavItems.News.rute) {
+        NewsListScreen(
+            newsScreenViewModel,
+            onNavigateToNews = { noticeId ->
+                navController.navigate("new_info_screen/${noticeId}")
             }
-        }
-
-        // ---
-        // New info route
-        // ---
-
-        composable(
-            "new_info_screen/{noticeId}",
-            arguments = listOf(
-                navArgument("noticeId") {
-                    type = NavType.StringType
+        )
+    }
+    // ---
+    // Routine route
+    // ---
+    composable(ButtomNavItems.Rutine.rute) {
+        RoutinesListScreen(
+            routinesViewModel,
+            userViewModel,
+            onNavigateToRoutine = { routineId ->
+                navController.navigate("routine_info_screen/${routineId}"){
                 }
-            )
-        ) { backStackEntry ->
-            backStackEntry.arguments?.getString("noticeId")?.let {
-                NewItemBox(
-                    newsItemViewModel,
-                    it,
-                    onBackPress = {
-                        navController.popBackStack()
-                    }
-                )
             }
-        }
-
-        // ---
-        // Routine info route
-        // ---
-
-        composable(
-            "routine_info_screen/{routineId}",
-            arguments = listOf(
-                navArgument("routineId") {
-                    type = NavType.StringType
-                }
-            )
-        ) { backStackEntry ->
-            backStackEntry.arguments?.getString("routineId")?.let {
-                RoutineItemScreen(
-                    routineItemViewModel,
-                    it,
-                    onBackPress = {
-                        navController.popBackStack()
-                    }
-                )
+        )
+    }
+    // ---
+    // Profile route
+    // ---
+    composable(ButtomNavItems.Profile.rute) {
+        ProfileScreen(
+            userViewModel,
+            userId = userViewModel.user._id ?: "",
+            onNavigateToEditProfile = { userId ->
+                navController.navigate("edit_profile_screen/${userId}")
+            },
+            onNavigateToTermsAndConditions = {
+                navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+            },
+            onNavigateToContactUs = {
+                navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
             }
-        }
+        )
+    }
 
-        // ---
-        // Auxiliary routes
-        // ---
-        composable(
-            MainRoutes.MAIN_CONTACT_INFO
-        ) {
-            Contact(
+    // ---
+    // Calculator screen
+    // ----
+
+    composable(MainRoutes.MAIN_CALCULATOR_SCREEN) {
+        CalculatorScreen()
+    }
+
+    // ---
+    // Edit profile route
+    // ---
+
+    composable(
+        "edit_profile_screen/{userId}",
+        arguments = listOf(
+            navArgument("userId") {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        backStackEntry.arguments?.getString("userId")?.let {
+            EditProfileScreen(
+                userViewModel,
+                editProfileViewModel,
+                it,
                 onBackPress = {
                     navController.popBackStack()
                 }
             )
         }
-        composable(
-            MainRoutes.MAIN_TERMS_AND_CONDITIONS
-        ) {
-            privacyPoliticsScreen(
+    }
+
+    // ---
+    // New info route
+    // ---
+
+    composable(
+        "new_info_screen/{noticeId}",
+        arguments = listOf(
+            navArgument("noticeId") {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        backStackEntry.arguments?.getString("noticeId")?.let {
+            NewItemBox(
+                newsItemViewModel,
+                it,
                 onBackPress = {
                     navController.popBackStack()
                 }
             )
         }
+    }
+
+    // ---
+    // Routine info route
+    // ---
+
+    composable(
+        "routine_info_screen/{routineId}",
+        arguments = listOf(
+            navArgument("routineId") {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        backStackEntry.arguments?.getString("routineId")?.let {
+            RoutineItemScreen(
+                routineItemViewModel,
+                it,
+                onBackPress = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    }
+
+    // ---
+    // Auxiliary routes
+    // ---
+    composable(
+        MainRoutes.MAIN_CONTACT_INFO
+    ) {
+        Contact(
+            onBackPress = {
+                navController.popBackStack()
+            }
+        )
+    }
+    composable(
+        MainRoutes.MAIN_TERMS_AND_CONDITIONS
+    ) {
+        privacyPoliticsScreen(
+            onBackPress = {
+                navController.popBackStack()
+            }
+        )
     }
 }
 

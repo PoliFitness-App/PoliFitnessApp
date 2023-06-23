@@ -48,10 +48,9 @@ fun privacyPoliticsScreen(
 
         item {
             BackButton(
-                modifier = Modifier,
+                modifier = Modifier.padding(24.dp,16.dp,8.dp,8.dp),
                 onBackPress
             )
-            Spacer(modifier = Modifier.height(25.dp))
             politicTittle()
             Spacer(modifier = Modifier.height(25.dp))
             politicsDescription()
