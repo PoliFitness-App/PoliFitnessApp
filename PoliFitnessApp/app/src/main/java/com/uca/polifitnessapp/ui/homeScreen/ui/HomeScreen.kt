@@ -1,4 +1,4 @@
-@file:OptIn(
+ @file:OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
 )
 
@@ -10,6 +10,8 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,7 +50,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -120,18 +127,14 @@ fun Home(
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
             .background(Color.White)
     ) {
-
-        /*item{
-            Spacer(modifier = Modifier.height(25.dp))
-            home_tittle()
-            Spacer(modifier = Modifier.height(25.dp))
-            IMC_card()
-        }*/
         item {
             Spacer(modifier = Modifier.height(25.dp))
             HomeTitle()
         }
-
+         item{
+            Spacer(modifier = Modifier.height(25.dp))
+            IMC_card()
+        }
         item {
             Spacer(modifier = Modifier.height(25.dp))
             SpotifyTitle()
@@ -228,7 +231,8 @@ fun IMC_card() {
             content = {
 
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
@@ -275,14 +279,17 @@ fun IMC_card() {
                         }
                     }
 
-                    // TODO: Averiguar como implementar la gráfica de pastel
-                    /*Box(
-                        modifier = Modifier
-                            .padding(0.dp, 0.dp, 40.dp, 0.dp)
-                            .align(Alignment.CenterVertically))
-                    {
+                    // TODO: Implementar que sea en base a el ibm
+                    val radius: Float = 0.64f
 
-                    }*/
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp, 0.dp, 22.dp, 0.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        RadialProgress(value = radius)
+                    }
                 }
             }
         )
@@ -570,4 +577,64 @@ fun SpotifyCard(
 }
 
 
+@Composable
+fun SpotifyPodcastButton(podcastUri: String) {
+    val context = LocalContext.current
+    val openPodcastLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+        // Handle the returned Uri here
+    }
+
+    Box(
+        modifier = Modifier
+            .size(25.dp)
+            .border(
+                width = 1.dp,
+                color = spotify_color,
+                shape = CircleShape,
+            )
+    ) {
+        FloatingActionButton(
+            backgroundColor = colorResource(R.color.white),
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(podcastUri))
+                intent.putExtra(Intent.EXTRA_REFERRER, Uri.parse("android-app://${context.packageName}"))
+
+                try{
+                    startActivity(context, intent, null)
+                }catch (e: Exception){
+                    Toast.makeText(context, "Spotify no está instalado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        ) {
+            Icon(
+                painterResource(R.drawable.nav_to_icon),
+                contentDescription = "Ir a Spotify",
+                tint = spotify_color)
+        }
+    }
+}
+
+ // test de rueda que cambia segun ibm
+ @Composable
+ fun RadialProgress(value: Float) {
+     val animatedProgress = animateFloatAsState(targetValue = value)
+
+     Canvas(modifier = Modifier.size(125.dp)) {
+         val radius = size.minDimension / 2f
+         val center = Offset(size.width / 2, size.height / 2)
+         val startAngle = -90f
+         val sweepAngle = animatedProgress.value * 360f
+
+         drawArc(
+             color = md_theme_light_secondaryContainer,
+             startAngle = startAngle,
+             sweepAngle = sweepAngle,
+             useCenter = true,
+             topLeft = Offset(center.x - radius, center.y - radius),
+             size = Size(radius * 2, radius * 2),
+             style = Fill,
+             colorFilter = ColorFilter.tint(md_theme_light_secondaryContainer)
+         )
+     }
+ }
 
