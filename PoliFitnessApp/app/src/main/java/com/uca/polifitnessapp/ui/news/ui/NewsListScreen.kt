@@ -268,7 +268,7 @@ fun NewsList(
         // ---
         // Vertical Grid
         // ---
-        val scrollState = rememberLazyGridState()
+        val scrollState = rememberLazyGridState(0)
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
@@ -311,7 +311,8 @@ fun NewsList(
         }
 
         // Save scroll state
-        LaunchedEffect(scrollState) {
+        /*
+        * LaunchedEffect(scrollState) {
             snapshotFlow {
                 scrollState.firstVisibleItemIndex
             }
@@ -324,6 +325,7 @@ fun NewsList(
                     viewModel.onScrollChange(index)
                 }
         }
+        * */
 
     }
 }
