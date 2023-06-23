@@ -8,27 +8,22 @@ import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.network.pagination.RoutinesMediator
 import com.uca.polifitnessapp.network.service.RoutineService
 
-class RoutineRepository(private val database: PoliFitnessDatabase, private val service: RoutineService) {
+class RoutineRepository(
+    private val database: PoliFitnessDatabase,
+    private val service: RoutineService
+    ) {
     // Instancia del dao
     private val routineDao = database.routineDao()
 
     // funciones obtenidas del dao
     suspend fun getAllRoutines() = routineDao.getAllRoutines()
 
-    suspend fun insertRoutine(routine: RoutineModel) = routineDao.insertRoutine(routine)
-
-    suspend fun getRoutinesByCategory(category: String) = routineDao.getRoutinesByCategory(category)
+    /*
+    * Get routines for home screen
+     */
+    suspend fun getRoutines(count:Int) = routineDao.getRoutines(count)
 
     suspend fun getRoutineById(routineId: String) = routineDao.getRoutineById(routineId)
-
-    suspend fun deleteRoutine(routine: RoutineModel) = routineDao.deleteRoutine(routine)
-
-    suspend fun getRoutinesByApproach(approach: String) = routineDao.getRoutinesByApproach(approach)
-
-    suspend fun getRoutinesByLevel(level: String) = routineDao.getRoutinesByLevel(level)
-
-    suspend fun getRoutinesByLevelAndCategory(level: String, category: String) = routineDao.getRoutinesByLevelAndCategory(level, category)
-
 
     // Insertar pager para obtener las rutinas, categoria
     @ExperimentalPagingApi

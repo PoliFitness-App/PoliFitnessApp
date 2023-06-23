@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 fun RoutinesListScreen(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
-    navController: NavController
+    onNavigateToRoutine: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -76,7 +76,7 @@ fun RoutinesListScreen(
         RoutinesList(
             viewModel,
             userViewModel,
-            navController
+            onNavigateToRoutine
         )
     }
 }
@@ -86,7 +86,7 @@ fun RoutinesListScreen(
 fun RoutinesList(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
-    navController: NavController
+    onNavigateToRoutine: (String) -> Unit
 ) {
     // States for news list
     var selectedIndex by remember { mutableStateOf(0) }
@@ -104,10 +104,13 @@ fun RoutinesList(
 
     // Filter's for news list
     // Filter by level
-
-    val routinesByFilters = viewModel.getRoutinesByApproachAndCategoryAndLevel(
-        "%", category, level
-    ).collectAsLazyPagingItems()
+    // TODO obtener el approach del usuario e insertarlo
+    val routinesByFilters2 = remember(key1 = category, key2 = level){
+        viewModel.getRoutinesByApproachAndCategoryAndLevel(
+            "%", category, level
+        )
+    }
+    val routinesByFilters = routinesByFilters2.collectAsLazyPagingItems()
 
     // Recommended routines list
 
@@ -168,16 +171,15 @@ fun RoutinesList(
                 RoutineItem(
                     routine = item
                 ) { routineId ->
-                    coroutineScope.launch {
-                        navController.navigate("routine_info_screen/${routineId}")
-                    }
+                    onNavigateToRoutine(routineId)
                 }
             }
         }
     }
 
     // Save scroll state
-    LaunchedEffect(scrollState) {
+    /*
+    * LaunchedEffect(scrollState) {
         snapshotFlow {
             scrollState.firstVisibleItemIndex
         }
@@ -190,6 +192,7 @@ fun RoutinesList(
                 viewModel.onScrollChange(index)
             }
     }
+    * */
 }
 
 // ----

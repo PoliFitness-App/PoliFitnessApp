@@ -63,6 +63,7 @@ import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.popupmessage.PopupMessageComposable
 import com.uca.polifitnessapp.ui.popupmessage.SheetContent
+import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +81,7 @@ import javax.mail.internet.MimeMessage
 
 @Composable
 fun Contact(
-    navController: NavController
+    onBackPress: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,7 +93,7 @@ fun Contact(
         BackButton(
             modifier = Modifier
                 .align(Alignment.Start),
-            navController
+            onBackPress
         )
         Spacer(modifier = Modifier.height(25.dp))
 
@@ -106,31 +107,6 @@ fun Contact(
         SendEmail()
     }
 }
-
-@Composable
-fun BackButton(
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        // center items horizontally in the row
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton(
-            onClick = { navController.popBackStack() }
-        ) {
-            Icon(
-                Icons.Outlined.ArrowBack,
-                contentDescription = "Back button"
-            )
-        }
-    }
-}
-
 
 @Composable
 fun ContactTitle() {

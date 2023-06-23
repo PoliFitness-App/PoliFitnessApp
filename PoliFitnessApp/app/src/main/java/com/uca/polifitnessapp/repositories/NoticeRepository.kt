@@ -14,6 +14,8 @@ class NoticeRepository(
     private val noticeDao = database.noticeDao()
     suspend fun getNoticeById(noticeId: String) = noticeDao.getNoticeById(noticeId)
 
+    suspend fun getNews(count:Int) = noticeDao.getNews(count)
+
     // --
     // Get new with pagination
     // --

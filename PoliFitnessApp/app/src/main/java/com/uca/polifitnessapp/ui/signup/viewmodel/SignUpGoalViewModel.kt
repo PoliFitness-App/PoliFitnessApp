@@ -8,10 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.uca.polifitnessapp.PoliFitnessApplication
-import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
-import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
 import com.uca.polifitnessapp.ui.signup.validation.SignUpUiStatus
 import kotlinx.coroutines.launch
 

@@ -46,11 +46,11 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
-    // navController
-    navController: NavController,
-    // user view model
     userViewModel: UserViewModel,
     userId:String,
+    onNavigateToEditProfile: (String) -> Unit,
+    onNavigateToTermsAndConditions: () -> Unit,
+    onNavigateToContactUs: () -> Unit,
 ) {
 
     // ---
@@ -74,29 +74,21 @@ fun ProfileScreen(
 
         UserCard(
             user,
-            navController
+            onNavigateToEditProfile
         )
         GeneralInfoUser(user)
         specificlInfoUser(user)
         ContactCard(
-            navController
+            onNavigateToTermsAndConditions,
+            onNavigateToContactUs
         )
-
-        try {
-        } catch (e: Exception) {
-            navController.navigate(AuthRoutes.LOGIN_SCREEN) {
-                popUpTo(AuthRoutes.LOGIN_SCREEN) {
-                    inclusive = true
-                }
-            }
-        }
     }
 }
 
 @Composable
 fun UserCard(
     user: UserModel,
-    navController: NavController
+    onNavigateToEditProfile: (String) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -133,7 +125,6 @@ fun UserCard(
                 fontSize = 12.sp,
             )
 
-
         }
         Spacer(modifier = Modifier.width(20.dp))
 
@@ -144,7 +135,7 @@ fun UserCard(
                 .width(92.dp)
                 .height(33.dp),
             onClick = {
-                navController.navigate(MainRoutes.MAIN_USER_EDIT)
+                onNavigateToEditProfile(user._id)
             }
         ) {
             Text(
@@ -402,7 +393,8 @@ fun specificlInfoUser(
 
 @Composable
 fun ContactCard(
-    navController: NavController
+    onNavigateToTermsAndConditions: () -> Unit,
+    onNavigateToContactUs: () -> Unit,
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -432,7 +424,7 @@ fun ContactCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+                        onNavigateToContactUs()
                     },
             ) {
                 Icon(
@@ -466,7 +458,7 @@ fun ContactCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+                        onNavigateToTermsAndConditions()
                     }
             ) {
                 Icon(

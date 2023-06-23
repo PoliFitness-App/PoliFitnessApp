@@ -12,6 +12,7 @@ import com.uca.polifitnessapp.ui.calculator.ui.CalculatorScreen
 import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
 import com.uca.polifitnessapp.ui.contactscreen.ui.Contact
 import com.uca.polifitnessapp.ui.homeScreen.ui.Home
+import com.uca.polifitnessapp.ui.homeScreen.viewmodel.HomeScreenViewModel
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems
 import com.uca.polifitnessapp.ui.news.ui.NewItemBox
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
@@ -43,6 +44,7 @@ fun NavGraphBuilder.mainGraph(
     userViewModel: UserViewModel,
     routinesViewModel: RoutinesViewModel,
     routineItemViewModel: RoutineItemViewModel,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
     navigation(
         startDestination = ButtomNavItems.Home.rute,
@@ -52,7 +54,29 @@ fun NavGraphBuilder.mainGraph(
         // Home route
         // ---
         composable(ButtomNavItems.Home.rute) {
-            Home()
+            Home(
+                homeScreenViewModel,
+                onRoutinesClick = {
+                    navController.navigate(ButtomNavItems.Rutine.rute){
+                        popUpTo(ButtomNavItems.Home.rute){
+                            inclusive = true
+                        }
+                    }
+                },
+                onNewsClick = {
+                    navController.navigate(ButtomNavItems.News.rute){
+                        popUpTo(ButtomNavItems.Home.rute){
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToNews = { noticeId ->
+                    navController.navigate("new_info_screen/${noticeId}")
+                },
+                onNavigateToRoutine = { routineId ->
+                    navController.navigate("routine_info_screen/${routineId}")
+                }
+            )
         }
         // ---
         // News route
@@ -60,7 +84,9 @@ fun NavGraphBuilder.mainGraph(
         composable(ButtomNavItems.News.rute) {
             NewsListScreen(
                 newsScreenViewModel,
-                navController
+                onNavigateToNews = { noticeId ->
+                    navController.navigate("new_info_screen/${noticeId}")
+                }
             )
         }
         // ---
@@ -70,7 +96,9 @@ fun NavGraphBuilder.mainGraph(
             RoutinesListScreen(
                 routinesViewModel,
                 userViewModel,
-                navController
+                onNavigateToRoutine = { routineId ->
+                    navController.navigate("routine_info_screen/${routineId}")
+                }
             )
         }
         // ---
@@ -78,11 +106,20 @@ fun NavGraphBuilder.mainGraph(
         // ---
         composable(ButtomNavItems.Profile.rute) {
             ProfileScreen(
-                navController,
                 userViewModel,
-                userId = userViewModel.user._id?: ""
+                userId = userViewModel.user._id?: "",
+                onNavigateToEditProfile = { userId ->
+                    navController.navigate("edit_profile_screen/${userId}")
+                },
+                onNavigateToTermsAndConditions = {
+                    navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+                },
+                onNavigateToContactUs = {
+                    navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+                }
             )
         }
+
         // ---
         // Calculator screen
         // ----
@@ -92,16 +129,30 @@ fun NavGraphBuilder.mainGraph(
         // ---
         // Edit profile route
         // ---
-        composable(MainRoutes.MAIN_USER_EDIT) {
-            EditProfileScreen(
-                navController,
-                userViewModel,
-                editProfileViewModel
+        composable(
+            "edit_profile_screen/{userId}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.StringType
+                }
             )
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getString("userId")?.let {
+                EditProfileScreen(
+                    userViewModel,
+                    editProfileViewModel,
+                    it,
+                    onBackPress = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
+
         // ---
         // New info route
         // ---
+
         composable(
             "new_info_screen/{noticeId}",
             arguments = listOf(
@@ -113,8 +164,10 @@ fun NavGraphBuilder.mainGraph(
             backStackEntry.arguments?.getString("noticeId")?.let {
                 NewItemBox(
                     newsItemViewModel,
-                    navController,
-                    it
+                    it,
+                    onBackPress = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }
@@ -134,8 +187,10 @@ fun NavGraphBuilder.mainGraph(
             backStackEntry.arguments?.getString("routineId")?.let {
                 RoutineItemScreen(
                     routineItemViewModel,
-                    navController,
-                    it
+                    it,
+                    onBackPress = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }
@@ -147,14 +202,18 @@ fun NavGraphBuilder.mainGraph(
             MainRoutes.MAIN_CONTACT_INFO
         ) {
             Contact(
-                navController
+                onBackPress = {
+                    navController.popBackStack()
+                }
             )
         }
         composable(
             MainRoutes.MAIN_TERMS_AND_CONDITIONS
         ) {
             privacyPoliticsScreen(
-                navController
+                onBackPress = {
+                    navController.popBackStack()
+                }
             )
         }
     }

@@ -46,6 +46,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.data.db.models.routine.StepModel
+import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.routines.viewmodel.RoutineItemViewModel
 import com.uca.polifitnessapp.ui.theme.md_theme_light_error
@@ -59,8 +60,8 @@ import com.uca.polifitnessapp.ui.theme.spotify_color
 @Composable
 fun RoutineItemScreen(
     routineItemViewModel: RoutineItemViewModel,
-    navController: NavController,
-    routineId: String
+    routineId: String,
+    onBackPress : () -> Unit,
 ) {
 
     // ---
@@ -94,7 +95,8 @@ fun RoutineItemScreen(
         ) {
             item {
                 BackButton(
-                    navController = navController
+                    modifier = Modifier.padding(8.dp,16.dp,8.dp,16.dp),
+                    onBackPress
                 )
             }
             item {
@@ -197,34 +199,6 @@ fun RoutineStepItem(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun BackButton(
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp,16.dp,8.dp,16.dp),
-        // center items horizontally in the row
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton(
-            onClick = { navController.popBackStack() }
-        ) {
-            Icon(
-                Icons.Outlined.ArrowBack,
-                contentDescription = "Back button"
-            )
-        }
-        Text(
-            text = stringResource(R.string.back_button_text),
-            style = MaterialTheme.typography.titleSmall
-        )
     }
 }
 
