@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.uca.polifitnessapp.PoliFitnessApplication
+import com.uca.polifitnessapp.ui.homeScreen.viewmodel.HomeScreenViewModel
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems.*
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
@@ -68,6 +69,11 @@ fun NavigationHost(navController: NavHostController) {
         factory = RoutineItemViewModel.Factory
     )
 
+    // Home screen ViewModel
+    val homeScreenViewModel: HomeScreenViewModel = viewModel(
+        factory = HomeScreenViewModel.Factory
+    )
+
     // ---
     // Sign up view models
     // ---
@@ -111,7 +117,8 @@ fun NavigationHost(navController: NavHostController) {
             newsItemViewModel,
             userViewModel,
             routinesViewModel,
-            routineItemViewModel
+            routineItemViewModel,
+            homeScreenViewModel
         )
 
         // ---

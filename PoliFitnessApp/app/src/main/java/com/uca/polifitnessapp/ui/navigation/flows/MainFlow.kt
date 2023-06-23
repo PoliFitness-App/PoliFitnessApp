@@ -12,6 +12,7 @@ import com.uca.polifitnessapp.ui.calculator.ui.CalculatorScreen
 import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
 import com.uca.polifitnessapp.ui.contactscreen.ui.Contact
 import com.uca.polifitnessapp.ui.homeScreen.ui.Home
+import com.uca.polifitnessapp.ui.homeScreen.viewmodel.HomeScreenViewModel
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems
 import com.uca.polifitnessapp.ui.news.ui.NewItemBox
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
@@ -43,6 +44,7 @@ fun NavGraphBuilder.mainGraph(
     userViewModel: UserViewModel,
     routinesViewModel: RoutinesViewModel,
     routineItemViewModel: RoutineItemViewModel,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
     navigation(
         startDestination = ButtomNavItems.Home.rute,
@@ -52,7 +54,29 @@ fun NavGraphBuilder.mainGraph(
         // Home route
         // ---
         composable(ButtomNavItems.Home.rute) {
-            Home()
+            Home(
+                homeScreenViewModel,
+                onRoutinesClick = {
+                    navController.navigate(ButtomNavItems.Rutine.rute){
+                        popUpTo(ButtomNavItems.Home.rute){
+                            inclusive = true
+                        }
+                    }
+                },
+                onNewsClick = {
+                    navController.navigate(ButtomNavItems.News.rute){
+                        popUpTo(ButtomNavItems.Home.rute){
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToNews = { noticeId ->
+                    navController.navigate("new_info_screen/${noticeId}")
+                },
+                onNavigateToRoutine = { routineId ->
+                    navController.navigate("routine_info_screen/${routineId}")
+                }
+            )
         }
         // ---
         // News route

@@ -7,7 +7,6 @@ package com.uca.polifitnessapp.ui.login.ui
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +26,6 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,6 +57,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.login.state.LoginUiStatus
+import com.uca.polifitnessapp.ui.login.state.UserState
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
