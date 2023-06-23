@@ -104,10 +104,13 @@ fun RoutinesList(
 
     // Filter's for news list
     // Filter by level
-
-    val routinesByFilters = viewModel.getRoutinesByApproachAndCategoryAndLevel(
-        "%", category, level
-    ).collectAsLazyPagingItems()
+    // TODO obtener el approach del usuario e insertarlo
+    val routinesByFilters2 = remember(key1 = category, key2 = level){
+        viewModel.getRoutinesByApproachAndCategoryAndLevel(
+            "%", category, level
+        )
+    }
+    val routinesByFilters = routinesByFilters2.collectAsLazyPagingItems()
 
     // Recommended routines list
 
@@ -177,7 +180,8 @@ fun RoutinesList(
     }
 
     // Save scroll state
-    LaunchedEffect(scrollState) {
+    /*
+    * LaunchedEffect(scrollState) {
         snapshotFlow {
             scrollState.firstVisibleItemIndex
         }
@@ -190,6 +194,7 @@ fun RoutinesList(
                 viewModel.onScrollChange(index)
             }
     }
+    * */
 }
 
 // ----
