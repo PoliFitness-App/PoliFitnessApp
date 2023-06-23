@@ -4,9 +4,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
-import com.uca.polifitnessapp.ui.login.ui.LoginScreen
-import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
+import com.uca.polifitnessapp.ui.extras.ui.AnimatedSplashScreen
+import com.uca.polifitnessapp.ui.auth.login.ui.LoginScreen
+import com.uca.polifitnessapp.ui.auth.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 // ---

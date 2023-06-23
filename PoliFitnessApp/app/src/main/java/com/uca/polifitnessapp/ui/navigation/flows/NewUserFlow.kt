@@ -4,14 +4,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.uca.polifitnessapp.ui.loadingscreen.ui.AnimatedSplashScreen
-import com.uca.polifitnessapp.ui.login.ui.LoginScreen
-import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
-import com.uca.polifitnessapp.ui.onboardscreen.ui.MainFunction
-import com.uca.polifitnessapp.ui.signup.ui.SignUpGoalScreen
-import com.uca.polifitnessapp.ui.signup.ui.SignUpPersonalInfoScreen
-import com.uca.polifitnessapp.ui.signup.ui.SignUpScreen
-import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
+import com.uca.polifitnessapp.ui.extras.ui.AnimatedSplashScreen
+import com.uca.polifitnessapp.ui.auth.login.ui.LoginScreen
+import com.uca.polifitnessapp.ui.auth.login.viewmodel.LoginViewModel
+import com.uca.polifitnessapp.ui.auth.onBoard.ui.MainFunction
+import com.uca.polifitnessapp.ui.auth.signup.ui.SignUpGoalScreen
+import com.uca.polifitnessapp.ui.auth.signup.ui.SignUpPersonalInfoScreen
+import com.uca.polifitnessapp.ui.auth.signup.ui.SignUpScreen
+import com.uca.polifitnessapp.ui.auth.signup.viewmodel.SignUpGoalViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 // ---
