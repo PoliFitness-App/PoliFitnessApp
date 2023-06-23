@@ -2,6 +2,7 @@ package com.uca.polifitnessapp.ui.user.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -328,12 +329,16 @@ fun hipField(
 }
 
 @Composable
-fun kgicon() {
+fun kgicon(
+    unit: String,
+    onClick: () -> Unit
+) {
     ElevatedCard(
         modifier = Modifier
             .height(74.dp)
             .size(80.dp)
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
     ) {
@@ -343,7 +348,7 @@ fun kgicon() {
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(text = "KG", color = Color.White)
+            Text(text = unit, color = Color.White)
         }
 
     }
@@ -408,7 +413,9 @@ fun combine(
                 viewModel.onFieldChange(it, height, waistP, hipP)
             }
 
-            kgicon()
+            kgicon(viewModel.weightUnitState){
+                viewModel.changeUnit()
+            }
 
         }
 

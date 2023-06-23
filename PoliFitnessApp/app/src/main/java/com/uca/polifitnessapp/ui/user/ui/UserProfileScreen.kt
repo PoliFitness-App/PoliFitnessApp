@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -400,7 +402,7 @@ fun ContactCard(
     ElevatedCard(
         modifier = Modifier
             .width(350.dp)
-            .height(156.dp),
+            .height(200.dp),
         elevation = CardDefaults.elevatedCardElevation(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp),
@@ -480,6 +482,41 @@ fun ContactCard(
                 )
 
                 Spacer(modifier = Modifier.width(width = 80.dp))
+
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = null,
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        //TODO:
+
+                    }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.logout_2),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp)
+                )
+
+                // gap between icon and text
+
+                Text(
+                    text = "Cerrar sesión",
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.width(width = 135.dp))
 
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),

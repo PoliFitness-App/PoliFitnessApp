@@ -2,45 +2,31 @@ package com.uca.polifitnessapp.ui.calculator.ui
 
 
 
-import android.content.Context
-import android.graphics.drawable.Icon
-import android.widget.Toast
-import android.content.ClipData.Item
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Female
 import androidx.compose.material.icons.outlined.Height
-import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Male
 import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,25 +35,19 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -81,9 +61,6 @@ import androidx.compose.ui.unit.sp
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-
-
 
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -136,6 +113,7 @@ fun HeaderText(
 fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
     val coroutineScope = rememberCoroutineScope()
+    var isButtonEnabled = viewModel.isButtonEnabled
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -250,7 +228,9 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            HeaderImage(viewModel.genderState)
+
+            HeaderImage(
+                viewModel.genderState)
 
 
         }
@@ -262,20 +242,19 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             viewModel::updateGender,
         )
 
-        //BirthdayField(birthdate, onDateChange = {})
 
 
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            weightField(
+            WeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 viewModel.weightState,
                 ImeAction.Next,
                 viewModel::updateWeight
             )
 
-            kgicon(
+            Kgicon(
                 viewModel.weightUnitState
             ){
                 viewModel.changeUnit()
@@ -286,7 +265,7 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            heightField(
+            HeightField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 viewModel.heightState,
                 ImeAction.Next,
@@ -299,25 +278,25 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            waistField(
+            WaistField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 viewModel.waistState,
                 ImeAction.Next,
                 viewModel::updateWaist
             )
-            cmicon()
+            Cmicon()
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,) {
 
-            hipField(
+            HipField(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 viewModel.hipState,
                 ImeAction.Done,
                 viewModel::updateHip
             )
-            cmicon()
+            Cmicon()
         }
 
         Row(
@@ -330,12 +309,14 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             CalculateButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = "Calcular",
+                isEnabled = isButtonEnabled,
                 onClick = {
                     coroutineScope.launch {
                         viewModel.calculate()
                     }
                 }
             )
+
         }
     }
 }
@@ -353,14 +334,15 @@ fun HeaderImage(
     state: ValueState,
 
 ) {
-        Image (
-            painter = painterResource(when (state.value) {
-                "Femenino" -> R.drawable.calculator_header_img
-                "Masculino" -> R.drawable.frame
-                else -> R.drawable.calculator_header_img
-            }),
-            contentDescription = null
-        )
+
+    var imageGender = when(state.value){
+        "Femenino" -> R.drawable.calculator_header_img
+        "Masculino" -> R.drawable.frame
+        else -> R.drawable.frame_2
+    }
+
+
+    Image(painter = painterResource(imageGender), contentDescription = null)
 
 
 }
@@ -368,13 +350,12 @@ fun HeaderImage(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun weightField(
+    fun WeightField(
         modifier: Modifier,
         state: ValueState,
         imeAction: ImeAction,
         onValueChange: (String) -> Unit
     ) {
-        val focusManager = LocalFocusManager.current
 
         TextField(
             value = state.value,
@@ -415,13 +396,12 @@ fun HeaderImage(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun heightField(
+    fun HeightField(
         modifier: Modifier,
         state: ValueState,
         imeAction: ImeAction,
         onValueChange: (String) -> Unit
     ) {
-        val focusManager = LocalFocusManager.current
 
         TextField(
             value = state.value,
@@ -463,7 +443,7 @@ fun HeaderImage(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun waistField(
+    fun WaistField(
         modifier: Modifier,
         state: ValueState,
         imeAction: ImeAction,
@@ -509,7 +489,7 @@ fun HeaderImage(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun hipField(
+    fun HipField(
         modifier: Modifier,
         state: ValueState,
         imeAction: ImeAction,
@@ -553,7 +533,7 @@ fun HeaderImage(
     }
 
     @Composable
-    fun kgicon(
+    fun Kgicon(
         unit: String,
         onClick: () -> Unit
     ) {
@@ -604,7 +584,7 @@ fun HeaderImage(
     }
 
     @Composable
-    fun cmicon(
+    fun Cmicon(
     ) {
         ElevatedCard(
             modifier = Modifier
@@ -630,6 +610,7 @@ fun HeaderImage(
     @Composable
     fun CalculateButton(
         modifier: Modifier,
+        isEnabled: Boolean,
         text: String,
         onClick: () -> Unit
     ) {
@@ -643,6 +624,7 @@ fun HeaderImage(
                 pressedElevation = 10.dp,
                 disabledElevation = 0.dp
             ),
+            enabled = isEnabled,
             modifier = modifier
                 .width(315.dp)
                 .height(56.dp),
