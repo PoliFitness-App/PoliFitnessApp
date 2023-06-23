@@ -58,7 +58,7 @@ fun PopupMessageComposable(
     Card(
         modifier = Modifier
             .width(412.dp)
-            .height(455.dp),
+            .height(850.dp),
         shape = RoundedCornerShape(60.dp, 60.dp, 0.dp, 0.dp),
         colors = cardColors,
     ) {

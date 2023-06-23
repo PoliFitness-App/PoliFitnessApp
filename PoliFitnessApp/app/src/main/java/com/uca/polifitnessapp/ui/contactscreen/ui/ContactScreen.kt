@@ -5,8 +5,14 @@
 
 package com.uca.polifitnessapp.ui.contactscreen.ui
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +28,7 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,24 +37,29 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.popupmessage.PopupMessageComposable
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
-import android.content.Context
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Properties
 import javax.mail.Authenticator
 import javax.mail.Message
@@ -180,8 +192,12 @@ fun SendEmail() {
 
     val recipientEmailState = remember { mutableStateOf("") }
     val context = LocalContext.current
+    var isCardVisible by remember { mutableStateOf(false) }
 
-    Column() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         TextField(
             value = recipientEmailState.value,
@@ -224,10 +240,26 @@ fun SendEmail() {
                 val recipientEmail = recipientEmailState.value
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    sendEmail(context, recipientEmail)
+                    val result = runCatching { sendEmail(context,recipientEmailState.value)}
+
+                    if(result.isSuccess){
+                        sendEmail(context,recipientEmailState.value)
+                        withContext(Dispatchers.Main){
+                            run { isCardVisible = true }
+                            Toast.makeText(context,"Correo enviado ", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }else {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Error al enviar correo ", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        result.exceptionOrNull()?.printStackTrace()
+                    }
+
                 }
 
-                Toast.makeText(context, "Enviado", Toast.LENGTH_SHORT).show()
+
 
             },
             shape = RoundedCornerShape(10.dp),
@@ -252,13 +284,38 @@ fun SendEmail() {
             )
         }
 
+        AnimatedVisibility(
+            visible = isCardVisible,
+            enter = slideInVertically(initialOffsetY = { it}),
+            exit = slideOutVertically(targetOffsetY = { it })
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(800.dp) // Ajusta la altura de la tarjeta según tus necesidades
+            ) {
+                PopupMessageComposable(
+                    painterResource = painterResource(id = R.drawable.contactcardimage),
+                    title = stringResource(R.string.title_contact_card),
+                    titleColor = MaterialTheme.colorScheme.primary,
+                    description = stringResource(R.string.contact_card_description),
+                    cardColors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+                    buttonColor = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    buttonText = "Listo"
+                )
+            }
+
+
+        }
     }
+
 }
 
 
+
 fun sendEmail(context: Context, recipientEmail: String) {
-    val username = "testpamela513@hotmail.com"
-    val password = "Delta51302"
+    val username = "centrodeportivoapp@outlook.com"
+    val password = "20R$03giFo17"
 
     val properties = Properties()
     properties["mail.smtp.auth"] = "true"
@@ -310,6 +367,8 @@ centrodeportivoapp@support.com"""
 fun SendEmailScreen() {
     val recipientEmailState = remember { mutableStateOf("") }
     val context = LocalContext.current
+    var isCardVisible by remember { mutableStateOf(false) }
+
 
     Column {
         TextField(
@@ -322,8 +381,11 @@ fun SendEmailScreen() {
             onClick = {
                 val recipientEmail = recipientEmailState.value
 
+                run { isCardVisible = true }
+
                 CoroutineScope(Dispatchers.IO).launch {
                     sendEmail(context, recipientEmail)
+
                 }
 
                 Toast.makeText(context, "Enviado", Toast.LENGTH_SHORT).show()
@@ -331,6 +393,7 @@ fun SendEmailScreen() {
         ) {
             Text("Enviar correo")
         }
+
     }
 }
 
