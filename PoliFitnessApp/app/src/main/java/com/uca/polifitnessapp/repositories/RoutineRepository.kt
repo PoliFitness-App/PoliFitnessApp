@@ -4,9 +4,15 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.uca.polifitnessapp.data.PoliFitnessDatabase
+import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
+import com.uca.polifitnessapp.network.ApiResponse
+import com.uca.polifitnessapp.network.dto.update.UpdateRequest
+import com.uca.polifitnessapp.network.dto.update.UpdateResponse
 import com.uca.polifitnessapp.network.pagination.RoutinesMediator
 import com.uca.polifitnessapp.network.service.RoutineService
+import retrofit2.HttpException
+import java.io.IOException
 
 class RoutineRepository(
     private val database: PoliFitnessDatabase,
@@ -21,7 +27,20 @@ class RoutineRepository(
     /*
     * Get routines for home screen
      */
-    suspend fun getRoutines(count:Int) = routineDao.getRoutines(count)
+    suspend fun getRoutines(count:Int): List<RoutineModel> {
+        try {
+            val response = service.getRoutinesByBlocks(
+                page = 1 , limit = 3
+            )
+            return response.routines
+        } catch (e: HttpException) {
+            if (e.code() == 400) {
+                return emptyList()
+            }
+        } catch (_: IOException) {
+        }
+        return emptyList()
+    }
 
     suspend fun getRoutineById(routineId: String) = routineDao.getRoutineById(routineId)
 

@@ -58,6 +58,7 @@ fun ProfileScreen(
     // ---
 
     LaunchedEffect(userId) {
+        userViewModel.getUserInfo()
         userViewModel.fetchUserById(userId)
     }
 

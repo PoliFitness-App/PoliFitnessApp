@@ -1,10 +1,9 @@
- @file:OptIn(
+@file:OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
 )
 
 package com.uca.polifitnessapp.ui.homeScreen.ui
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -14,7 +13,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,42 +27,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -78,17 +68,24 @@ import com.uca.polifitnessapp.ui.theme.md_theme_light_onPrimary
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
 import com.uca.polifitnessapp.ui.theme.md_theme_light_primary
 import com.uca.polifitnessapp.ui.theme.md_theme_light_scrim
+import com.uca.polifitnessapp.ui.theme.md_theme_light_secondary
 import com.uca.polifitnessapp.ui.theme.md_theme_light_secondaryContainer
-import com.uca.polifitnessapp.ui.theme.spotify_color
+import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 @Composable
 fun Home(
     homeScreenViewModel: HomeScreenViewModel,
+    userViewModel: UserViewModel,
     onRoutinesClick: () -> Unit,
     onNewsClick: () -> Unit,
     onNavigateToNews: (String) -> Unit,
     onNavigateToRoutine: (String) -> Unit,
+    onNavigateToProfile: () -> Unit,
+    userId: String
 ) {
+    LaunchedEffect(userId) {
+        userViewModel.fetchUserById(userId)
+    }
     /*
     * Variables
     */
@@ -131,9 +128,13 @@ fun Home(
             Spacer(modifier = Modifier.height(25.dp))
             HomeTitle()
         }
-         item{
+        item {
             Spacer(modifier = Modifier.height(25.dp))
-            IMC_card()
+            IMC_card(
+                imc = userViewModel.user.imc,
+            ) {
+                onNavigateToProfile()
+            }
         }
         item {
             Spacer(modifier = Modifier.height(25.dp))
@@ -147,7 +148,7 @@ fun Home(
             RoutinesTittle {
                 onRoutinesClick()
             }
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(15.dp))
         }
 
         items(
@@ -210,33 +211,37 @@ fun HomeTitle() {
 IMC user info
 */
 @Composable
-fun IMC_card() {
+fun IMC_card(
+    imc: Float,
+    onNavigateToProfile: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.5.dp, 0.dp),
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(18.dp),
             colors = CardDefaults.cardColors(
                 containerColor = md_theme_light_primary
             ),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 12.dp
             ),
-
-            content = {
-
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, 0.dp),
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(painterResource(id = R.drawable.imc_card_background), contentDescription = "")
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-
                     Column {
                         Text(
                             modifier = Modifier
@@ -253,46 +258,58 @@ fun IMC_card() {
                             modifier = Modifier
                                 .width(170.dp)
                                 .padding(start = 22.dp, top = 2.dp, end = 22.dp, bottom = 5.dp),
-                            text = "Tienes un peso normal",
+                            text = when{
+                                imc < 21 -> "Tienes un peso bajo"
+                                imc in 21.0..32.9 -> "Tienes un peso normal"
+                                imc in 33.0..38.9 -> "Tienes un peso alto"
+                                imc >= 39.0 -> "Tienes peso muy alto"
+                                else -> "No disponible"
+                            },
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight(400),
                             fontSize = 12.sp,
                             color = md_theme_light_onPrimary
                         )
 
+                        // Button
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                onNavigateToProfile()
+                            },
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(8.dp),
                             modifier = Modifier
-                                .padding(start = 22.dp, top = 5.dp, end = 22.dp, bottom = 22.dp)
-                                .width(90.dp),
-                            shape = RoundedCornerShape(50.dp),
+                                .padding(start = 22.dp, top = 2.dp, end = 22.dp, bottom = 22.dp)
+                                .width(100.dp)
+                                .height(40.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = md_theme_light_secondaryContainer
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.scrim
                             )
                         ) {
                             Text(
                                 text = "Ver más",
                                 fontSize = 10.sp,
-                                fontWeight = FontWeight(600),
-                                color = md_theme_light_outline
                             )
                         }
                     }
-
-                    // TODO: Implementar que sea en base a el ibm
-                    val radius: Float = 0.64f
-
-                    Column(
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(0.dp, 0.dp, 22.dp, 0.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .padding(0.dp, 0.dp, 22.dp, 0.dp)
+                            .drawBehind {
+                                drawCircle(
+                                    color = md_theme_light_secondary,
+                                    radius = 50.dp.toPx()
+                                )
+                            },
                     ) {
-                        RadialProgress(value = radius)
+                        RadialProgress(value = imc/100)
                     }
                 }
             }
-        )
+        }
     }
 }
 
@@ -359,14 +376,14 @@ fun RoutineItemHome(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    onRoutineClick(routine.routineId)
-                }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
+                    .clickable {
+                        onRoutineClick(routine.routineId)
+                    }
                     .fillMaxSize()
                     .padding(17.dp)
             ) {
@@ -375,7 +392,7 @@ fun RoutineItemHome(
                     modifier = Modifier
                         .drawBehind {
                             drawCircle(
-                               md_theme_light_primary,
+                                md_theme_light_primary,
                             )
                         }
                         .width(70.dp),
@@ -384,11 +401,12 @@ fun RoutineItemHome(
                     // Image
                     Image(
                         painter = painterResource(
-                            when(routine.category){
-                            "Cuerpo completo" -> R.drawable.fullbody_approach
-                            "Tren superior" -> R.drawable.upper_body_approach
-                            "Tren inferior" -> R.drawable.lower_body_approach
-                            else -> R.drawable.fullbody_approach}
+                            when (routine.category) {
+                                stringResource(R.string.full_body_category) -> R.drawable.fullbody_approach
+                                stringResource(R.string.upper_body_category) -> R.drawable.upper_body_approach
+                                stringResource(R.string.lower_boddy_category) -> R.drawable.lower_body_approach
+                                else -> R.drawable.fullbody_approach
+                            }
                         ),
                         contentDescription = "Routines Image",
                         modifier = Modifier
@@ -511,7 +529,6 @@ fun SpotifyCard(
                             Intent.EXTRA_REFERRER,
                             Uri.parse("android-app://${context.packageName}")
                         )
-
                         try {
                             startActivity(context, intent, null)
                         } catch (e: Exception) {
@@ -543,8 +560,7 @@ fun SpotifyCard(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
-                            .padding(0.dp, 4.dp, 0.dp, 4.dp)
-                        ,
+                            .padding(0.dp, 4.dp, 0.dp, 4.dp),
                     )
 
                     Text(
@@ -552,8 +568,7 @@ fun SpotifyCard(
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Light,
                         modifier = Modifier
-                            .padding(0.dp, 4.dp, 0.dp, 4.dp)
-                        ,
+                            .padding(0.dp, 4.dp, 0.dp, 4.dp),
                     )
 
                     Spacer(modifier = Modifier.height(5.dp))
@@ -577,64 +592,32 @@ fun SpotifyCard(
 }
 
 
+/*
+ * Radial progress bar(used in the home screen)
+ *
+ * param value: Float value to be displayed in the progress bar (IMC)
+ */
+
 @Composable
-fun SpotifyPodcastButton(podcastUri: String) {
-    val context = LocalContext.current
-    val openPodcastLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
-        // Handle the returned Uri here
-    }
+fun RadialProgress(value: Float) {
+    val animatedProgress = animateFloatAsState(targetValue = value)
 
-    Box(
-        modifier = Modifier
-            .size(25.dp)
-            .border(
-                width = 1.dp,
-                color = spotify_color,
-                shape = CircleShape,
-            )
-    ) {
-        FloatingActionButton(
-            backgroundColor = colorResource(R.color.white),
-            onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(podcastUri))
-                intent.putExtra(Intent.EXTRA_REFERRER, Uri.parse("android-app://${context.packageName}"))
+    Canvas(modifier = Modifier.size(125.dp)) {
+        val radius = size.minDimension / 2f
+        val center = Offset(size.width / 2, size.height / 2)
+        val startAngle = -90f
+        val sweepAngle = animatedProgress.value * 360f
 
-                try{
-                    startActivity(context, intent, null)
-                }catch (e: Exception){
-                    Toast.makeText(context, "Spotify no está instalado", Toast.LENGTH_SHORT).show()
-                }
-            }
-        ) {
-            Icon(
-                painterResource(R.drawable.nav_to_icon),
-                contentDescription = "Ir a Spotify",
-                tint = spotify_color)
-        }
+        drawArc(
+            color = md_theme_light_secondaryContainer,
+            startAngle = startAngle,
+            sweepAngle = sweepAngle,
+            useCenter = true,
+            topLeft = Offset(center.x - radius, center.y - radius),
+            size = Size(radius * 2, radius * 2),
+            style = Fill,
+            colorFilter = ColorFilter.tint(md_theme_light_secondaryContainer)
+        )
     }
 }
-
- // test de rueda que cambia segun ibm
- @Composable
- fun RadialProgress(value: Float) {
-     val animatedProgress = animateFloatAsState(targetValue = value)
-
-     Canvas(modifier = Modifier.size(125.dp)) {
-         val radius = size.minDimension / 2f
-         val center = Offset(size.width / 2, size.height / 2)
-         val startAngle = -90f
-         val sweepAngle = animatedProgress.value * 360f
-
-         drawArc(
-             color = md_theme_light_secondaryContainer,
-             startAngle = startAngle,
-             sweepAngle = sweepAngle,
-             useCenter = true,
-             topLeft = Offset(center.x - radius, center.y - radius),
-             size = Size(radius * 2, radius * 2),
-             style = Fill,
-             colorFilter = ColorFilter.tint(md_theme_light_secondaryContainer)
-         )
-     }
- }
 
