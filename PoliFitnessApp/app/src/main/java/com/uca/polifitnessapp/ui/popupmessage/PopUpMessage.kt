@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.uca.polifitnessapp.R
 import kotlinx.coroutines.launch
 
@@ -58,7 +59,8 @@ fun PopupMessageComposable(
     Card(
         modifier = Modifier
             .width(412.dp)
-            .height(850.dp),
+            .height(850.dp)
+            .zIndex(10f),
         shape = RoundedCornerShape(60.dp, 60.dp, 0.dp, 0.dp),
         colors = cardColors,
     ) {
@@ -153,13 +155,13 @@ fun viewScreen(){
 @Composable
 fun SheetContent(){
     PopupMessageComposable(
-        painterResource = painterResource(id = R.drawable.errorimage),
-        title = stringResource(R.string.title_error_card),
-        titleColor = MaterialTheme.colorScheme.error,
-        description = stringResource(R.string.description_error_card),
-        cardColors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-        buttonColor = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-        buttonText =  stringResource(R.string.button_text_error_card)
+        painterResource = painterResource(id = R.drawable.contactcardimage),
+        title = stringResource(R.string.title_contact_card),
+        titleColor = MaterialTheme.colorScheme.primary,
+        description = stringResource(R.string.contact_card_description),
+        cardColors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+        buttonColor = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+        buttonText =  "Listo"
     )
 
 }

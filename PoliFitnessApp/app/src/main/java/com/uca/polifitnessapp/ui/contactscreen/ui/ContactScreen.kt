@@ -8,6 +8,8 @@ package com.uca.polifitnessapp.ui.contactscreen.ui
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.MailOutline
@@ -36,7 +39,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -55,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.popupmessage.PopupMessageComposable
+import com.uca.polifitnessapp.ui.popupmessage.SheetContent
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -193,6 +201,11 @@ fun SendEmail() {
     val recipientEmailState = remember { mutableStateOf("") }
     val context = LocalContext.current
     var isCardVisible by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
+    var isBottomSheetVisible by remember { mutableStateOf(false) }
+
+
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -245,7 +258,7 @@ fun SendEmail() {
                     if(result.isSuccess){
                         sendEmail(context,recipientEmailState.value)
                         withContext(Dispatchers.Main){
-                            run { isCardVisible = true }
+                            run { isBottomSheetVisible = true }
                             Toast.makeText(context,"Correo enviado ", Toast.LENGTH_SHORT).show()
                         }
 
@@ -284,29 +297,17 @@ fun SendEmail() {
             )
         }
 
-        AnimatedVisibility(
-            visible = isCardVisible,
-            enter = slideInVertically(initialOffsetY = { it}),
-            exit = slideOutVertically(targetOffsetY = { it })
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(800.dp) // Ajusta la altura de la tarjeta según tus necesidades
-            ) {
-                PopupMessageComposable(
-                    painterResource = painterResource(id = R.drawable.contactcardimage),
-                    title = stringResource(R.string.title_contact_card),
-                    titleColor = MaterialTheme.colorScheme.primary,
-                    description = stringResource(R.string.contact_card_description),
-                    cardColors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-                    buttonColor = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                    buttonText = "Listo"
-                )
+        if (isBottomSheetVisible) {
+            LaunchedEffect(Unit) {
+                isBottomSheetVisible = true
             }
 
+            SheetContent(
 
+            )
         }
+
+
     }
 
 }
