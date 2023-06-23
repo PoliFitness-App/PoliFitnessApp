@@ -3,6 +3,15 @@ package com.uca.polifitnessapp.ui.navigation.components
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -61,11 +70,23 @@ fun MainScalfold() {
         }
 
         // Edit profile
-        "edit_profile_screen" -> {
+        "edit_profile_screen/{userId}" -> {
             bottomBarState.value = false
         }
 
         "routine_info_screen/{routineId}" ->{
+            bottomBarState.value = false
+        }
+
+        "new_info_screen/{noticeId}" ->{
+            bottomBarState.value = false
+        }
+
+        MainRoutes.MAIN_CONTACT_INFO ->{
+            bottomBarState.value = false
+        }
+
+        MainRoutes.MAIN_TERMS_AND_CONDITIONS ->{
             bottomBarState.value = false
         }
 
@@ -78,10 +99,16 @@ fun MainScalfold() {
     // Scaffold
     Scaffold(
         bottomBar = {
-            BottomBar(
-                navController = navController,
-                bottomBarState
-            )
+            AnimatedVisibility(
+                visible = bottomBarState.value,
+                enter = slideInVertically() + fadeIn(),
+                exit = slideOutVertically() + fadeOut()
+            ) {
+                BottomBar(
+                    navController = navController,
+                    bottomBarState
+                )
+            }
         }
     ) {
         Box() {

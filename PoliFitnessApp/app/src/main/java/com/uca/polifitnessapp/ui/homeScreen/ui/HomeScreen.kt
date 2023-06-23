@@ -41,11 +41,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -54,6 +58,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,6 +69,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
+import com.uca.polifitnessapp.ui.homeScreen.state.HomeUiStatus
+import com.uca.polifitnessapp.ui.homeScreen.viewmodel.HomeScreenViewModel
+import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
+import com.uca.polifitnessapp.ui.news.ui.NewItem
 import com.uca.polifitnessapp.ui.theme.md_theme_light_onPrimary
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
 import com.uca.polifitnessapp.ui.theme.md_theme_light_primary
@@ -71,47 +81,107 @@ import com.uca.polifitnessapp.ui.theme.md_theme_light_scrim
 import com.uca.polifitnessapp.ui.theme.md_theme_light_secondaryContainer
 import com.uca.polifitnessapp.ui.theme.spotify_color
 
-@Preview
 @Composable
-fun Home() {
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White)) {
+fun Home(
+    homeScreenViewModel: HomeScreenViewModel,
+    onRoutinesClick: () -> Unit,
+    onNewsClick: () -> Unit,
+    onNavigateToNews: (String) -> Unit,
+    onNavigateToRoutine: (String) -> Unit,
+) {
+    /*
+    * Variables
+    */
+    val homeUiStatus by homeScreenViewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    /*
+    * This is the lifecycle of the composable
+     */
+    val lifecycle = LocalLifecycleOwner.current
+    val news = homeScreenViewModel.news
+    val routines = homeScreenViewModel.routines
 
-        /*item{
-            Spacer(modifier = Modifier.height(25.dp))
-            home_tittle()
-            Spacer(modifier = Modifier.height(25.dp))
-            IMC_card()
-        }*/
-        // rueba de circulo de ibm
-        item{
-            Spacer(modifier = Modifier.height(25.dp))
-            IMC_card()
+    if (homeUiStatus == HomeUiStatus.Loading) {
+        LoadingScreen()
+    } else {
+        LaunchedEffect(lifecycle) {
+            when (homeUiStatus) {
+                is HomeUiStatus.Error -> {
+                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                }
+
+                is HomeUiStatus.ErrorWithMessage -> {
+                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                }
+
+                else
+                -> {
+                }
+            }
         }
+    }
 
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp, 8.dp, 16.dp, 8.dp)
+            .background(Color.White)
+    ) {
         item {
             Spacer(modifier = Modifier.height(25.dp))
-            routinesTittle()
+            HomeTitle()
         }
-
-        items(3) {
+         item{
             Spacer(modifier = Modifier.height(25.dp))
-            someRoutines()
+            IMC_card()
         }
-
-        item{
+        item {
             Spacer(modifier = Modifier.height(25.dp))
-            Spotifytitle()
+            SpotifyTitle()
             Spacer(modifier = Modifier.height(25.dp))
             SpotifyCard()
         }
 
         item {
             Spacer(modifier = Modifier.height(25.dp))
-            newsTittle()
+            RoutinesTittle {
+                onRoutinesClick()
+            }
             Spacer(modifier = Modifier.height(25.dp))
-            someNews()
+        }
+
+        items(
+            routines.size,
+        ) { index ->
+            val item = routines[index]
+            RoutineItemHome(
+                routine = item
+            ) { routineId ->
+                onNavigateToRoutine(routineId)
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(25.dp))
+            NewsTittle {
+                onNewsClick()
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+
+        items(
+            news.size,
+            key = { index ->
+                news[index].noticeId
+            }
+        ) { index ->
+            val item = news[index]
+            // Filter item
+            NewItem(
+                new = item,
+            ) { noticeId ->
+                onNavigateToNews(noticeId)
+            }
         }
 
         item {
@@ -125,10 +195,11 @@ fun Home() {
 Home tittle text
 */
 @Composable
-fun home_tittle() {
-    Text(modifier = Modifier
-        .fillMaxWidth()
-        .padding(32.5.dp, 0.dp),
+fun HomeTitle() {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp, 0.dp),
         text = "Home",
         fontWeight = FontWeight(700),
         fontSize = 20.sp
@@ -150,11 +221,12 @@ fun IMC_card() {
                 .fillMaxWidth()
                 .padding(32.5.dp, 0.dp),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors (
+            colors = CardDefaults.cardColors(
                 containerColor = md_theme_light_primary
             ),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 12.dp),
+                defaultElevation = 12.dp
+            ),
 
             content = {
 
@@ -162,12 +234,14 @@ fun IMC_card() {
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .fillMaxWidth()) {
+                        .fillMaxWidth()
+                ) {
 
                     Column {
-                        Text(modifier = Modifier
-                            .width(150.dp)
-                            .padding(start = 22.dp, top = 22.dp, end = 22.dp, bottom = 4.dp),
+                        Text(
+                            modifier = Modifier
+                                .width(150.dp)
+                                .padding(start = 22.dp, top = 22.dp, end = 22.dp, bottom = 4.dp),
                             text = "IMC (Indice de masa corporal)",
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight(600),
@@ -175,9 +249,10 @@ fun IMC_card() {
                             color = md_theme_light_onPrimary
                         )
 
-                        Text(modifier = Modifier
-                            .width(170.dp)
-                            .padding(start = 22.dp, top = 2.dp, end = 22.dp, bottom = 5.dp),
+                        Text(
+                            modifier = Modifier
+                                .width(170.dp)
+                                .padding(start = 22.dp, top = 2.dp, end = 22.dp, bottom = 5.dp),
                             text = "Tienes un peso normal",
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight(400),
@@ -225,12 +300,15 @@ fun IMC_card() {
 User routines tittle
 */
 @Composable
-fun routinesTittle() {
+fun RoutinesTittle(
+    onRoutinesClick: () -> Unit
+) {
     Box(modifier = Modifier) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween,
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.5.dp, 0.dp)
+                .padding(16.dp, 0.dp)
         ) {
 
             Text(
@@ -239,13 +317,17 @@ fun routinesTittle() {
                 fontWeight = FontWeight(600),
             )
 
-            Box(modifier = Modifier
-                .align(Alignment.CenterVertically)) {
-                Text(modifier = Modifier
-                    .clickable { },
-                    text = "Ver más",
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            onRoutinesClick()
+                        },
+                    text = stringResource(R.string.watch_more_home_screen),
                     fontSize = 12.sp,
-                    fontWeight = FontWeight(222),
                     color = md_theme_light_outline
                 )
             }
@@ -257,97 +339,88 @@ fun routinesTittle() {
 Show tree user routines
 */
 @Composable()
-fun someRoutines() {
+fun RoutineItemHome(
+    routine: RoutineModel,
+    onRoutineClick: (String) -> Unit
+) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,)
-    {
-
+            .fillMaxWidth()
+            .padding(16.dp, 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.5.dp, 0.dp),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 12.dp
             ),
-            colors = CardDefaults . cardColors (
+            colors = CardDefaults.cardColors(
                 containerColor = md_theme_light_onPrimary,
             ),
-
-            content = {
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(17.dp)) {
-
-                    Image(modifier = Modifier
-                        .clip(CircleShape)
-                        .size(57.dp),
-                        painter = painterResource(R.drawable.google), contentDescription = "Routine image")
-
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    Column {
-
-                        Text(
-                            text = "Routine name",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight(500),
-                            color = md_theme_light_scrim
-                        )
-
-                        Spacer(modifier = Modifier.height(3.dp))
-
-                        Text(
-                            text = "180 Calories Burn | 20 minutes",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight(222),
-                            color = md_theme_light_outline
-                        )
-
-                    }
-
-                    Spacer(modifier = Modifier.width(30.dp))
-                    RoutineButtonHome()
-
-
-
-
-
-
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onRoutineClick(routine.routineId)
                 }
-
-
-            }
-        )
-    }
-}
-
-@Composable
-fun RoutineButtonHome(){
-    Box(
-        modifier = Modifier
-            .size(25.dp)
-            .border(
-                width = 1.dp,
-                color = md_theme_light_primary,
-                shape = CircleShape,
-            ),
-    ) {
-        FloatingActionButton(
-            onClick = { /* Acción al hacer clic en el FAB */ },
-            backgroundColor = colorResource(R.color.white),
-            content = {
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(17.dp)
+            ) {
+                // Image
+                Box(
+                    modifier = Modifier
+                        .drawBehind {
+                            drawCircle(
+                               md_theme_light_primary,
+                            )
+                        }
+                        .width(70.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Image
+                    Image(
+                        painter = painterResource(
+                            when(routine.category){
+                            "Cuerpo completo" -> R.drawable.fullbody_approach
+                            "Tren superior" -> R.drawable.upper_body_approach
+                            "Tren inferior" -> R.drawable.lower_body_approach
+                            else -> R.drawable.fullbody_approach}
+                        ),
+                        contentDescription = "Routines Image",
+                        modifier = Modifier
+                            .size(70.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Column {
+                    Text(
+                        text = routine.title,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = md_theme_light_scrim
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "${routine.category} | ${routine.level}",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Light,
+                        color = md_theme_light_outline
+                    )
+                }
+                Spacer(modifier = Modifier.width(30.dp))
                 Icon(
-                    painterResource(R.drawable.nav_to_icon),
-                    contentDescription = "Ver rutina",
-                    tint = md_theme_light_primary)
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = "Arrow icon",
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
             }
-        )
+        }
     }
 }
 
@@ -355,27 +428,32 @@ fun RoutineButtonHome(){
 Newest news tittle
 */
 @Composable()
-fun newsTittle() {
+fun NewsTittle(
+    onNewsClick: () -> Unit
+) {
     Box(modifier = Modifier) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween,
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.5.dp, 0.dp)
+                .padding(16.dp, 0.dp)
         ) {
-
             Text(
                 text = "Últimas noticias",
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
             )
-
-            Box(modifier = Modifier
-                .align(Alignment.CenterVertically)) {
-                Text(modifier = Modifier
-                    .clickable { },
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            onNewsClick()
+                        },
                     text = "Ver más",
                     fontSize = 12.sp,
-                    fontWeight = FontWeight(222),
                     color = md_theme_light_outline
                 )
             }
@@ -383,121 +461,33 @@ fun newsTittle() {
     }
 }
 
-/*
-Show tree newest news
-*/
 @Composable
-fun someNews() {
-    Spacer(modifier = Modifier.height(30.dp))
+fun SpotifyTitle() {
     Box(modifier = Modifier) {
-        Card(
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.5.dp, 0.dp),
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 12.dp
-            ),
-            colors = CardDefaults.cardColors (
-                containerColor = md_theme_light_onPrimary,
-            ),
-
-            content = {
-
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                )
-                {
-                    Image(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(160.dp),
-                        contentScale = ContentScale.FillWidth,
-                        painter = painterResource(R.drawable.new_2), contentDescription = "News image")
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(modifier = Modifier
-                    .padding(20.dp, 0.dp),
-                    text = "Título de noticia",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight(500),
-                )
-
-                Spacer(modifier = Modifier.height(5.dp))
-
-                Text(modifier = Modifier
-                    .padding(20.dp, 0.dp),
-                    text = "Descripción de la noticia",
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight(222),
-                    color = md_theme_light_outline
-                )
-
-                Spacer(modifier = Modifier.height(25.dp))
-
-                Box(modifier = Modifier
-                    .align(Alignment.End)) {
-                    Text(modifier = Modifier
-                        .padding(20.dp, 0.dp),
-                        text = "TAG de la noticia",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight(222),
-                        color = md_theme_light_outline
-                    )
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-        )
-    }
-}
-
-/*
-Versión estática de barra de progreso
-
-
-@Composable
-fun ProgressBarDemo() {
-    val progress = remember { mutableStateOf(0.1f) } // Valor inicial del progreso
-
-        LinearProgressIndicator(
-            progress = progress.value,
-            modifier = Modifier
-                .width(180.dp)
-                .height(11.dp)
-                .clip(RoundedCornerShape(10.dp)),
-            color = md_theme_light_primary // Color de la barra de progreso
-        )
-}
-
- */
-
-
-
-@Composable
-fun Spotifytitle() {
-    Box(modifier = Modifier) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.5.dp, 0.dp)
+                .padding(16.dp, 0.dp)
         ) {
-
             Text(
                 text = "Podcast",
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
             )
-
         }
     }
 }
+
 @Composable
 fun SpotifyCard(
-){
+) {
     val podcastUri = "spotify:show:2czhc0HIut5fRs7uL3Waox?si=0ae7fb6c77fd4c71"
-
+    val context = LocalContext.current
+    val openPodcastLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+            // Handle the returned Uri here
+        }
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -509,39 +499,61 @@ fun SpotifyCard(
             colors = CardDefaults.cardColors(containerColor = Color.White),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.5.dp, 0.dp),
-        ){
+                .height(120.dp)
+                .padding(16.dp, 0.dp),
+        ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(17.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+                    .fillMaxSize()
+                    .clickable {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(podcastUri))
+                        intent.putExtra(
+                            Intent.EXTRA_REFERRER,
+                            Uri.parse("android-app://${context.packageName}")
+                        )
 
+                        try {
+                            startActivity(context, intent, null)
+                        } catch (e: Exception) {
+                            Toast
+                                .makeText(context, "Spotify no está instalado", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.spotifylogo),
-                    contentDescription = null,
+                    contentDescription = "Spotify logo",
                     modifier = Modifier
                         .size(45.dp)
+                        .padding(8.dp, 0.dp, 0.dp, 0.dp)
                 )
-
                 Column(
                     modifier = Modifier
-                        .padding(start = 10.dp)
+                        .padding(8.dp)
                         .fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
 
                     Text(
                         text = stringResource(R.string.podcast_name),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier
+                            .padding(0.dp, 4.dp, 0.dp, 4.dp)
+                        ,
                     )
 
                     Text(
                         text = stringResource(R.string.podcast_description),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Light,
+                        modifier = Modifier
+                            .padding(0.dp, 4.dp, 0.dp, 4.dp)
+                        ,
                     )
 
                     Spacer(modifier = Modifier.height(5.dp))
@@ -549,15 +561,13 @@ fun SpotifyCard(
                         painter = painterResource(id = R.drawable.musicoptions),
                         contentDescription = null,
                     )
-
                 }
-
-                Spacer(modifier = Modifier.width(30.dp))
-
-                SpotifyPodcastButton(podcastUri = podcastUri)
-
-
-
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = "Arrow icon",
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
             }
 
         }
@@ -565,6 +575,7 @@ fun SpotifyCard(
     }
 
 }
+
 
 @Composable
 fun SpotifyPodcastButton(podcastUri: String) {
@@ -626,7 +637,4 @@ fun SpotifyPodcastButton(podcastUri: String) {
          )
      }
  }
-
-
-
 

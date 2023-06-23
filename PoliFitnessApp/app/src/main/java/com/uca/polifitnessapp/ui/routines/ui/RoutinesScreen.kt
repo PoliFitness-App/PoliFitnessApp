@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 fun RoutinesListScreen(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
-    navController: NavController
+    onNavigateToRoutine: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -76,7 +76,7 @@ fun RoutinesListScreen(
         RoutinesList(
             viewModel,
             userViewModel,
-            navController
+            onNavigateToRoutine
         )
     }
 }
@@ -86,7 +86,7 @@ fun RoutinesListScreen(
 fun RoutinesList(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
-    navController: NavController
+    onNavigateToRoutine: (String) -> Unit
 ) {
     // States for news list
     var selectedIndex by remember { mutableStateOf(0) }
@@ -171,9 +171,7 @@ fun RoutinesList(
                 RoutineItem(
                     routine = item
                 ) { routineId ->
-                    coroutineScope.launch {
-                        navController.navigate("routine_info_screen/${routineId}")
-                    }
+                    onNavigateToRoutine(routineId)
                 }
             }
         }

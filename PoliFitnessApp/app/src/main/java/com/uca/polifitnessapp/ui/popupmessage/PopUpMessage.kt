@@ -1,15 +1,20 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.uca.polifitnessapp.ui.popupmessage
 
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
@@ -51,7 +56,6 @@ fun PopupMessageComposable(
     buttonColor: ButtonColors,
     buttonText: String,
 ){
-
     Card(
         modifier = Modifier
             .width(412.dp)
@@ -99,7 +103,8 @@ fun PopupMessageComposable(
 
 
             Button(
-                onClick = { "/*TODO*/ "},
+                onClick = {
+                },
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(
                     defaultElevation = 20.dp,
@@ -126,50 +131,115 @@ fun PopupMessageComposable(
     }
 }
 
-@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun viewScreen(){
-
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState() // Crear el BottomSheetScaffoldState
-
+fun viewScreen(
+    painterResource: Painter,
+    title: String,
+    titleColor: Color,
+    description: String,
+    cardColors: Color,
+    buttonColor: ButtonColors,
+    buttonText: String,
+    scaffoldState: BottomSheetScaffoldState,
+    onClick : () -> Unit
+){
     BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetContent = { SheetContent() } // Contenido del BottomSheet
+        scaffoldState = scaffoldState,
+        sheetContainerColor = cardColors,
+        sheetPeekHeight = 0.dp,
+        sheetContent = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(455.dp)
+                        .padding(20.dp, 0.dp, 20.dp, 0.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
 
+                ) {
+
+                    Image(
+                        painter = painterResource,
+                        contentDescription = null,
+                    )
+
+                    Text(text = title,
+                        color = titleColor,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(200.dp)
+
+                    )
+
+                    Text(
+                        text = description,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(303.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Button(
+                        onClick = {
+                           onClick()
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 20.dp,
+                            pressedElevation = 10.dp,
+                            disabledElevation = 0.dp
+                        ),
+                        modifier = Modifier
+                            .width(315.dp)
+                            .height(56.dp),
+                        colors = buttonColor,
+
+                        )
+                    {
+                        Text(
+                            text = buttonText,
+                            fontSize = 16.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+        }
     ){
 
     }
-
-
-
 }
 
-
-// Content of the BottomSheet
 @Composable
 fun SheetContent(){
-    PopupMessageComposable(
+
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState()
+
+    viewScreen(
         painterResource = painterResource(id = R.drawable.errorimage),
         title = stringResource(R.string.title_error_card),
         titleColor = MaterialTheme.colorScheme.error,
         description = stringResource(R.string.description_error_card),
-        cardColors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+        cardColors = MaterialTheme.colorScheme.errorContainer,
         buttonColor = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-        buttonText =  stringResource(R.string.button_text_error_card)
+        buttonText =  stringResource(R.string.button_text_error_card),
+        scaffoldState = scaffoldState,
+        onClick = {
+            scope.launch { scaffoldState.bottomSheetState.partialExpand() }
+        }
     )
-
 }
-
-
-
-
-
 
 @Preview(showBackground = true)
 @Composable
 fun PopUpCardScreen(){
-
     // Error Card
     PopupMessageComposable(
         painterResource = painterResource(id = R.drawable.errorimage),
@@ -204,20 +274,13 @@ fun PopUpCardScreen(){
         buttonColor = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
         buttonText =  "Listo"
     )
-
-
-
 }
-
-
-
 
 
 // Content of the BottomSheetScaffold
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun Content(
-
 )
 {
     val coroutineScope = rememberCoroutineScope()

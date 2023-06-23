@@ -31,6 +31,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.NoticeModel
+import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsItemViewModel
 
@@ -38,8 +39,8 @@ import com.uca.polifitnessapp.ui.news.viewmodel.NewsItemViewModel
 @Composable
 fun NewItemBox(
     newsItemViewModel: NewsItemViewModel,
-    navController: NavController,
-    noticeId: String
+    noticeId: String,
+    onBackPress: () -> Unit
 ) {
 
     // ---
@@ -73,39 +74,13 @@ fun NewItemBox(
         ) {
             BackButton(
                 modifier = Modifier
-                    .align(Alignment.Start),
-                navController = navController
+                    .align(Alignment.Start)
+                    .padding(8.dp,16.dp,8.dp,16.dp)
+                ,
+                onBackPress
             )
             NewItemScreen(new)
         }
-    }
-}
-
-@Composable
-fun BackButton(
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        // center items horizontally in the row
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton(
-            onClick = { navController.popBackStack() }
-        ) {
-            Icon(
-                Icons.Outlined.ArrowBack,
-                contentDescription = "Back button"
-            )
-        }
-        Text(
-            text = "Regresar",
-            style = MaterialTheme.typography.titleSmall
-        )
     }
 }
 
