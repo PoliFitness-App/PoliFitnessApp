@@ -1,11 +1,7 @@
 package com.uca.polifitnessapp.ui.navigation.flows
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,22 +9,24 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.uca.polifitnessapp.ui.calculator.ui.CalculatorScreen
+import com.uca.polifitnessapp.ui.calculator.viewmodel.CalculatorViewModel
 import com.uca.polifitnessapp.ui.contactscreen.ui.Contact
 import com.uca.polifitnessapp.ui.homeScreen.ui.Home
-import com.uca.polifitnessapp.ui.user.ui.EditProfileScreen
-import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
-import com.uca.polifitnessapp.ui.user.ui.ProfileScreen
-import com.uca.polifitnessapp.ui.navigation.PreviewScreens
+import com.uca.polifitnessapp.ui.homeScreen.viewmodel.HomeScreenViewModel
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems
 import com.uca.polifitnessapp.ui.news.ui.NewItemBox
-import com.uca.polifitnessapp.ui.news.ui.NewItemScreen
 import com.uca.polifitnessapp.ui.news.ui.NewsListScreen
+import com.uca.polifitnessapp.ui.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.politicscreen.ui.privacyPoliticsScreen
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.routines.ui.RoutineItemScreen
 import com.uca.polifitnessapp.ui.routines.ui.RoutinesListScreen
+import com.uca.polifitnessapp.ui.routines.viewmodel.RoutineItemViewModel
+import com.uca.polifitnessapp.ui.user.ui.EditProfileScreen
+import com.uca.polifitnessapp.ui.user.ui.ProfileScreen
+import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
-import kotlinx.coroutines.launch
 
 // ---
 // Main flow
@@ -42,74 +40,193 @@ fun NavGraphBuilder.mainGraph(
     navController: NavHostController,
     editProfileViewModel: EditProfileViewModel,
     newsScreenViewModel: NewsScreenViewModel,
+    newsItemViewModel: NewsItemViewModel,
     userViewModel: UserViewModel,
-    routinesViewModel: RoutinesViewModel
+    routinesViewModel: RoutinesViewModel,
+    routineItemViewModel: RoutineItemViewModel,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
     navigation(
         startDestination = ButtomNavItems.Home.rute,
         route = MainRoutes.MAIN_ROUTE
     ) {
+        // ---
         // Home route
-        composable(ButtomNavItems.Home.rute) {
-            Home()
-        }
-        // News route
-        composable(ButtomNavItems.News.rute) {
-            NewsListScreen(
-                newsScreenViewModel,
-                navController
-            )
-        }
-        // Routine route
-        composable(ButtomNavItems.Rutine.rute) {
-            RoutinesListScreen(
-                routinesViewModel
-            )
-        }
-        // Profile route
-        composable(ButtomNavItems.Profile.rute) {
-            ProfileScreen(
-                navController,
-                userViewModel
-            )
-        }
-        composable(MainRoutes.MAIN_CALCULATOR_SCREEN) {
-            CalculatorScreen()
-        }
-        // Edit profile route
-        composable(MainRoutes.MAIN_USER_EDIT) {
-            EditProfileScreen(
-                navController,
-                userViewModel,
-                editProfileViewModel
-            )
-        }
-        // New info route
-        composable(MainRoutes.MAIN_NEW_INFO
+        // ---
+        composable(
+            ButtomNavItems.Home.rute
         ) {
-            NewItemBox(
-                newsScreenViewModel,
-                navController
+            Home(
+                homeScreenViewModel,
+                userViewModel,
+                onRoutinesClick = {
+                    navController.navigate(ButtomNavItems.Rutine.rute) {
+                        popUpTo(ButtomNavItems.Home.rute) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNewsClick = {
+                    navController.navigate(ButtomNavItems.News.rute) {
+                        popUpTo(ButtomNavItems.Home.rute) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToNews = { noticeId ->
+                    navController.navigate("new_info_screen/${noticeId}")
+                },
+                onNavigateToRoutine = { routineId ->
+                    navController.navigate("routine_info_screen/${routineId}")
+                },
+                onNavigateToProfile = {
+                    navController.navigate(ButtomNavItems.Profile.rute)
+                },
+                userId = userViewModel.user._id ?: "",
             )
         }
+    }
+    // ---
+    // News route
+    // ---
+    composable(ButtomNavItems.News.rute) {
+        NewsListScreen(
+            newsScreenViewModel,
+            onNavigateToNews = { noticeId ->
+                navController.navigate("new_info_screen/${noticeId}")
+            }
+        )
+    }
+    // ---
+    // Routine route
+    // ---
+    composable(ButtomNavItems.Rutine.rute) {
+        RoutinesListScreen(
+            routinesViewModel,
+            userViewModel,
+            onNavigateToRoutine = { routineId ->
+                navController.navigate("routine_info_screen/${routineId}"){
+                }
+            }
+        )
+    }
+    // ---
+    // Profile route
+    // ---
+    composable(ButtomNavItems.Profile.rute) {
+        ProfileScreen(
+            userViewModel,
+            userId = userViewModel.user._id ?: "",
+            onNavigateToEditProfile = { userId ->
+                navController.navigate("edit_profile_screen/${userId}")
+            },
+            onNavigateToTermsAndConditions = {
+                navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+            },
+            onNavigateToContactUs = {
+                navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+            }
+        )
+    }
 
-        // ---
-        // Auxiliary routes
-        // ---
-        composable(
-            MainRoutes.MAIN_CONTACT_INFO
-        ){
-            Contact(
-                navController
+    // ---
+    // Calculator screen
+    // ----
+
+    composable(MainRoutes.MAIN_CALCULATOR_SCREEN) {
+        CalculatorScreen()
+    }
+
+    // ---
+    // Edit profile route
+    // ---
+
+    composable(
+        "edit_profile_screen/{userId}",
+        arguments = listOf(
+            navArgument("userId") {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        backStackEntry.arguments?.getString("userId")?.let {
+            EditProfileScreen(
+                userViewModel,
+                editProfileViewModel,
+                it,
+                onBackPress = {
+                    navController.popBackStack()
+                }
             )
         }
-        composable(
-            MainRoutes.MAIN_TERMS_AND_CONDITIONS
-        ){
-            privacyPoliticsScreen(
-                navController
+    }
+
+    // ---
+    // New info route
+    // ---
+
+    composable(
+        "new_info_screen/{noticeId}",
+        arguments = listOf(
+            navArgument("noticeId") {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        backStackEntry.arguments?.getString("noticeId")?.let {
+            NewItemBox(
+                newsItemViewModel,
+                it,
+                onBackPress = {
+                    navController.popBackStack()
+                }
             )
         }
+    }
+
+    // ---
+    // Routine info route
+    // ---
+
+    composable(
+        "routine_info_screen/{routineId}",
+        arguments = listOf(
+            navArgument("routineId") {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        backStackEntry.arguments?.getString("routineId")?.let {
+            RoutineItemScreen(
+                routineItemViewModel,
+                it,
+                onBackPress = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    }
+
+    // ---
+    // Auxiliary routes
+    // ---
+    composable(
+        MainRoutes.MAIN_CONTACT_INFO
+    ) {
+        Contact(
+            onBackPress = {
+                navController.popBackStack()
+            }
+        )
+    }
+    composable(
+        MainRoutes.MAIN_TERMS_AND_CONDITIONS
+    ) {
+        privacyPoliticsScreen(
+            onBackPress = {
+                navController.popBackStack()
+            }
+        )
     }
 }
 

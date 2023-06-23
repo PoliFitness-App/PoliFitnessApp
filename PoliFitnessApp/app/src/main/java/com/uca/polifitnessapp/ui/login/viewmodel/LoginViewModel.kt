@@ -1,7 +1,6 @@
 package com.uca.polifitnessapp.ui.login.viewmodel
 
 import android.util.Patterns
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,8 +10,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
-import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
-import kotlinx.coroutines.delay
+import com.uca.polifitnessapp.ui.login.state.LoginUiStatus
 import kotlinx.coroutines.launch
 
 class LoginViewModel(

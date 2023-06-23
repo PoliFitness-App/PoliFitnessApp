@@ -104,4 +104,11 @@ dependencies {
     implementation "androidx.paging:paging-runtime:$paging_version"
     implementation('androidx.paging:paging-compose:3.2.0-beta01')
 
+    // Exo Player (Video)
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
+
+    //Java mail
+    implementation 'com.sun.mail:android-mail:1.6.2'
+    implementation 'com.sun.mail:android-activation:1.6.2'
 }

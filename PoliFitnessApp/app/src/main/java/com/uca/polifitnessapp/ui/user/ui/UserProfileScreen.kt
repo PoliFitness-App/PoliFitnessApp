@@ -15,19 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,10 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import java.time.LocalDate
@@ -50,26 +48,42 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
-    // navController
-    navController: NavController,
-    // user view model
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    userId:String,
+    onNavigateToEditProfile: (String) -> Unit,
+    onNavigateToTermsAndConditions: () -> Unit,
+    onNavigateToContactUs: () -> Unit,
 ) {
+
+    // ---
+    // Fetch user from the userId
+    // ---
+
+    LaunchedEffect(userId) {
+        userViewModel.getUserInfo()
+        userViewModel.fetchUserById(userId)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(30.dp, 30.dp, 30.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(50.dp)
     ) {
+
+        // New item screen
+        val user = userViewModel.user
+
         UserCard(
-            user = userViewModel.user,
-            navController
+            user,
+            onNavigateToEditProfile
         )
-        generalInfoUser(user = userViewModel.user)
-        specificlInfoUser(user = userViewModel.user)
+        GeneralInfoUser(user)
+        specificlInfoUser(user)
         ContactCard(
-            navController
+            onNavigateToTermsAndConditions,
+            onNavigateToContactUs
         )
     }
 }
@@ -77,14 +91,13 @@ fun ProfileScreen(
 @Composable
 fun UserCard(
     user: UserModel,
-    navController: NavController
+    onNavigateToEditProfile: (String) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp, 20.dp, 8.dp, 8.dp),
     ) {
         Image(
             painter = painterResource(id = R.drawable.profilepic),
@@ -93,6 +106,9 @@ fun UserCard(
                 id = R.string.description,
             )
         )
+
+        Spacer(modifier = Modifier.width(20.dp))
+
         Column() {
             Text(
                 text = user.username,
@@ -112,8 +128,9 @@ fun UserCard(
                 fontSize = 12.sp,
             )
 
-
         }
+        Spacer(modifier = Modifier.width(20.dp))
+
         Button(
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(20.dp),
@@ -121,7 +138,7 @@ fun UserCard(
                 .width(92.dp)
                 .height(33.dp),
             onClick = {
-                navController.navigate(MainRoutes.MAIN_USER_EDIT)
+                onNavigateToEditProfile(user._id)
             }
         ) {
             Text(
@@ -136,16 +153,15 @@ fun UserCard(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun generalInfoUser(user: UserModel) {
+fun GeneralInfoUser(user: UserModel) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.Center
     ) {
 
         ElevatedCard(
             modifier = Modifier
-                .padding(8.dp)
                 .width(105.dp)
                 .height(73.dp),
             elevation = CardDefaults.elevatedCardElevation(12.dp),
@@ -180,9 +196,10 @@ fun generalInfoUser(user: UserModel) {
 
         }
 
+        Spacer(modifier = Modifier.width(10.dp))
+
         ElevatedCard(
             modifier = Modifier
-                .padding(10.dp)
                 .width(105.dp)
                 .height(73.dp),
             elevation = CardDefaults.elevatedCardElevation(12.dp),
@@ -216,6 +233,8 @@ fun generalInfoUser(user: UserModel) {
 
         }
 
+        Spacer(modifier = Modifier.width(10.dp))
+
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         val datOfBirth = LocalDate.parse(user.birthday, formatter)
 
@@ -223,7 +242,6 @@ fun generalInfoUser(user: UserModel) {
 
         ElevatedCard(
             modifier = Modifier
-                .padding(10.dp)
                 .width(105.dp)
                 .height(73.dp),
             elevation = CardDefaults.elevatedCardElevation(12.dp),
@@ -268,12 +286,11 @@ fun specificlInfoUser(
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.Center
     ) {
 
         ElevatedCard(
             modifier = Modifier
-                .padding(20.dp)
                 .width(160.dp)
                 .height(120.dp),
             elevation = CardDefaults.elevatedCardElevation(12.dp),
@@ -320,9 +337,10 @@ fun specificlInfoUser(
 
         }
 
+        Spacer(modifier = Modifier.width(10.dp))
+
         ElevatedCard(
             modifier = Modifier
-                .padding(20.dp)
                 .width(160.dp)
                 .height(120.dp),
             elevation = CardDefaults.elevatedCardElevation(12.dp),
@@ -378,13 +396,13 @@ fun specificlInfoUser(
 
 @Composable
 fun ContactCard(
-    navController: NavController
+    onNavigateToTermsAndConditions: () -> Unit,
+    onNavigateToContactUs: () -> Unit,
 ) {
     ElevatedCard(
         modifier = Modifier
-            .padding(8.dp)
             .width(350.dp)
-            .height(156.dp),
+            .height(200.dp),
         elevation = CardDefaults.elevatedCardElevation(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp),
@@ -409,7 +427,7 @@ fun ContactCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+                        onNavigateToContactUs()
                     },
             ) {
                 Icon(
@@ -443,7 +461,7 @@ fun ContactCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate(MainRoutes.MAIN_TERMS_AND_CONDITIONS)
+                        onNavigateToTermsAndConditions()
                     }
             ) {
                 Icon(
@@ -464,6 +482,41 @@ fun ContactCard(
                 )
 
                 Spacer(modifier = Modifier.width(width = 80.dp))
+
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = null,
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        //TODO:
+
+                    }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.logout_2),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp)
+                )
+
+                // gap between icon and text
+
+                Text(
+                    text = "Cerrar sesión",
+                    fontWeight = FontWeight.ExtraLight,
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.width(width = 135.dp))
 
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),

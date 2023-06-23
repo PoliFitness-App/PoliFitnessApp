@@ -2,6 +2,7 @@ package com.uca.polifitnessapp.ui.user.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,16 +14,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Height
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.MonitorWeight
+import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -42,17 +50,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
+
 @Composable
 fun EditProfileScreen(
-    navController: NavController,
     userViewModel: UserViewModel,
-    viewModel: EditProfileViewModel
+    viewModel: EditProfileViewModel,
+    userId: String,
+    onBackPress: () -> Unit,
 ) {
-    LaunchedEffect(Unit) {
-        userViewModel.getUserInfo()
+    LaunchedEffect(userId) {
+        userViewModel.fetchUserById(userId)
     }
 
     Column(
@@ -61,16 +72,24 @@ fun EditProfileScreen(
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(25.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(25.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
+        BackButton(
+            modifier = Modifier
+                .align(Alignment.Start),
+            onBackPress
+        )
         HeaderImage()
         EditProfileText()
+        Spacer(modifier = Modifier.height(10.dp))
         combine(
             viewModel,
             userViewModel
         )
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
@@ -150,7 +169,7 @@ fun WeightField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.MonitorWeight,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -194,7 +213,7 @@ fun heightField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.Height,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -238,7 +257,7 @@ fun waistField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.Straighten,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -282,7 +301,7 @@ fun hipField(
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Outlined.MailOutline,
+                imageVector = Icons.Outlined.Straighten,
                 contentDescription = "null",
                 tint = Color(0xFF565E71)
             )
@@ -310,12 +329,16 @@ fun hipField(
 }
 
 @Composable
-fun kgicon() {
+fun kgicon(
+    unit: String,
+    onClick: () -> Unit
+) {
     ElevatedCard(
         modifier = Modifier
             .height(74.dp)
             .size(80.dp)
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
     ) {
@@ -325,7 +348,7 @@ fun kgicon() {
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(text = "KG", color = Color.White)
+            Text(text = unit, color = Color.White)
         }
 
     }
@@ -390,7 +413,9 @@ fun combine(
                 viewModel.onFieldChange(it, height, waistP, hipP)
             }
 
-            kgicon()
+            kgicon(viewModel.weightUnitState){
+                viewModel.changeUnit()
+            }
 
         }
 

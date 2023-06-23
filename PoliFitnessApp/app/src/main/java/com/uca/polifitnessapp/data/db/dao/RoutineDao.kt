@@ -7,15 +7,24 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.uca.polifitnessapp.data.db.models.NoticeModel
-import com.uca.polifitnessapp.data.db.models.RoutineModel
+import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 
 @Dao
 interface RoutineDao {
 
-    //Funcion para obtener todas las rutinas
+    /*
+    * Get all routines
+    */
     @Query("SELECT * FROM routine_table")
     suspend fun getAllRoutines(): List<RoutineModel>
+
+    /*
+    * Get routines for homes screen
+    *
+    * param count: number of routines to get
+     */
+    @Query("SELECT * FROM routine_table LIMIT :count")
+    suspend fun getRoutines(count: Int): List<RoutineModel>
 
     // funcion para  obtener rutinas general
     @Query("SELECT * FROM routine_table")
@@ -36,15 +45,25 @@ interface RoutineDao {
 
     // funcion para buscar por enfoque y categoria por bloques
     @Query("SELECT * FROM routine_table WHERE approach like :query AND category like :query2")
-    fun pagingSourceByApproachAndCategory(query: String, query2: String): PagingSource<Int, RoutineModel>
+    fun pagingSourceByApproachAndCategory(
+        query: String,
+        query2: String
+    ): PagingSource<Int, RoutineModel>
 
     // funcion para buscar por enfoque y nivel por bloques
     @Query("SELECT * FROM routine_table WHERE approach like :query AND level like :query2")
-    fun pagingSourceByApproachAndLevel(query: String, query2: String): PagingSource<Int, RoutineModel>
+    fun pagingSourceByApproachAndLevel(
+        query: String,
+        query2: String
+    ): PagingSource<Int, RoutineModel>
 
     // funcion para buscar por enfoque, categoria y nivel por bloques
     @Query("SELECT * FROM routine_table WHERE approach like :query AND category like :query2 AND level like :query3")
-    fun pagingSourceByApproachAndCategoryAndLevel(query: String, query2: String, query3: String): PagingSource<Int, RoutineModel>
+    fun pagingSourceByApproachAndCategoryAndLevel(
+        query: String,
+        query2: String,
+        query3: String
+    ): PagingSource<Int, RoutineModel>
 
 
     //Funcion para ingresar una rutina
@@ -58,7 +77,7 @@ interface RoutineDao {
 
     //Funcion para obtener una rutina por su id
     @Query("SELECT * FROM routine_table WHERE routineId = :routineId")
-    suspend fun getRoutineById(routineId: Int): RoutineModel?
+    suspend fun getRoutineById(routineId: String): RoutineModel?
 
     //funcion para eliminar rutina por id
     @Transaction

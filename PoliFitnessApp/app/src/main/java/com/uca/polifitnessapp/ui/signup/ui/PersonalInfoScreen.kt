@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.outlined.CalendarMonth
@@ -82,12 +84,15 @@ fun SignUpPersonalInfoScreen(
     viewModel: SignUpGoalViewModel,
     userViewModel: UserViewModel
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 colorResource(id = R.color.white)
             )
+            .verticalScroll(scrollState)
             .padding(50.dp, 0.dp, 30.dp, 0.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -105,6 +110,8 @@ fun SignUpPersonalInfoScreen(
             viewModel,
             navController
         )
+
+        Spacer(modifier = Modifier.height(30.dp))
 
     }
 }
@@ -143,7 +150,7 @@ fun SignUpPersonalInfoView(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        //verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
 
         // ---
@@ -155,6 +162,8 @@ fun SignUpPersonalInfoView(
             viewModel.onGenderChange(it)
         }
 
+        Spacer(modifier = Modifier.height(15.dp))
+
         // ---
         // BirthdateField
         // ---
@@ -163,6 +172,8 @@ fun SignUpPersonalInfoView(
         ) {
             viewModel.onAgeChange(it)
         }
+
+        Spacer(modifier = Modifier.height(15.dp))
 
         // ---
         // WeightField
@@ -178,7 +189,11 @@ fun SignUpPersonalInfoView(
             ) {
                 viewModel.onWeightChange(it)
             }
-            kgicon()
+            kgicon(
+                viewModel.weightUnitState
+            ){
+                viewModel.changeUnit()
+            }
         }
 
         // ---
@@ -234,6 +249,8 @@ fun SignUpPersonalInfoView(
             cmicon()
 
         }
+
+        Spacer(modifier = Modifier.height(15.dp))
         // ---
         // Button
         // ---
@@ -528,11 +545,15 @@ fun hipField(
 }
 
 @Composable
-fun kgicon() {
+fun kgicon(
+    unit: String,
+    onClick: () -> Unit
+) {
     ElevatedCard(
         modifier = Modifier
             .height(56.dp)
-            .width(48.dp),
+            .width(48.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
     ) {
@@ -543,7 +564,7 @@ fun kgicon() {
 
         ) {
             Text(
-                text = "KG",
+                text = unit,
                 color = Color.White
             )
         }

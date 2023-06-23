@@ -1,6 +1,9 @@
 package com.uca.polifitnessapp.ui.signup.viewmodel
 
 import android.util.Patterns
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,10 +11,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.uca.polifitnessapp.PoliFitnessApplication
-import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
-import com.uca.polifitnessapp.ui.login.ui.LoginUiStatus
 import com.uca.polifitnessapp.ui.signup.validation.SignUpUiStatus
 import kotlinx.coroutines.launch
 
@@ -58,6 +59,8 @@ class SignUpGoalViewModel(
 
     // CheckBox
     var checkBox = MutableLiveData(false)
+
+    var weightUnitState by mutableStateOf("KG")
 
     // Is enable?
     private val _isEnabled = MutableLiveData(false)
@@ -355,6 +358,13 @@ class SignUpGoalViewModel(
         approach.value = approachU
         // It also updates the is enabled variable
         _isEnabled.value = true
+    }
+
+    fun changeUnit() {
+        if (weightUnitState == "KG")
+            weightUnitState = "LB"
+        else
+            weightUnitState = "KG"
     }
 
     // ---

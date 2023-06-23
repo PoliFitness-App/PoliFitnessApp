@@ -17,6 +17,12 @@ interface NoticeDao {
     @Query("SELECT * FROM notice_table WHERE category like :query")
     fun pagingSource(query: String): PagingSource<Int, NoticeModel>
 
+    @Query("SELECT * FROM notice_table LIMIT :count")
+    suspend fun getNews(count:Int): List<NoticeModel>
+
+    @Query("SELECT * FROM notice_table")
+    fun pagingSourceAll():PagingSource<Int, NoticeModel>
+
     // ---
     // Insert new
     // ---

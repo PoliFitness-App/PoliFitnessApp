@@ -1,10 +1,21 @@
 package com.uca.polifitnessapp.ui.calculator.viewmodel
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Female
+import androidx.compose.material.icons.outlined.Male
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.calculator.ui.ValueState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class CalculatorViewModel: ViewModel() {
 
@@ -24,7 +35,7 @@ class CalculatorViewModel: ViewModel() {
     var weightState by mutableStateOf(ValueState())
         private set
 
-    var waistState by mutableStateOf(ValueState( ))
+    var waistState by mutableStateOf(ValueState())
         private set
 
     var hipState by mutableStateOf(ValueState())
@@ -32,25 +43,68 @@ class CalculatorViewModel: ViewModel() {
 
     var genderState by mutableStateOf(ValueState())
 
+    var weightUnitState by mutableStateOf("KG")
+
+    var isButtonEnabled by mutableStateOf(false)
+
     fun updateHeight(it: String) {
         heightState = heightState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateWeight(it: String) {
         weightState = weightState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateWaist(it: String) {
         waistState = waistState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateHip(it: String) {
         hipState = hipState.copy(value = it, error = null)
+        checkButton()
     }
 
     fun updateGender(it: String) {
         genderState = genderState.copy(value = it, error = null)
+        checkButton()
+        //updateImage(it)
+
     }
+
+
+
+    fun checkButton(){
+        isButtonEnabled = genderState.value.isNotEmpty() &&
+                weightState.value.isNotEmpty()&&
+                weightState.value.isNotEmpty()&&
+                heightState.value.isNotEmpty()&&
+                hipState.value.isNotEmpty()&&
+                waistState.value.isNotEmpty()
+    }
+
+
+
+    /*
+    private fun updateImage(gender: String) {
+        imageGender = when (gender) {
+            "Femenino" -> R.drawable.calculator_header_img
+            "Masculino" -> R.drawable.frame
+            else -> R.drawable.calculator_header_img
+        }
+    }*/
+
+
+
+    fun changeUnit() {
+        if (weightUnitState == "KG")
+            weightUnitState = "LB"
+        else
+            weightUnitState = "KG"
+    }
+
 
     fun calculate() {
         val height = heightState.toNumber()
@@ -70,11 +124,35 @@ class CalculatorViewModel: ViewModel() {
         else calculateBMI(height, weight, waist, hip, gender)
     }
 
-    private fun calculateBMI(height: Double, weight: Double, waist: Double, hip: Double, gender: String) {
+    private fun calculateBMI(
+        height: Double,
+        weight: Double,
+        waist: Double,
+        hip: Double,
+        gender: String
+    ) {
 
 
-        if (gender == "Femenino") {
+        if (gender == "Femenino" && weightUnitState == "KG") {
+
             bmi = weight / (height * height)
+            messageIbm = when {
+                bmi < 21 -> "Bajo"
+                bmi in 21.0..32.9 -> "Normal"
+                bmi in 33.0..38.9 -> "Alto"
+                bmi >= 39.0 -> "Muy Alto"
+                else -> error("Invalid params")
+            }
+            icc = (waist / hip) * 10
+            messageIcc = when {
+                icc < 0.80 -> "Riesgo Bajo"
+                icc in 0.81..0.84 -> "Riesgo Alto"
+                icc >= 0.85 -> "Muy alto"
+                else -> error("Invalid params")
+            }
+        } else if (gender == "Femenino" && weightUnitState == "LB") {
+
+            bmi = (weight/2.205) / (height * height)
 
             messageIbm = when {
                 bmi < 21 -> "Bajo"
@@ -92,7 +170,9 @@ class CalculatorViewModel: ViewModel() {
                 icc >= 0.85 -> "Muy alto"
                 else -> error("Invalid params")
             }
-        } else {
+
+
+        } else if(gender == "Masculino" && weightUnitState == "KG"){
             bmi = weight / (height * height)
 
             messageIbm = when {
@@ -111,5 +191,34 @@ class CalculatorViewModel: ViewModel() {
                 else -> error("Invalid params")
             }
         }
+        else{
+            bmi = (weight/2.205) / (height * height)
+
+            messageIbm = when {
+                bmi < 8.0 -> "Bajo"
+                bmi in 8.0..19.9 -> "Normal"
+                bmi in 20.0..24.9 -> "Alto"
+                bmi >= 25.0 -> "Muy Alto"
+                else -> error("Invalid params")
+            }
+
+            icc = (waist / hip) * 10
+            messageIcc = when {
+                icc < 0.95 -> "Riesgo Bajo"
+                icc in 0.96..0.99 -> "Riesgo Alto"
+                icc >= 1.0 -> "Muy alto"
+                else -> error("Invalid params")
+            }
+        }
+        clearData()
+    }
+
+    fun clearData(){
+        genderState = genderState.copy(value = "", error = null)
+        heightState = heightState.copy(value = "", error = null)
+        weightState = weightState.copy(value = "", error = null)
+        waistState = waistState.copy(value = "", error = null)
+        hipState = hipState.copy(value = "", error = null)
+
     }
 }

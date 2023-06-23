@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.uca.polifitnessapp.PoliFitnessApplication
+import com.uca.polifitnessapp.ui.homeScreen.viewmodel.HomeScreenViewModel
 import com.uca.polifitnessapp.ui.login.viewmodel.LoginViewModel
 import com.uca.polifitnessapp.ui.navigation.components.ButtomNavItems.*
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
@@ -17,8 +18,10 @@ import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.authGraph
 import com.uca.polifitnessapp.ui.navigation.flows.loginGraph
 import com.uca.polifitnessapp.ui.navigation.flows.mainGraph
+import com.uca.polifitnessapp.ui.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.routines.viewmodel.RoutineItemViewModel
 import com.uca.polifitnessapp.ui.signup.viewmodel.SignUpGoalViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
@@ -42,6 +45,10 @@ fun NavigationHost(navController: NavHostController) {
         factory = NewsScreenViewModel.Factory
     )
 
+    val newsItemViewModel: NewsItemViewModel = viewModel(
+        factory = NewsItemViewModel.Factory
+    )
+
     // User view model (global)
     val userViewModel: UserViewModel = viewModel(
         factory = UserViewModel.Factory
@@ -55,6 +62,16 @@ fun NavigationHost(navController: NavHostController) {
     // Routines view model
     val routinesViewModel: RoutinesViewModel = viewModel(
         factory = RoutinesViewModel.Factory
+    )
+
+    // Routine Item ViewModel
+    val routineItemViewModel: RoutineItemViewModel = viewModel(
+        factory = RoutineItemViewModel.Factory
+    )
+
+    // Home screen ViewModel
+    val homeScreenViewModel: HomeScreenViewModel = viewModel(
+        factory = HomeScreenViewModel.Factory
     )
 
     // ---
@@ -97,8 +114,11 @@ fun NavigationHost(navController: NavHostController) {
             navController,
             editProfileViewModel,
             newsScreenViewModel,
+            newsItemViewModel,
             userViewModel,
-            routinesViewModel
+            routinesViewModel,
+            routineItemViewModel,
+            homeScreenViewModel
         )
 
         // ---
@@ -122,13 +142,4 @@ fun NavigationHost(navController: NavHostController) {
             userViewModel
         )
     }
-}
-
-
-// TODO - Remove this function
-@Composable
-fun PreviewScreens(
-    greeting: String,
-) {
-    //
 }
