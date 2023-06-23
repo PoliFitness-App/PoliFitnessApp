@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.BottomSheetScaffold
@@ -40,8 +41,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.uca.polifitnessapp.R
 import kotlinx.coroutines.launch
+
 
 
 //Pop-Up cards composable function with parameters to change the content of the card
@@ -59,7 +62,8 @@ fun PopupMessageComposable(
     Card(
         modifier = Modifier
             .width(412.dp)
-            .height(455.dp),
+            .height(850.dp)
+            .zIndex(10f),
         shape = RoundedCornerShape(60.dp, 60.dp, 0.dp, 0.dp),
         colors = cardColors,
     ) {
@@ -234,6 +238,7 @@ fun SheetContent(){
         onClick = {
             scope.launch { scaffoldState.bottomSheetState.partialExpand() }
         }
+
     )
 }
 

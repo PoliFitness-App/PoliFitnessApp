@@ -107,4 +107,8 @@ dependencies {
     // Exo Player (Video)
     implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
+
+    //Java mail
+    implementation 'com.sun.mail:android-mail:1.6.2'
+    implementation 'com.sun.mail:android-activation:1.6.2'
 }
