@@ -7,7 +7,6 @@ package com.uca.polifitnessapp.ui.contactscreen.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +42,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Properties
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.MessagingException
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 @Composable
 fun Contact(
@@ -65,11 +79,9 @@ fun Contact(
         ContactTitle()
         Spacer(modifier = Modifier.height(25.dp))
 
-        contactDescription()
+        ContactDescription()
         Spacer(modifier = Modifier.height(25.dp))
 
-        EmailField()
-        Spacer(modifier = Modifier.height(50.dp))
 
         SendEmail()
     }
@@ -113,7 +125,7 @@ fun ContactTitle() {
 }
 
 @Composable
-fun contactDescription() {
+fun ContactDescription() {
     Text(
         modifier = Modifier
             .width(350.dp)
@@ -165,30 +177,160 @@ fun EmailField() {
 
 @Composable
 fun SendEmail() {
-    Button(
-        onClick = {
 
-        },
-        shape = RoundedCornerShape(10.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 20.dp,
-            pressedElevation = 10.dp,
-            disabledElevation = 0.dp
-        ),
-        modifier = Modifier
-            .width(315.dp)
-            .height(56.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF034189)
-        ),
-    )
-    {
-        Text(
-            text = "Enviar",
-            fontSize = 16.sp,
-            color = Color.White,
-            fontWeight = FontWeight.Bold
+    val recipientEmailState = remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    Column() {
+
+        TextField(
+            value = recipientEmailState.value,
+            onValueChange = {
+                recipientEmailState.value = it
+            },
+            shape = MaterialTheme.shapes.small,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.MailOutline,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            label = {
+                Text(
+                    text = "Correo electrónico",
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
+
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            modifier = Modifier
+                .width(315.dp),
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+                containerColor = Color(0xFFD7E2FF)
+            )
         )
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+        Button(
+            onClick = {
+
+                val recipientEmail = recipientEmailState.value
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    sendEmail(context, recipientEmail)
+                }
+
+                Toast.makeText(context, "Enviado", Toast.LENGTH_SHORT).show()
+
+            },
+            shape = RoundedCornerShape(10.dp),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 20.dp,
+                pressedElevation = 10.dp,
+                disabledElevation = 0.dp
+            ),
+            modifier = Modifier
+                .width(315.dp)
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF034189)
+            ),
+        )
+        {
+            Text(
+                text = "Enviar",
+                fontSize = 16.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+    }
+}
+
+
+fun sendEmail(context: Context, recipientEmail: String) {
+    val username = "testpamela513@hotmail.com"
+    val password = "Delta51302"
+
+    val properties = Properties()
+    properties["mail.smtp.auth"] = "true"
+    properties["mail.smtp.starttls.enable"] = "true"
+    properties["mail.smtp.host"] = "smtp-mail.outlook.com"
+    properties["mail.smtp.port"] = "587"
+
+    val session = Session.getInstance(properties, object : Authenticator() {
+        override fun getPasswordAuthentication(): PasswordAuthentication {
+            return PasswordAuthentication(username, password)
+        }
+    })
+
+    try {
+        val message = MimeMessage(session)
+        message.setFrom(InternetAddress(username))
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail))
+        message.subject = "Respuesta a tu solicitud de ayuda - Centro Deportivo App"
+        message.setText(
+            """Estimado/a,
+Estimado/a,
+
+Gracias por contactar a nuestro equipo de servicio de ayuda en Centro Deportivo App. Para brindarte la mejor asistencia posible, necesitamos obtener más detalles sobre tu consulta.
+
+Por favor, proporciona una descripción detallada de tu consulta o problema. Si es relevante, adjunta capturas de pantalla para ayudarnos a entender mejor la situación. Asegúrate también de incluir tu información de contacto actualizada.
+
+Una vez que recibamos esta información, nos dedicaremos a investigar tu caso y te brindaremos una solución satisfactoria en el menor tiempo posible.
+
+Agradecemos tu colaboración y paciencia. Estamos aquí para ayudarte en todo momento.
+
+Saludos cordiales,
+
+Servicio de ayuda
+Centro Deportivo App
+centrodeportivoapp@support.com"""
+        )
+
+        Transport.send(message)
+
+        println("Correo enviado exitosamente.")
+
+    } catch (e: MessagingException) {
+        e.printStackTrace()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SendEmailScreen() {
+    val recipientEmailState = remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    Column {
+        TextField(
+            value = recipientEmailState.value,
+            onValueChange = { recipientEmailState.value = it },
+            label = { Text("Correo electrónico") }
+        )
+
+        Button(
+            onClick = {
+                val recipientEmail = recipientEmailState.value
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    sendEmail(context, recipientEmail)
+                }
+
+                Toast.makeText(context, "Enviado", Toast.LENGTH_SHORT).show()
+            }
+        ) {
+            Text("Enviar correo")
+        }
     }
 }
 

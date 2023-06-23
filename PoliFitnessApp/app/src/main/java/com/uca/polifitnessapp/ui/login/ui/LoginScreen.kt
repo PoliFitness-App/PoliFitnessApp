@@ -27,7 +27,9 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -119,11 +122,13 @@ fun LoginView(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     // Handle status changes
+    
     fun handleUiStatus(status: LoginUiStatus) {
 
         when(status) {
             is LoginUiStatus.Error -> {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+
             }
             is LoginUiStatus.ErrorWithMessage -> {
                 Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
