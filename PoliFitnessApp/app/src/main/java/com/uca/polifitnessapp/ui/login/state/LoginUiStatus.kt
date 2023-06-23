@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.login.ui
+package com.uca.polifitnessapp.ui.login.state
 
 import java.lang.Exception
 

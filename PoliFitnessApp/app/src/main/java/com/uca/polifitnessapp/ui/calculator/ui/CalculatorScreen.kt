@@ -394,7 +394,6 @@ fun HeaderImage(
 
     }
 
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun HeightField(
@@ -642,8 +641,6 @@ fun HeaderImage(
             )
 
         }
-
-
     }
 
 

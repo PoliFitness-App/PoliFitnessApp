@@ -50,20 +50,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 
 
-
-
 @Composable
 fun EditProfileScreen(
-    navController: NavController,
     userViewModel: UserViewModel,
-    viewModel: EditProfileViewModel
+    viewModel: EditProfileViewModel,
+    userId: String,
+    onBackPress: () -> Unit,
 ) {
-    LaunchedEffect(Unit) {
-        userViewModel.getUserInfo()
+    LaunchedEffect(userId) {
+        userViewModel.fetchUserById(userId)
     }
 
     Column(
@@ -77,10 +77,10 @@ fun EditProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        com.uca.polifitnessapp.ui.news.ui.BackButton(
+        BackButton(
             modifier = Modifier
                 .align(Alignment.Start),
-            navController = navController
+            onBackPress
         )
         HeaderImage()
         EditProfileText()
@@ -519,33 +519,6 @@ fun SaveButton(
             fontSize = 16.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-fun BackButton(
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        // center items horizontally in the row
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton(
-            onClick = { navController.popBackStack() }
-        ) {
-            Icon(
-                Icons.Outlined.ArrowBack,
-                contentDescription = "Back button"
-            )
-        }
-        Text(
-            text = "Regresar",
-            style = MaterialTheme.typography.titleSmall
         )
     }
 }

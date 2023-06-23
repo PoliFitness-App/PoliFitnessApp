@@ -2,36 +2,24 @@
 
 package com.uca.polifitnessapp.ui.routines.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -50,13 +38,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,7 +51,7 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.uca.polifitnessapp.R
-import com.uca.polifitnessapp.data.db.models.RoutineModel
+import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.ui.routines.data.RoutinesViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.FlowPreview
@@ -77,7 +64,7 @@ import kotlinx.coroutines.launch
 fun RoutinesListScreen(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
-    navController: NavController
+    onNavigateToRoutine: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -90,7 +77,7 @@ fun RoutinesListScreen(
         RoutinesList(
             viewModel,
             userViewModel,
-            navController
+            onNavigateToRoutine
         )
     }
 }
@@ -100,7 +87,7 @@ fun RoutinesListScreen(
 fun RoutinesList(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
-    navController: NavController
+    onNavigateToRoutine: (String) -> Unit
 ) {
     // States for news list
     var selectedIndex by remember { mutableStateOf(0) }
@@ -118,10 +105,13 @@ fun RoutinesList(
 
     // Filter's for news list
     // Filter by level
-
-    val routinesByFilters = viewModel.getRoutinesByApproachAndCategoryAndLevel(
-        "%", category, level
-    ).collectAsLazyPagingItems()
+    // TODO obtener el approach del usuario e insertarlo
+    val routinesByFilters2 = remember(key1 = category, key2 = level){
+        viewModel.getRoutinesByApproachAndCategoryAndLevel(
+            "%", category, level
+        )
+    }
+    val routinesByFilters = routinesByFilters2.collectAsLazyPagingItems()
 
     // Recommended routines list
 
@@ -182,16 +172,15 @@ fun RoutinesList(
                 RoutineItem(
                     routine = item
                 ) { routineId ->
-                    coroutineScope.launch {
-                        navController.navigate("routine_info_screen/${routineId}")
-                    }
+                    onNavigateToRoutine(routineId)
                 }
             }
         }
     }
 
     // Save scroll state
-    LaunchedEffect(scrollState) {
+    /*
+    * LaunchedEffect(scrollState) {
         snapshotFlow {
             scrollState.firstVisibleItemIndex
         }
@@ -204,6 +193,7 @@ fun RoutinesList(
                 viewModel.onScrollChange(index)
             }
     }
+    * */
 }
 
 // ----
@@ -298,7 +288,13 @@ fun RoutineItem(
             ) {
                 // Image
                 Image(
-                    painter = painterResource(R.drawable.fullbody_approach),
+                    painter = painterResource(
+                        when(routine.category){
+                            stringResource(R.string.full_body_category) -> R.drawable.fullbody_approach
+                            stringResource(R.string.upper_body_category) -> R.drawable.upper_body_approach
+                            stringResource(R.string.lower_boddy_category) -> R.drawable.lower_body_approach
+                            else -> R.drawable.fullbody_approach}
+                    ),
                     contentDescription = "Routines Image",
                     modifier = Modifier
                         .width(82.dp)

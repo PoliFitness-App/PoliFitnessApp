@@ -5,11 +5,9 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.uca.polifitnessapp.data.db.PoliFitnessDatabase
-import com.uca.polifitnessapp.data.db.models.NoticeModel
-import com.uca.polifitnessapp.data.db.models.RemoteKey
+import com.uca.polifitnessapp.data.PoliFitnessDatabase
 import com.uca.polifitnessapp.data.db.models.RemoteKeyRoutine
-import com.uca.polifitnessapp.data.db.models.RoutineModel
+import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.network.service.RoutineService
 import retrofit2.HttpException
 import java.io.IOException
