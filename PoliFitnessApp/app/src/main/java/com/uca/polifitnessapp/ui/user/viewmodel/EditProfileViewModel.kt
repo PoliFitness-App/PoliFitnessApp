@@ -13,6 +13,7 @@ import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
+import com.uca.polifitnessapp.ui.main.calculator.ui.ValueState
 import com.uca.polifitnessapp.ui.user.status.EditProfileUiStatus
 import kotlinx.coroutines.launch
 
@@ -37,6 +38,14 @@ class EditProfileViewModel(
     var hipP = MutableLiveData("")
 
     var weightUnitState by mutableStateOf("KG")
+
+    var approachState by mutableStateOf(ValueState())
+
+    fun updateApproach(it: String) {
+        approachState = approachState.copy(value = it, error = null)
+
+
+    }
 
     // ---
     // States

@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.Button
@@ -64,9 +66,12 @@ fun ProfileScreen(
         userViewModel.fetchUserById(userId)
     }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(30.dp, 30.dp, 30.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(50.dp)
@@ -85,7 +90,11 @@ fun ProfileScreen(
             onNavigateToTermsAndConditions,
             onNavigateToContactUs
         )
+
+        Spacer(modifier = Modifier.height(50.dp))
     }
+
+
 }
 
 @Composable
@@ -135,7 +144,7 @@ fun UserCard(
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
-                .width(92.dp)
+                .width(100.dp)
                 .height(33.dp),
             onClick = {
                 onNavigateToEditProfile(user._id)

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,20 +16,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipColors
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.Height
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.Male
 import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,17 +50,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.main.calculator.ui.ValueState
 import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
@@ -62,6 +79,9 @@ fun EditProfileScreen(
     userId: String,
     onBackPress: () -> Unit,
 ) {
+
+    val scrollState = rememberScrollState()
+
     LaunchedEffect(userId) {
         userViewModel.fetchUserById(userId)
     }
@@ -73,7 +93,7 @@ fun EditProfileScreen(
                 colorResource(id = R.color.white)
             )
             .padding(25.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -335,9 +355,8 @@ fun kgicon(
 ) {
     ElevatedCard(
         modifier = Modifier
-            .height(74.dp)
-            .size(80.dp)
-            .padding(10.dp)
+            .height(56.dp)
+            .width(48.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
@@ -358,9 +377,8 @@ fun kgicon(
 fun cmicon() {
     ElevatedCard(
         modifier = Modifier
-            .height(74.dp)
-            .size(80.dp)
-            .padding(10.dp),
+            .height(56.dp)
+            .width(48.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
     ) {
@@ -397,11 +415,12 @@ fun combine(
     val isValidForm by viewModel.isEnabled.observeAsState(initial = false)
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
 
         Row(
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -420,7 +439,7 @@ fun combine(
         }
 
         Row(
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -436,7 +455,7 @@ fun combine(
         }
 
         Row(
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -452,7 +471,7 @@ fun combine(
         }
 
         Row(
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -467,7 +486,25 @@ fun combine(
 
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+                ApproachField(
+                    viewModel.approachState,
+                    viewModel::updateApproach
+                )
+
+
+        }
+
+
+        Spacer(modifier = Modifier.height(35.dp))
+
+
+
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -484,6 +521,9 @@ fun combine(
                 viewModel.clearStatus()
             }
         }
+
+        Spacer(modifier = Modifier.height(5.dp))
+
     }
 
 }
@@ -520,6 +560,81 @@ fun SaveButton(
             color = Color.White,
             fontWeight = FontWeight.Bold
         )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ApproachField(
+    state: ValueState,
+    onValueChange: (String) -> Unit,
+) {
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = {
+            isExpanded = it
+        }
+    ) {
+        TextField(
+            value = state.value,
+            onValueChange = {
+                onValueChange(it)
+            },
+            shape = MaterialTheme.shapes.small,
+            readOnly = true,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.FitnessCenter,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            label = {
+                Text(
+                    text = "Escoge un enfoque",
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+            ),
+            modifier = Modifier
+                .menuAnchor()
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color(0xFFD7E2FF))
+                .width(325.dp)
+        )
+
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false },
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "Ganar masa muscular") },
+                onClick = {
+                    state.value = "Ganar masa muscular"
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Perder grada") },
+                onClick = {
+                    state.value = "Perder grasa"
+                    isExpanded = false
+                }
+            )
+        }
     }
 }
 
