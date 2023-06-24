@@ -18,7 +18,7 @@ import com.uca.polifitnessapp.ui.main.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.extras.ui.privacyPoliticsScreen
-import com.uca.polifitnessapp.ui.main.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.main.routines.viewmodel.RoutinesViewModel
 import com.uca.polifitnessapp.ui.main.routines.ui.RoutineItemScreen
 import com.uca.polifitnessapp.ui.main.routines.ui.RoutinesListScreen
 import com.uca.polifitnessapp.ui.main.routines.viewmodel.RoutineItemViewModel

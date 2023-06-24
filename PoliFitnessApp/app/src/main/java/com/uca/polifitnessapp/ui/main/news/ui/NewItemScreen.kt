@@ -3,6 +3,7 @@ package com.uca.polifitnessapp.ui.main.news.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -128,11 +130,11 @@ fun NewItemScreen(
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.Start),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.labelLarge
             )
             Text(
                 text = new.description,
-                fontWeight = FontWeight.ExtraLight,
+                fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier
                     .padding(8.dp, 0.dp, 8.dp, 8.dp)
@@ -142,13 +144,14 @@ fun NewItemScreen(
             )
             // Place
             NewPlace(
-                text = "Centro Deportivo UCA",
+                text = stringResource(R.string.place_title),
                 icon = R.drawable.pin_new_screen
             )
+            Spacer(modifier = Modifier.weight(1f))
             // Category
             Text(
                 text = new.category,
-                fontWeight = FontWeight.ExtraLight,
+                fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier
                     .padding(8.dp, 8.dp, 8.dp, 8.dp)
@@ -183,7 +186,7 @@ fun NewPlace(
         )
         Text(
             text = text,
-            fontWeight = FontWeight.ExtraLight,
+            fontWeight = FontWeight.Light,
             color = MaterialTheme.colorScheme.scrim,
             modifier = Modifier
                 .padding(8.dp, 0.dp, 8.dp, 8.dp),

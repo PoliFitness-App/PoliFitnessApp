@@ -120,8 +120,6 @@ fun CalculatorView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-
-
         Row(
             modifier = Modifier
                 .fillMaxWidth(),

@@ -20,7 +20,7 @@ import com.uca.polifitnessapp.ui.navigation.flows.loginGraph
 import com.uca.polifitnessapp.ui.navigation.flows.mainGraph
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsScreenViewModel
-import com.uca.polifitnessapp.ui.main.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.main.routines.viewmodel.RoutinesViewModel
 import com.uca.polifitnessapp.ui.main.routines.viewmodel.RoutineItemViewModel
 import com.uca.polifitnessapp.ui.auth.signup.viewmodel.SignUpGoalViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel

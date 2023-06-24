@@ -363,6 +363,7 @@ class SignUpGoalViewModel(
         waistP = waistP.copy(value = "", error = "")
         hipP = hipP.copy(value = "", error = "")
         checkBox = false
+        approach = approach.copy(value = "", error = "")
     }
 
     fun clearStatus() {

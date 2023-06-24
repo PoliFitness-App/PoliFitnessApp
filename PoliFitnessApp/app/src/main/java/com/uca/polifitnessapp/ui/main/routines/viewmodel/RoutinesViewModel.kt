@@ -1,4 +1,4 @@
-package com.uca.polifitnessapp.ui.main.routines.data
+package com.uca.polifitnessapp.ui.main.routines.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +9,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.ExperimentalPagingApi
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.repositories.RoutineRepository
-import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsScreenViewModel
 
 class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel() {
 

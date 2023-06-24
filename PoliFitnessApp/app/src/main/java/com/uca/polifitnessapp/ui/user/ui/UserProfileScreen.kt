@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.Button
@@ -45,28 +47,39 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
+/**
+ * @Composable User Profile Screen
+ * @Description: This composable show the user profile screen
+ *
+ * @param: userViewModel: UserViewModel (User view model)
+ * @param: user: UserModel (User info)
+ * @param: onNavigateToEditProfile: (String) -> Unit (Navigation to edit profile screen)
+ * @param: onNavigateToTermsAndConditions: () -> Unit (Navigation to terms and conditions screen)
+ * @param: onNavigateToContactUs: () -> Unit (Navigation to contact us screen)
+ **/
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     userViewModel: UserViewModel,
-    userId:String,
+    userId: String,
     onNavigateToEditProfile: (String) -> Unit,
     onNavigateToTermsAndConditions: () -> Unit,
     onNavigateToContactUs: () -> Unit,
 ) {
-
-    // ---
     // Fetch user from the userId
-    // ---
-
     LaunchedEffect(userId) {
         userViewModel.getUserInfo()
         userViewModel.fetchUserById(userId)
     }
 
+    // Scroll state to scroll the screen, when the screen is too long
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(30.dp, 30.dp, 30.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(50.dp)
@@ -80,13 +93,23 @@ fun ProfileScreen(
             onNavigateToEditProfile
         )
         GeneralInfoUser(user)
-        specificlInfoUser(user)
+        UserInfo(user)
         ContactCard(
             onNavigateToTermsAndConditions,
             onNavigateToContactUs
         )
+
+        Spacer(modifier = Modifier.height(60.dp))
     }
 }
+
+/**
+ * @Composable User Card
+ * @Description: This composable show the user card (profile pic, username, approach, edit button)
+ *
+ * @param: user: UserModel (User info)
+ * @param: onNavigateToEditProfile: (String) -> Unit (Navigation to edit profile screen)
+ **/
 
 @Composable
 fun UserCard(
@@ -94,7 +117,7 @@ fun UserCard(
     onNavigateToEditProfile: (String) -> Unit,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
@@ -120,9 +143,11 @@ fun UserCard(
                 fontSize = 14.sp,
             )
 
+            Spacer(modifier = Modifier.height(5.dp))
+
             Text(
                 text = user.approach,
-                fontWeight = FontWeight.ExtraLight,
+                fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.scrim,
                 style = MaterialTheme.typography.labelMedium,
                 fontSize = 12.sp,
@@ -132,28 +157,41 @@ fun UserCard(
         Spacer(modifier = Modifier.width(20.dp))
 
         Button(
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-            shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
-                .width(92.dp)
-                .height(33.dp),
             onClick = {
                 onNavigateToEditProfile(user._id)
-            }
+            },
+            shape = RoundedCornerShape(10.dp),
+            elevation = ButtonDefaults.buttonElevation(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ),
+            modifier = Modifier
+                .width(100.dp)
+                .height(40.dp)
+                .padding(0.dp,8.dp,0.dp,0.dp)
+            ,
         ) {
             Text(
-                text = "Editar",
+                text = stringResource(R.string.button_edit_title),
                 fontSize = 12.sp
             )
-
         }
-
     }
 }
 
+/**
+ * @Composable General info user
+ * @Description: This composable show the general user info (height, weight, age,...)
+ *
+ * @param: user: UserModel (User info)
+ **/
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun GeneralInfoUser(user: UserModel) {
+fun GeneralInfoUser(
+    user: UserModel
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -184,7 +222,7 @@ fun GeneralInfoUser(user: UserModel) {
 
                 Text(
                     text = "Altura",
-                    fontWeight = FontWeight.ExtraLight,
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
@@ -221,7 +259,7 @@ fun GeneralInfoUser(user: UserModel) {
                 )
                 Text(
                     text = "Peso",
-                    fontWeight = FontWeight.ExtraLight,
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
@@ -262,7 +300,7 @@ fun GeneralInfoUser(user: UserModel) {
                 )
                 Text(
                     text = "Edad",
-                    fontWeight = FontWeight.ExtraLight,
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
@@ -277,9 +315,15 @@ fun GeneralInfoUser(user: UserModel) {
 
 }
 
+/**
+ * @Composable User Info
+ * @Description: This composable show the user info
+ *
+ * @param: user: UserModel (User info)
+ **/
 
 @Composable
-fun specificlInfoUser(
+fun UserInfo(
     user: UserModel
 ) {
 
@@ -324,8 +368,8 @@ fun specificlInfoUser(
 
                 //
                 Text(
-                    text = "IMC (Indice de masa corporal)",
-                    fontWeight = FontWeight.ExtraLight,
+                    text = stringResource(R.string.imc_title),
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
@@ -374,26 +418,27 @@ fun specificlInfoUser(
 
                 //
                 Text(
-                    text = "ICC (Indice cintura - cadera)",
-                    fontWeight = FontWeight.ExtraLight,
+                    text = stringResource(R.string.icc_title),
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(8.dp, 8.dp, 8.dp, 8.dp),
-                    textAlign = TextAlign.Center
                 )
-
             }
-
         }
-
-
     }
-
 }
 
-
+/**
+ * @Composable ContactCard
+ * @Description: This is the contact card that contains the terms and conditions, contact us, and logout button
+ *
+ * @param: onNavigateToTermsAndConditions: () -> Unit, (To navigate to terms and conditions)
+ * @param: onNavigateToContactUs: () -> Unit, (To navigate to contact us)
+ **/
 @Composable
 fun ContactCard(
     onNavigateToTermsAndConditions: () -> Unit,
@@ -416,7 +461,7 @@ fun ContactCard(
 
         ) {
             Text(
-                text = "Otros",
+                text = stringResource(R.string.other_title),
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
             )
@@ -437,8 +482,8 @@ fun ContactCard(
                 )
 
                 Text(
-                    text = "Contáctanos",
-                    fontWeight = FontWeight.ExtraLight,
+                    text = stringResource(R.string.contact_us_title),
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
@@ -466,15 +511,15 @@ fun ContactCard(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.admin_panel_settings),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.arrow_icon_title),
                     modifier = Modifier.size(28.dp)
                 )
 
                 // gap between icon and text
 
                 Text(
-                    text = "Política de privacidad",
-                    fontWeight = FontWeight.ExtraLight,
+                    text = stringResource(R.string.privacy_policy_title),
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
@@ -485,7 +530,7 @@ fun ContactCard(
 
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.arrow_icon_title),
                 )
             }
 
@@ -501,26 +546,26 @@ fun ContactCard(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.logout_2),
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp)
+                    contentDescription = stringResource(R.string.arrow_icon_title),
+                    modifier = Modifier.size(28.dp)
                 )
 
                 // gap between icon and text
 
                 Text(
-                    text = "Cerrar sesión",
-                    fontWeight = FontWeight.ExtraLight,
+                    text = stringResource(R.string.logout_title),
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,
                 )
 
-                Spacer(modifier = Modifier.width(width = 135.dp))
+                Spacer(modifier = Modifier.width(width = 80.dp))
 
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.arrow_icon_title)
                 )
             }
         }

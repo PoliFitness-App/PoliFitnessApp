@@ -104,7 +104,7 @@ fun Home(
         LaunchedEffect(lifecycle) {
             when (homeUiStatus) {
                 is HomeUiStatus.Error -> {
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Se ha producido un error al intentar cargar las noticias y/o rutinas", Toast.LENGTH_SHORT).show()
                 }
 
                 is HomeUiStatus.ErrorWithMessage -> {
@@ -121,7 +121,7 @@ fun Home(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, 8.dp, 16.dp, 8.dp)
+            .padding(8.dp, 8.dp, 8.dp, 8.dp)
             .background(Color.White)
     ) {
         item {
@@ -235,10 +235,6 @@ fun IMC_card(
             Box(
                 contentAlignment = Alignment.Center,
             ) {
-                Image(
-                    painterResource(id = R.drawable.imc_card_background),
-                    contentDescription = ""
-                )
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically,
@@ -247,16 +243,15 @@ fun IMC_card(
                 ) {
                     Column {
                         Text(
-                            modifier = Modifier
-                                .width(150.dp)
-                                .padding(start = 22.dp, top = 22.dp, end = 22.dp, bottom = 4.dp),
-                            text = "IMC (Indice de masa corporal)",
+                            text = stringResource(id = R.string.imc_title),
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight(600),
                             fontSize = 14.sp,
-                            color = md_theme_light_onPrimary
+                            color = md_theme_light_onPrimary,
+                            modifier = Modifier
+                                .width(150.dp)
+                                .padding(start = 22.dp, top = 22.dp, end = 22.dp, bottom = 4.dp),
                         )
-
                         Text(
                             modifier = Modifier
                                 .width(170.dp)
@@ -430,13 +425,13 @@ fun RoutineItemHome(
                         text = "${routine.category} | ${routine.level}",
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Light,
-                        color = md_theme_light_outline
+                        color = md_theme_light_scrim
                     )
                 }
                 Spacer(modifier = Modifier.width(30.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
-                    contentDescription = "Arrow icon",
+                    contentDescription = stringResource(id = R.string.arrow_icon_title),
                     modifier = Modifier
                         .padding(8.dp)
                 )
@@ -598,10 +593,10 @@ fun SpotifyCard(
 }
 
 
-/*
- * Radial progress bar(used in the home screen)
+/**
+ * @Composable Radial progress bar(used in the home screen)
  *
- * param value: Float value to be displayed in the progress bar (IMC)
+ * @param value: Float value to be displayed in the progress bar (IMC)
  */
 
 @Composable

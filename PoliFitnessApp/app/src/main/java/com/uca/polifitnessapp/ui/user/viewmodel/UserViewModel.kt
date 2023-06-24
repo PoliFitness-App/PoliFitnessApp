@@ -74,6 +74,12 @@ class UserViewModel(
         }
     }
 
+    fun logout() {
+        viewModelScope.launch {
+
+        }
+    }
+
     // Companion object to initialize the view model(UserViewModel)
     companion object {
         val Factory = viewModelFactory {

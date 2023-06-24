@@ -192,10 +192,10 @@ fun RoutineStepItem(
                     text = step.description,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier
                         .padding(4.dp, 0.dp, 8.dp, 0.dp)
                         .width(325.dp),
-                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }

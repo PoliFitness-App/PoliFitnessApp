@@ -165,6 +165,9 @@ fun SignUpGoalScreen(
                     )
                 }
                 viewModel.onSignUp()
+                viewModel.clearData()
+                viewModel.clearStatus()
+                // Then sign up
             }
         }
     }
