@@ -25,40 +25,52 @@ class SignUpGoalViewModel(
     // ---
 
     // username
-    var username = MutableLiveData("")
+    var username by mutableStateOf(TextFieldState())
+        private set
 
     // lastname
-    var lastname = MutableLiveData("")
+    var lastname by mutableStateOf(TextFieldState())
+        private set
 
     // email
-    var email = MutableLiveData("")
+    var email by mutableStateOf(TextFieldState())
+    private set
 
     // password
-    var password = MutableLiveData("")
+    var password by mutableStateOf(TextFieldState())
+        private set
 
     // gender
-    var gender = MutableLiveData("")
+    var gender by mutableStateOf(TextFieldState())
+        private set
 
     // date of birth
-    var dateOfBirth = MutableLiveData("")
+    var dateOfBirth by mutableStateOf(TextFieldState())
+        private set
 
     // weight
-    var weight = MutableLiveData("")
+    var weight by mutableStateOf(TextFieldState())
+        private set
 
     // height
-    var height = MutableLiveData("")
+    var height by mutableStateOf(TextFieldState())
+        private set
 
     // waistP
-    var waistP = MutableLiveData("")
+    var waistP by mutableStateOf(TextFieldState())
+        private set
 
     // hipP
-    var hipP = MutableLiveData("")
+    var hipP by mutableStateOf(TextFieldState())
+        private set
 
     // Approach
-    var approach = MutableLiveData("")
+    var approach by mutableStateOf(TextFieldState())
+        private set
 
     // CheckBox
-    var checkBox = MutableLiveData(false)
+    var checkBox by mutableStateOf(false)
+        private set
 
     var weightUnitState by mutableStateOf("KG")
 
@@ -66,46 +78,6 @@ class SignUpGoalViewModel(
     private val _isEnabled = MutableLiveData(false)
     val isEnabled: MutableLiveData<Boolean>
         get() = _isEnabled
-
-    // is valid username?
-    private val _isValidUsername = MutableLiveData(false)
-    val isValidUsername: MutableLiveData<Boolean>
-        get() = _isValidUsername
-
-    // is valid lastname?
-    private val _isValidLastname = MutableLiveData(false)
-    val isValidLastname: MutableLiveData<Boolean>
-        get() = _isValidLastname
-
-    // is valid email?
-    private val _isValidEmail = MutableLiveData(false)
-    val isValidEmail: MutableLiveData<Boolean>
-        get() = _isValidEmail
-
-    // is valid password?
-    private val _isValidPassword = MutableLiveData(false)
-    val isValidPassword: MutableLiveData<Boolean>
-        get() = _isValidPassword
-
-    // is valid weight?
-    private val _isValidWeight = MutableLiveData(false)
-    val isValidWeight: MutableLiveData<Boolean>
-        get() = _isValidWeight
-
-    // is valid height?
-    private val _isValidHeight = MutableLiveData(false)
-    val isValidHeight: MutableLiveData<Boolean>
-        get() = _isValidHeight
-
-    // is valid waistP?
-    private val _isValidWaistP = MutableLiveData(false)
-    val isValidWaistP: MutableLiveData<Boolean>
-        get() = _isValidWaistP
-
-    // is valid hipP?
-    private val _isValidHipP = MutableLiveData(false)
-    val isValidHipP: MutableLiveData<Boolean>
-        get() = _isValidHipP
 
     // is checked?
     private val _isChecked = MutableLiveData(false)
@@ -181,29 +153,27 @@ class SignUpGoalViewModel(
 
     // On sign up function -> Calls the signup function
     fun onSignUp() {
-
         // Gender
         val genderU: Boolean = gender.value == "Masculino"
         val imc: Float =
-            weight.value!!.toFloat() / (height.value!!.toFloat() * height.value!!.toFloat())
-        val icc: Float = waistP.value!!.toFloat() / hipP.value!!.toFloat()
-
+            weight.value.toFloat() / (height.value.toFloat() * height.value.toFloat())
+        val icc: Float = waistP.value.toFloat() / hipP.value.toFloat()
 
         // If the password is not empty, it calls the signup function
         signUp(
-            username.value!!,
-            lastname.value!!,
-            email.value!!,
-            password.value!!,
+            username.value,
+            lastname.value,
+            email.value,
+            password.value,
             imc,
             icc,
             genderU,
             dateOfBirth.value!!,
-            weight.value!!.toFloat(),
-            height.value!!.toFloat(),
-            waistP.value!!.toFloat(),
-            hipP.value!!.toFloat(),
-            approach.value!!
+            weight.value.toFloat(),
+            height.value.toFloat(),
+            waistP.value.toFloat(),
+            hipP.value.toFloat(),
+            approach.value
         )
     }
 
@@ -214,140 +184,150 @@ class SignUpGoalViewModel(
     // On username change function -> Updates the username variable
     fun onUsernameChange(usernameU: String) {
         // If the username is empty, it returns an error
-        _isValidUsername.value = !validateUsername(usernameU)
+        val error = validateUsername(usernameU)
 
         // If the username is not empty, it updates the username variable
-        username.value = usernameU
+        username = username.copy(
+            value = usernameU,
+            error = error
+        )
     }
 
     // Validate Username
-    private fun validateUsername(name: String): Boolean = (name.isNotEmpty() && name.length > 1)
+    private fun validateUsername(name: String): String = if (name.isNotEmpty() && name.length > 1)  "" else "Por favor, ingrese un nombre válido"
 
 
     // On lastname change function -> Updates the lastname variable
     fun onLastnameChange(lastnameU: String) {
         // If the lastname is empty, it returns an error
-        _isValidLastname.value = !validateLastName(lastnameU)
+        val error = validateLastName(lastnameU)
+
         // If the lastname is not empty, it updates the lastname variable
-        lastname.value = lastnameU
+        lastname = lastname.copy(
+            value = lastnameU,
+            error = error
+        )
     }
 
     // Validate lastname
-    private fun validateLastName(lastname: String): Boolean =
-        (lastname.isNotEmpty() && lastname.length > 1)
+    private fun validateLastName(lastname: String): String = if (lastname.isNotEmpty() && lastname.length > 1) "" else "Por favor, ingrese un apellido válido"
 
 
     // On email change function -> Updates the email variable
     fun onEmailChange(emailU: String) {
         // If the email is empty, it returns an error
-        _isValidEmail.value = !isValidEmail(email.value!!)
-        //then
-        email.value = emailU.trimEnd()
+        val error = isValidEmail(emailU)
+
+        // If the email is not empty, it updates the email variable
+        email = email.copy(
+            value = emailU,
+            error = error
+        )
     }
 
     // Valid Email
-    private fun isValidEmail(email: String): Boolean =
-        Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun isValidEmail(email: String): String = if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) "" else "Por favor, ingrese un email válido (example@example.com)"
 
     // On password change function -> Updates the password variable
     fun onPasswordChange(passwordU: String) {
+        // If the email is empty, it returns an error
+        val error = isValidPassword(passwordU)
 
-        // If the password is valid?
-        _isValidPassword.value = !isValidPassword(password.value!!)
-
-        println(_isValidPassword.value)
-        // Set te value
-        password.value = passwordU
+        // If the email is not empty, it updates the email variable
+        password = password.copy(
+            value = passwordU,
+            error = error
+        )
     }
-
     // Valid Password
-    private fun isValidPassword(password: String): Boolean =
-        Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$").matches(password)
+    private fun isValidPassword(password: String): String = if (Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$").matches(password)) "" else "La contraseña debe de tener entre 8 y 32 chars, y al menos 1 M, 1 m y 1 #"
 
     // On weight change function -> Updates the weight variable
     fun onWeightChange(weightU: String) {
         // If the weight is empty, it returns an error
-        _isValidWeight.value = isValidWeight(weight.value!!)
+        val error = isValidWeight(weightU)
 
-        // If the weight is not empty, it updates the weight variable
-        weight.value = weightU
+        // If the weight is not empty, it updates the email variable
+        weight = weight.copy(
+            value = weightU,
+            error = error
+        )
     }
-
-    private fun isValidWeight(weight: String): Boolean {
-        val numericRegex = Regex("^\\d+(\\.\\d+)?$")
-        val maxWeight = 1000.0
-        return numericRegex.matches(weight) && weight.toDouble() > 0 && weight.toDouble() <= maxWeight
-    }
+    private fun isValidWeight(weight: String): String = if (weight.isNotEmpty() && weight.length > 1) "" else "Por favor, ingrese un peso válido (kg/lb)"
 
     // On height change function -> Updates the height variable
     fun onHeightChange(heightU: String) {
-        // If the height is empty, it returns an error
-        _isValidHeight.value = isValidHeight(height.value!!)
-        // If the height is not empty, it updates the height variable
-        height.value = heightU
-    }
+        // If the weight is empty, it returns an error
+        val error = isValidHeight(heightU)
 
-    // Valid Height
-    private fun isValidHeight(value: String): Boolean {
-        val numericRegex = Regex("^\\d+(\\.\\d+)?$")
-        val maxWeight = 3.0
-        return numericRegex.matches(value) && value.toDouble() > 0 && value.toDouble() <= maxWeight
+        // If the weight is not empty, it updates the email variable
+        height = height.copy(
+            value = heightU,
+            error = error
+        )
     }
+    // Valid Height
+    private fun isValidHeight(value: String): String = if (value.isNotEmpty() && value.length > 1) "" else "Por favor, ingrese una altura válida (mts)"
 
     // On waistP change function -> Updates the waistP variable
     fun onWaistPChange(waistPU: String) {
-        // If the waistP is empty, it returns an error
-        _isValidWaistP.value = isValidWaistP(waistP.value!!)
-        // If the waistP is not empty, it updates the waistP variable
-        waistP.value = waistPU
-    }
+        // If the weight is empty, it returns an error
+        val error = isValidWaistP(waistPU)
 
-    // Valid waistP
-    private fun isValidWaistP(waist: String): Boolean {
-        val numericRegex = Regex("^\\d+(\\.\\d+)?$")
-        val maxWaistP = 200.0
-        return numericRegex.matches(waist) && waist.toDouble() > 0 && waist.toDouble() <= maxWaistP
+        // If the weight is not empty, it updates the email variable
+        waistP = waistP.copy(
+            value = waistPU,
+            error = error
+        )
     }
+    // Valid waistP
+    private fun isValidWaistP(waist: String): String = if (waist.isNotEmpty() && waist.length > 1) "" else "Por favor, ingrese un valor valido (cm)"
 
     // On hipP change function -> Updates the hipP variable
     fun onHipPChange(hipPU: String) {
-        // If the hipP is empty, it returns an error
-        _isValidHipP.value = isValidHipP(hipP.value!!)
-        // If the hipP is not empty, it updates the hipP variable
-        hipP.value = hipPU
+        // If the weight is empty, it returns an error
+        val error = isValidHipP(hipPU)
+
+        // If the weight is not empty, it updates the email variable
+        hipP = waistP.copy(
+            value = hipPU,
+            error = error
+        )
+
         _isSignUpButton2.value =
-            isValidWeight(weight.value!!) &&
-                    isValidHeight(height.value!!) &&
-                    isValidWaistP(waistP.value!!) &&
-                    isValidHipP(hipP.value!!)
+            isValidWeight(weight.error).isNotEmpty() &&
+                    isValidHeight(height.error).isNotEmpty() &&
+                    isValidWaistP(waistP.error).isNotEmpty() &&
+                    isValidHipP(hipP.error).isNotEmpty()
     }
 
-    private fun isValidHipP(hip: String): Boolean {
-        val numericRegex = Regex("^\\d+(\\.\\d+)?$")
-        val maxHipP = 200.0
-        return numericRegex.matches(hip) && hip.toDouble() > 0 && hip.toDouble() <= maxHipP
-    }
+    private fun isValidHipP(hip: String): String = if (hip.isNotEmpty() && hip.length > 1) "" else "Por favor, ingrese un valor valido (cm)"
 
     // On gender change function -> Updates the gender value
     fun onGenderChange(genderU: String) {
-        gender.value = genderU
+        gender = gender.copy(
+            value = genderU
+        )
     }
 
     // On age change function -> Updates the age variable
     fun onAgeChange(ageU: String) {
         // If the age is not empty, it updates the age variable
-        dateOfBirth.value = ageU
+        dateOfBirth =  gender.copy(
+            value = ageU
+        )
     }
 
     fun onCheckboxChanged(checkboxU: Boolean) {
-        _isChecked.value = !validateCheckbox(checkBox.value!!)
-        checkBox.value = checkboxU
+        _isChecked.value = !validateCheckbox(checkboxU)
+        checkBox = checkboxU
+
         _isSignUpButton1.value =
             validateCheckbox(checkboxU) &&
-                    validateUsername(username.value!!) &&
-                    validateLastName(lastname.value!!) &&
-                    isValidEmail(email.value!!) &&
-                    isValidPassword(password.value!!)
+                    validateUsername(username.error).isNotEmpty() &&
+                    validateLastName(lastname.error).isNotEmpty() &&
+                    isValidEmail(email.error).isNotEmpty() &&
+                    isValidPassword(password.error).isNotEmpty()
     }
 
     private fun validateCheckbox(isChecked: Boolean): Boolean = (isChecked)
@@ -355,7 +335,9 @@ class SignUpGoalViewModel(
     // On approach function -> Updates the approach variable
     fun onApproachChange(approachU: String) {
         // If the approach is not empty, it updates the approach variable
-        approach.value = approachU
+        approach = approach.copy(
+            value = approachU
+        )
         // It also updates the is enabled variable
         _isEnabled.value = true
     }
@@ -372,10 +354,15 @@ class SignUpGoalViewModel(
     // ---
 
     fun clearData() {
-        approach.value = ""
-        username.value = ""
-        lastname.value = ""
-        email.value = ""
+        username = username.copy(value = "", error = "")
+        lastname = lastname.copy(value = "", error = "")
+        email = email.copy(value = "", error = "")
+        password = password.copy(value = "", error = "")
+        weight = weight.copy(value = "", error = "")
+        height = height.copy(value = "", error = "")
+        waistP = waistP.copy(value = "", error = "")
+        hipP = hipP.copy(value = "", error = "")
+        checkBox = false
     }
 
     fun clearStatus() {

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.uca.polifitnessapp.ui.auth.signup.ui
 
 import android.content.Context
@@ -59,12 +61,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,15 +78,17 @@ import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 import com.uca.polifitnessapp.ui.auth.signup.validation.SignUpUiStatus
 import com.uca.polifitnessapp.ui.auth.signup.viewmodel.SignUpGoalViewModel
+import com.uca.polifitnessapp.ui.auth.signup.viewmodel.TextFieldState
+import com.uca.polifitnessapp.ui.extras.ui.TextFieldWithIcon
+import com.uca.polifitnessapp.ui.main.calculator.ui.ValueState
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @Composable
 fun SignUpPersonalInfoScreen(
-    navController: NavController,
     viewModel: SignUpGoalViewModel,
-    userViewModel: UserViewModel
+    onSignUpSuccess: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -93,8 +99,7 @@ fun SignUpPersonalInfoScreen(
                 colorResource(id = R.color.white)
             )
             .verticalScroll(scrollState)
-            .padding(50.dp, 0.dp, 30.dp, 0.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(30.dp, 0.dp, 30.dp, 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -108,11 +113,9 @@ fun SignUpPersonalInfoScreen(
         // ---
         SignUpPersonalInfoView(
             viewModel,
-            navController
+            onSignUpSuccess
         )
-
         Spacer(modifier = Modifier.height(30.dp))
-
     }
 }
 
@@ -120,44 +123,20 @@ fun SignUpPersonalInfoScreen(
 @Composable
 fun SignUpPersonalInfoView(
     viewModel: SignUpGoalViewModel,
-    navController: NavController
+    onSignUpSuccess: () -> Unit,
 ) {
-
-    // ---
-    // Variables
-    // ---
-
-    val gender: String by viewModel.gender.observeAsState(initial = "")
-    val birthdate: String by viewModel.dateOfBirth.observeAsState(initial = "")
-    val weight: String by viewModel.weight.observeAsState(initial = "")
-    val height: String by viewModel.height.observeAsState(initial = "")
-    val waistP: String by viewModel.waistP.observeAsState(initial = "")
-    val hipP: String by viewModel.hipP.observeAsState(initial = "")
-
-    // ---
-    // States
-    // ---
-
-    val isValidWeight: Boolean by viewModel.isValidWeight.observeAsState(initial = false)
-    val isValidHeight: Boolean by viewModel.isValidHeight.observeAsState(initial = false)
-    val isValidWaistP: Boolean by viewModel.isValidWaistP.observeAsState(initial = false)
-    val isValidHipP: Boolean by viewModel.isValidHipP.observeAsState(initial = false)
-
     // Button
     val isEnabled: Boolean by viewModel.isSignUpButton2.observeAsState(initial = false)
 
-    val coroutineScope = rememberCoroutineScope()
-
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        //verticalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         // ---
         // GenderField
         // ---
         GenderField(
-            gender
+            viewModel.gender.value
         ) {
             viewModel.onGenderChange(it)
         }
@@ -168,7 +147,7 @@ fun SignUpPersonalInfoView(
         // BirthdateField
         // ---
         BirthdayField(
-            birthdate
+            viewModel.dateOfBirth.value
         ) {
             viewModel.onAgeChange(it)
         }
@@ -178,76 +157,66 @@ fun SignUpPersonalInfoView(
         // ---
         // WeightField
         // ---
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.Top,
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.MonitorWeight,
+            state = viewModel.weight,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = viewModel.weightUnitState,
+            labelText = "Peso",
+            onValueChange = viewModel::onWeightChange
         ) {
-            WeightField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                weight,
-                isValidWeight
-            ) {
-                viewModel.onWeightChange(it)
-            }
-            kgicon(
-                viewModel.weightUnitState
-            ){
-                viewModel.changeUnit()
-            }
+            viewModel.changeUnit()
         }
 
         // ---
         // HeightField
         // ---
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.Top,
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.Height,
+            state = viewModel.height,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = "M",
+            labelText = "Altura",
+            onValueChange = viewModel::onHeightChange
         ) {
-            HeightField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                height,
-                isValidHeight
-            ) {
-                viewModel.onHeightChange(it)
-            }
-            cmicon()
         }
 
         // ---
         // WaistField
         // ---
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.Top,
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.Straighten,
+            state = viewModel.waistP,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = "CM",
+            labelText = "Perimetro de cintura",
+            onValueChange = viewModel::onWaistPChange
         ) {
-            WaistField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                waistP,
-                isValidWaistP
-            ) {
-                viewModel.onWaistPChange(it)
-            }
-            cmicon()
         }
 
         // ---
         // HipField
         // ---
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.Top,
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.Straighten,
+            state = viewModel.hipP,
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Number,
+            iconText = "CM",
+            labelText = "Perimetro de cadera",
+            onValueChange = viewModel::onHipPChange
         ) {
-
-            hipField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                hipP,
-                isValidHipP
-            ) {
-                viewModel.onHipPChange(it)
-            }
-
-            cmicon()
-
         }
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -260,8 +229,103 @@ fun SignUpPersonalInfoView(
             ),
             isEnabled
         ) {
-            coroutineScope.launch {
-                navController.navigate(AuthRoutes.GOAL_SCREEN)
+            onSignUpSuccess()
+        }
+    }
+}
+
+/*
+* Text field item
+ */
+
+@Composable
+fun TextFieldIcon(
+    modifier: Modifier,
+    icon: ImageVector,
+    state: TextFieldState,
+    imeAction: ImeAction,
+    keyboardType: KeyboardType,
+    iconText: String,
+    labelText: String,
+    onValueChange: (String) -> Unit,
+    onIconClick: () -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(15.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        TextField(
+            value = state.value,
+            isError = state.error.isNotEmpty(),
+            onValueChange = {
+                onValueChange(it)
+            },
+            shape = MaterialTheme.shapes.small,
+            leadingIcon = {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "null",
+                    tint = Color(0xFF565E71)
+                )
+            },
+            label = {
+                Text(
+                    text = labelText,
+                    color = Color(0xFF565E71),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            trailingIcon = {
+                if (state.error.isNotEmpty()) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "Error Icon"
+                    )
+                }
+            },
+            supportingText = {
+                if (state.error.isNotEmpty()) {
+                    Text(
+                        text = state.error,
+                        color = Color.Red,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp
+                    )
+                }
+            },
+            modifier = modifier
+                .width(240.dp),
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF565E71),
+                unfocusedBorderColor = Color.Transparent,
+                containerColor = Color(0xFFD7E2FF)
+            )
+        )
+        ElevatedCard(
+            modifier = Modifier
+                .height(56.dp)
+                .width(48.dp)
+                .clickable {
+                    onIconClick()
+                },
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = iconText,
+                    color = Color.White
+                )
             }
         }
     }
@@ -290,7 +354,6 @@ fun HeaderImage(
             contentDescription = "Imagen "
         )
     }
-
 }
 
 // -----------
@@ -298,302 +361,6 @@ fun HeaderImage(
 // HEADER TEXT
 
 // ------------
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun WeightField(
-    modifier: Modifier,
-    weight: String,
-    isValidWeight: Boolean,
-    onWeightChange: (String) -> Unit
-) {
-    TextField(
-        value = weight,
-        onValueChange = { onWeightChange(it) },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.MonitorWeight,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Peso",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        isError = isValidWeight,
-        trailingIcon = {
-            if (isValidWeight) {
-                Icon(
-                    imageVector = Icons.Filled.Error,
-                    contentDescription = "Error Icon"
-                )
-            }
-        },
-        supportingText = {
-            if (isValidWeight) {
-                Text(
-                    text = "Formato incorrecto (Ej: 70.5 kg)",
-                    color = Color.Red,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            }
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-        )
-    )
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HeightField(
-    modifier: Modifier,
-    height: String,
-    isWrongHeight: Boolean,
-    onHeightChange: (String) -> Unit
-) {
-    TextField(
-        value = height,
-        onValueChange = {
-            onHeightChange(it)
-        },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Height,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Altura",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        isError = isWrongHeight,
-        trailingIcon = {
-            if (isWrongHeight) {
-                Icon(
-                    imageVector = Icons.Filled.Error,
-                    contentDescription = "Error Icon"
-                )
-            }
-        },
-        supportingText = {
-            if (isWrongHeight) {
-                Text(
-                    text = "Formato incorrecto (ej: 1.70 m)",
-                    color = Color.Red,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            }
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-        )
-    )
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun WaistField(
-    modifier: Modifier,
-    waist: String,
-    isValidWaist: Boolean,
-    onWaistChange: (String) -> Unit
-) {
-    TextField(
-        value = waist,
-        onValueChange = {
-            onWaistChange(it)
-        },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Straighten,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Perímetro de cintura",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        isError = isValidWaist,
-        trailingIcon = {
-            if (isValidWaist) {
-                Icon(
-                    imageVector = Icons.Filled.Error,
-                    contentDescription = "Error Icon"
-                )
-            }
-        },
-        supportingText = {
-            if (isValidWaist) {
-                Text(
-                    text = "Formato incorrecto (Ej: 70.5 cm)",
-                    color = Color.Red,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            }
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun hipField(
-    modifier: Modifier,
-    hip: String,
-    isValidHip: Boolean,
-    onHipChange: (String) -> Unit
-) {
-    TextField(
-        value = hip,
-        onValueChange = {
-            onHipChange(it)
-        },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Straighten,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Perímetro de cadera",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        isError = isValidHip,
-        trailingIcon = {
-            if (isValidHip) {
-                Icon(
-                    imageVector = Icons.Filled.Error,
-                    contentDescription = "Error Icon"
-                )
-            }
-        },
-        supportingText = {
-            if (isValidHip) {
-                Text(
-                    text = "Formato incorrecto (Ej: 70.5 cm)",
-                    color = Color.Red,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            }
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(240.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-        )
-    )
-}
-
-@Composable
-fun kgicon(
-    unit: String,
-    onClick: () -> Unit
-) {
-    ElevatedCard(
-        modifier = Modifier
-            .height(56.dp)
-            .width(48.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(
-                text = unit,
-                color = Color.White
-            )
-        }
-
-    }
-}
-
-@Composable
-fun cmicon() {
-    ElevatedCard(
-        modifier = Modifier
-            .height(56.dp)
-            .width(48.dp)
-        ,
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(text = "CM", color = Color.White)
-        }
-
-    }
-}
-
 
 @Composable
 fun SaveButton(
@@ -723,7 +490,7 @@ fun BirthdayField(
                     onClick = {
                         openDialog.value = false
                         date =
-                            SimpleDateFormat("yyyy/dd/MM").format(datePickerState.selectedDateMillis)
+                            SimpleDateFormat("yyyy/MM/dd").format(datePickerState.selectedDateMillis)
                                 .toString()
                         onDateChange(date)
                     },
@@ -800,12 +567,9 @@ fun BirthdayField(
                 focusedBorderColor = Color(0xFF565E71),
                 unfocusedBorderColor = Color.Transparent,
                 containerColor = Color(0xFFD7E2FF)
-
             )
         )
     }
-
-
 }
 
 

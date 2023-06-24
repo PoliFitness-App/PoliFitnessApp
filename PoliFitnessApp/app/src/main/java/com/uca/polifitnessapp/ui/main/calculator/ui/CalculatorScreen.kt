@@ -1,7 +1,7 @@
 package com.uca.polifitnessapp.ui.main.calculator.ui
 
 
-
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,6 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.extras.ui.TextFieldWithIcon
 import com.uca.polifitnessapp.ui.main.calculator.viewmodel.CalculatorViewModel
 import kotlinx.coroutines.launch
 
@@ -66,7 +67,7 @@ import kotlinx.coroutines.launch
 @Preview(showBackground = true, showSystemUi = true)
 
 @Composable
-fun CalculatorScreen(){
+fun CalculatorScreen() {
 
     val scrollState = rememberScrollState()
 
@@ -81,45 +82,44 @@ fun CalculatorScreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Spacer(modifier = Modifier.height(40.dp))
-        HeaderText()
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(15.dp))
+        HeaderText(
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.Start)
+        )
 
-        CalculatorView( viewModel = CalculatorViewModel())
+        CalculatorView(viewModel = CalculatorViewModel())
 
         Spacer(modifier = Modifier.height(90.dp))
-
-
     }
 }
 
 
-
-
 @Composable
 fun HeaderText(
-
+    modifier: Modifier = Modifier,
 ) {
-        Text(
-            text = "Calculadora IMC e ICC",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineSmall,
-        )
-
+    Text(
+        text = "Calculadora IMC e ICC",
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = modifier
+    )
 }
 
 
 @Composable
-fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
-
+fun CalculatorView(
+    viewModel: CalculatorViewModel = CalculatorViewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
-    var isButtonEnabled = viewModel.isButtonEnabled
+    val isButtonEnabled = viewModel.isButtonEnabled
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-
 
 
         Row(
@@ -131,7 +131,6 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             // Tarjetas con los resultados IMC e ICC
 
             Column() {
-
                 //IMC CARD
                 ElevatedCard(
                     modifier = Modifier
@@ -141,14 +140,15 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                     elevation = CardDefaults.elevatedCardElevation(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     shape = RoundedCornerShape(10.dp),
-                ){
+                ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
 
                     ) {
-                        Text(text = "%.2f".format(viewModel.bmi),
+                        Text(
+                            text = "%.2f".format(viewModel.bmi),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.tertiary,
                             style = MaterialTheme.typography.labelSmall,
@@ -156,7 +156,8 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                         )
 
                         //
-                        Text(text = viewModel.messageIbm,
+                        Text(
+                            text = viewModel.messageIbm,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.tertiary,
                             style = MaterialTheme.typography.labelSmall,
@@ -166,7 +167,8 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                         )
 
                         //
-                        Text(text = "IMC",
+                        Text(
+                            text = "IMC",
                             fontWeight = FontWeight.ExtraLight,
                             color = MaterialTheme.colorScheme.scrim,
                             style = MaterialTheme.typography.labelSmall,
@@ -188,14 +190,15 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                     elevation = CardDefaults.elevatedCardElevation(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     shape = RoundedCornerShape(10.dp),
-                ){
+                ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
 
                     ) {
-                        Text(text = "%.2f".format(viewModel.icc),
+                        Text(
+                            text = "%.2f".format(viewModel.icc),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.tertiary,
                             style = MaterialTheme.typography.labelSmall,
@@ -203,7 +206,8 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                         )
 
                         //
-                        Text(text = viewModel.messageIcc,
+                        Text(
+                            text = viewModel.messageIcc,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.tertiary,
                             style = MaterialTheme.typography.labelSmall,
@@ -213,7 +217,8 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                         )
 
                         //
-                        Text(text = "ICC",
+                        Text(
+                            text = "ICC",
                             fontWeight = FontWeight.ExtraLight,
                             color = MaterialTheme.colorScheme.scrim,
                             style = MaterialTheme.typography.labelSmall,
@@ -228,13 +233,10 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
             Spacer(modifier = Modifier.width(10.dp))
 
-
             HeaderImage(
-                viewModel.genderState)
-
-
+                viewModel.genderState
+            )
         }
-
 
         GenderField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -242,61 +244,53 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             viewModel::updateGender,
         )
 
-
-
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            WeightField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                viewModel.weightState,
-                ImeAction.Next,
-                viewModel::updateWeight
-            )
-
-            Kgicon(
-                viewModel.weightUnitState
-            ){
-                viewModel.changeUnit()
-            }
-
+        TextFieldWithIcon(
+            modifier = Modifier,
+            icon = Icons.Outlined.MonitorWeight,
+            state = viewModel.weightState,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = viewModel.weightUnitState,
+            labelText = "Peso",
+            onValueChange = viewModel::updateWeight,
+        ) {
+            viewModel.changeUnit()
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            HeightField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                viewModel.heightState,
-                ImeAction.Next,
-                viewModel::updateHeight
-            )
-            MetersIcon()
-
+        TextFieldWithIcon(
+            modifier = Modifier,
+            icon = Icons.Outlined.Height,
+            state = viewModel.heightState,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = "M",
+            labelText = "Altura",
+            onValueChange = viewModel::updateHeight,
+        ) {
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            WaistField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                viewModel.waistState,
-                ImeAction.Next,
-                viewModel::updateWaist
-            )
-            Cmicon()
+        TextFieldWithIcon(
+            modifier = Modifier,
+            icon = Icons.Outlined.Straighten,
+            state = viewModel.waistState,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = "CM",
+            labelText = "Perimetro de cintura",
+            onValueChange = viewModel::updateWaist
+        ) {
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalAlignment = Alignment.CenterVertically,) {
-
-            HipField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                viewModel.hipState,
-                ImeAction.Done,
-                viewModel::updateHip
-            )
-            Cmicon()
+        TextFieldWithIcon(
+            modifier = Modifier,
+            icon = Icons.Outlined.Straighten,
+            state = viewModel.hipState,
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Number,
+            iconText = "CM",
+            labelText = "Perimetro de cadera",
+            onValueChange = viewModel::updateHip
+        ) {
         }
 
         Row(
@@ -305,7 +299,6 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
             modifier = Modifier
                 .fillMaxWidth(),
         ) {
-
             CalculateButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = "Calcular",
@@ -316,11 +309,9 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
                     }
                 }
             )
-
         }
     }
 }
-
 
 
 // -----------
@@ -331,419 +322,145 @@ fun CalculatorView(viewModel: CalculatorViewModel = CalculatorViewModel()){
 
 @Composable
 fun HeaderImage(
-    state: ValueState,
-
-    ) {
-
-    var imageGender = when(state.value){
-        "Femenino" -> R.drawable.calculator_header_img
-        "Masculino" -> R.drawable.frame
-        else -> R.drawable.frame_2
+    valueState: ValueState,
+) {
+    AnimatedVisibility(valueState.value == "Femenino") {
+        Image(
+            painter = painterResource(
+                R.drawable.calculator_header_img
+            ),
+            contentDescription = "Image gender"
+        )
     }
+    AnimatedVisibility(valueState.value == "Masculino") {
+        Image(
+            painter = painterResource(
+                R.drawable.frame
+            ),
+            contentDescription = "Image gender"
+        )
+    }
+}
 
+@Composable
+fun CalculateButton(
+    modifier: Modifier,
+    isEnabled: Boolean,
+    text: String,
+    onClick: () -> Unit
+) {
+    val focusManager = LocalFocusManager.current
 
-    Image(painter = painterResource(imageGender), contentDescription = null)
-
-
+    Button(
+        onClick = { focusManager.clearFocus(); onClick() },
+        shape = RoundedCornerShape(10.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 20.dp,
+            pressedElevation = 10.dp,
+            disabledElevation = 0.dp
+        ),
+        enabled = isEnabled,
+        modifier = modifier
+            .width(315.dp)
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF034189)
+        ),
+    )
+    {
+        Text(
+            text,
+            fontSize = 16.sp,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun WeightField(
-        modifier: Modifier,
-        state: ValueState,
-        imeAction: ImeAction,
-        onValueChange: (String) -> Unit
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GenderField(
+    modifier: Modifier,
+    state: ValueState,
+    onValueChange: (String) -> Unit,
+) {
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = { isExpanded = it }
     ) {
-
         TextField(
             value = state.value,
-            isError = state.error != null,
-            onValueChange = { onValueChange(it) },
+            onValueChange = {
+                onValueChange(it)
+            },
             shape = MaterialTheme.shapes.small,
+            readOnly = true,
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.MonitorWeight,
-                    contentDescription = "null",
-                    tint = Color(0xFF565E71)
-                )
+                if (state.value == "Femenino" || state.value == "")
+                    Icon(
+                        imageVector = Icons.Outlined.Female,
+                        contentDescription = "null",
+                        tint = Color(0xFF565E71)
+                    ) else {
+                    Icon(
+                        imageVector = Icons.Outlined.Male,
+                        contentDescription = "null",
+                        tint = Color(0xFF565E71)
+                    )
+                }
             },
             label = {
                 Text(
-                    text = "Peso",
+                    text = "Escoge tu genero",
                     color = Color(0xFF565E71),
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
                 )
             },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = imeAction
-            ),
-            modifier = modifier
-                .width(240.dp),
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color(0xFF565E71),
                 unfocusedBorderColor = Color.Transparent,
-                containerColor = Color(0xFFD7E2FF)
-
-            )
-        )
-
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun HeightField(
-        modifier: Modifier,
-        state: ValueState,
-        imeAction: ImeAction,
-        onValueChange: (String) -> Unit
-    ) {
-
-        TextField(
-            value = state.value,
-            isError = state.error != null,
-            onValueChange = { onValueChange(it) },
-            shape = MaterialTheme.shapes.small,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Height,
-                    contentDescription = "null",
-                    tint = Color(0xFF565E71)
-                )
-            },
-            label = {
-                Text(
-                    text = "Altura",
-                    color = Color(0xFF565E71),
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = imeAction
+                //containerColor = Color(0xFFD7E2FF)
             ),
-            modifier = modifier
-                .width(240.dp),
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF565E71),
-                unfocusedBorderColor = Color.Transparent,
-                containerColor = Color(0xFFD7E2FF)
-
-            )
-        )
-
-    }
-
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun WaistField(
-        modifier: Modifier,
-        state: ValueState,
-        imeAction: ImeAction,
-        onValueChange: (String) -> Unit
-    ) {
-        TextField(
-            value = state.value,
-            isError = state.error != null,
-            onValueChange = { onValueChange(it) },
-            shape = MaterialTheme.shapes.small,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Straighten,
-                    contentDescription = "null",
-                    tint = Color(0xFF565E71)
-                )
-            },
-            label = {
-                Text(
-                    text = "Perímetro de cintura",
-                    color = Color(0xFF565E71),
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = imeAction
-            ),
-            modifier = modifier
-                .width(240.dp),
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF565E71),
-                unfocusedBorderColor = Color.Transparent,
-                containerColor = Color(0xFFD7E2FF)
-
-            )
-        )
-
-    }
-
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun HipField(
-        modifier: Modifier,
-        state: ValueState,
-        imeAction: ImeAction,
-        onValueChange: (String) -> Unit
-    ) {
-        TextField(
-            value = state.value,
-            isError = state.error != null,
-            onValueChange = { onValueChange(it) },
-            shape = MaterialTheme.shapes.small,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Straighten,
-                    contentDescription = "null",
-                    tint = Color(0xFF565E71)
-                )
-            },
-            label = {
-                Text(
-                    text = "Perímetro de cadera",
-                    color = Color(0xFF565E71),
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = imeAction
-            ),
-            modifier = modifier
-                .width(240.dp),
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF565E71),
-                unfocusedBorderColor = Color.Transparent,
-                containerColor = Color(0xFFD7E2FF)
-
-            )
-        )
-
-    }
-
-    @Composable
-    fun Kgicon(
-        unit: String,
-        onClick: () -> Unit
-    ) {
-        ElevatedCard(
             modifier = Modifier
-                .height(56.dp)
-                .width(48.dp)
-                .clickable {
-                    onClick()
-                },
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-                Text(text = unit, color = Color.White)
-
-            }
-
-        }
-    }
-
-    @Composable
-    fun MetersIcon(
-    ) {
-        ElevatedCard(
-            modifier = Modifier
-                .height(56.dp)
-                .width(48.dp),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-                Text(text = "M", color = Color.White)
-
-            }
-
-        }
-    }
-
-    @Composable
-    fun Cmicon(
-    ) {
-        ElevatedCard(
-            modifier = Modifier
-                .height(56.dp)
-                .width(48.dp),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-                Text(text = "CM", color = Color.White)
-
-            }
-
-        }
-    }
-
-
-    @Composable
-    fun CalculateButton(
-        modifier: Modifier,
-        isEnabled: Boolean,
-        text: String,
-        onClick: () -> Unit
-    ) {
-        val focusManager = LocalFocusManager.current
-
-        Button(
-            onClick = { focusManager.clearFocus(); onClick() },
-            shape = RoundedCornerShape(10.dp),
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = 20.dp,
-                pressedElevation = 10.dp,
-                disabledElevation = 0.dp
-            ),
-            enabled = isEnabled,
-            modifier = modifier
-                .width(315.dp)
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF034189)
-            ),
+                .menuAnchor()
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color(0xFFD7E2FF))
+                .width(300.dp)
         )
-        {
-            Text(
-                text,
-                fontSize = 16.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-
-        }
-    }
-
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun GenderField(
-        modifier: Modifier,
-        state: ValueState,
-        onValueChange: (String) -> Unit,
-    ) {
-
-
-        var isExpanded by remember {
-            mutableStateOf(false)
-        }
-
-        /*var gender by remember {
-        mutableStateOf("")
-    }*/
-
-
-        ExposedDropdownMenuBox(
+        ExposedDropdownMenu(
             expanded = isExpanded,
-            onExpandedChange = { isExpanded = it }
+            onDismissRequest = { isExpanded = false },
         ) {
-            TextField(
-                value = state.value,
-                onValueChange = { onValueChange(it) },
-                shape = MaterialTheme.shapes.small,
-                readOnly = true,
-                leadingIcon = {
-
-                    if (state.value == "Femenino" || state.value == "")
-                        Icon(
-                            imageVector = Icons.Outlined.Female,
-                            contentDescription = "null",
-                            tint = Color(0xFF565E71)
-                        ) else {
-                        Icon(
-                            imageVector = Icons.Outlined.Male,
-                            contentDescription = "null",
-                            tint = Color(0xFF565E71)
-                        )
-
-                    }
-                },
-                label = {
-                    Text(
-                        text = "Escoge tu genero",
-                        color = Color(0xFF565E71),
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 12.sp
-                    )
-                },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                },
-                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color(0xFF565E71),
-                    unfocusedBorderColor = Color.Transparent,
-                    //containerColor = Color(0xFFD7E2FF)
-
-                ),
-                modifier = Modifier
-                    .menuAnchor()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color(0xFFD7E2FF))
-                    .width(300.dp)
+            /*
+            *  DropDown Item
+             */
+            DropdownMenuItem(
+                text = { Text(text = "Femenino") },
+                onClick = {
+                    state.value = "Femenino"
+                    isExpanded = false
+                }
             )
-
-
-
-            ExposedDropdownMenu(
-                expanded = isExpanded,
-                onDismissRequest = { isExpanded = false },
-            ) {
-
-                DropdownMenuItem(
-                    text = { Text(text = "Femenino") },
-                    onClick = {
-                        state.value = "Femenino"
-                        isExpanded = false
-                    }
-                )
-
-
-
-                DropdownMenuItem(
-                    text = { Text(text = "Masculino") },
-                    onClick = {
-                        state.value = "Masculino"
-                        isExpanded = false
-
-                    },
-
-                    )
-
-            }
-
-
+            /*
+            *  DropDown Item
+            */
+            DropdownMenuItem(
+                text = { Text(text = "Masculino") },
+                onClick = {
+                    state.value = "Masculino"
+                    isExpanded = false
+                })
         }
-
     }
+}
 
 
 

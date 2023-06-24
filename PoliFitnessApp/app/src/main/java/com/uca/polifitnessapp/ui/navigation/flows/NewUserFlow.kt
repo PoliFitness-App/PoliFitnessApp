@@ -24,11 +24,11 @@ import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 fun NavGraphBuilder.authGraph(
     navController: NavHostController,
     signUpGoalViewModel: SignUpGoalViewModel,
-    userViewModel:UserViewModel,
+    userViewModel: UserViewModel,
     loginViewModel: LoginViewModel
 ) {
     navigation(
-        startDestination = AuthRoutes.SIGN_UP_SCREEN,
+        startDestination = AuthRoutes.ONBOARD_SCREEN,
         route = AuthRoutes.AUTH_ROUTE
     ) {
         composable(AuthRoutes.SPLASH_SCREEN) {
@@ -38,34 +38,57 @@ fun NavGraphBuilder.authGraph(
         }
         composable(AuthRoutes.ONBOARD_SCREEN) {
             MainFunction(
-                navController = navController
+                onNavigateToAuth = {
+                    navController.popBackStack()
+                    navController.navigate(AuthRoutes.SIGN_UP_SCREEN)
+                },
             )
         }
         composable(AuthRoutes.SIGN_UP_SCREEN) {
             SignUpScreen(
-                navController,
                 signUpGoalViewModel,
+                onLoginOption = {
+                    navController.navigate(AuthRoutes.LOGIN_SCREEN)
+                },
+                onSignUpSuccess = {
+                    navController.popBackStack()
+                    navController.navigate(AuthRoutes.PERSONAL_INFO_SCREEN)
+                }
             )
         }
         composable(AuthRoutes.PERSONAL_INFO_SCREEN) {
             SignUpPersonalInfoScreen(
-                navController,
                 signUpGoalViewModel,
-                userViewModel
+                onSignUpSuccess = {
+                    navController.navigate(AuthRoutes.GOAL_SCREEN)
+                }
             )
         }
         composable(AuthRoutes.GOAL_SCREEN) {
             SignUpGoalScreen(
-                navController,
                 signUpGoalViewModel,
-                userViewModel
+                onSignUpSuccess = {
+                    navController.popBackStack()
+                    navController.navigate(LoginRoutes.LOGIN_SCREEN)
+                }
             )
         }
         composable(AuthRoutes.LOGIN_SCREEN) {
             LoginScreen(
                 viewModel = loginViewModel,
                 userViewModel = userViewModel,
-                navController = navController
+                onLoginSuccess = {
+                    navController.popBackStack()
+                    navController.navigate(MainRoutes.MAIN_ROUTE) {
+                        popUpTo(AuthRoutes.AUTH_ROUTE) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToSignUp = {
+                    navController.popBackStack()
+                    navController.navigate(AuthRoutes.SIGN_UP_SCREEN)
+                }
             )
         }
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PoliFitnessApp</string>
+    <string name="app_name">CentroDeportivoApp</string>
     <string name="description">Description</string>
     <string name="title_error_card">Oh no!</string>
     <string name="button_text_error_card">Intentar de nuevo</string>

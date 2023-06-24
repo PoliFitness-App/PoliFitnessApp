@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -74,7 +76,7 @@ fun MainFunction(
         ApproachData(
             image = R.drawable.approachimg2,
             tittle = "Perder grasa",
-            desc = "Tengo que perder más de 9 kilos. Quiero bajar toda esta grasa y ganar masa muscular.",
+            desc = "Tengo que perder más de 9 kilos. Quiero bajar toda esta grasa.",
         )
     )
 
@@ -100,9 +102,8 @@ fun MainFunction(
 
 @Composable
 fun SignUpGoalScreen(
-    navController: NavController,
     viewModel: SignUpGoalViewModel,
-    userViewModel: UserViewModel
+    onSignUpSuccess: () -> Unit,
 ) {
 
     // ---
@@ -117,6 +118,7 @@ fun SignUpGoalScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val scrollState = rememberScrollState()
 
     // ---
     // viewModel
@@ -125,11 +127,13 @@ fun SignUpGoalScreen(
 
     Column(
         modifier = Modifier
+            .verticalScroll(scrollState)
             .fillMaxSize()
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(25.dp),
+            .padding(16.dp)
+        ,
         verticalArrangement = Arrangement.spacedBy(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -156,8 +160,8 @@ fun SignUpGoalScreen(
                 viewModel.status.observe(lifecycleOwner) { status ->
                     handleUiStatus(
                         status,
-                        navController,
-                        context
+                        context,
+                        onSignUpSuccess
                     )
                 }
                 viewModel.onSignUp()
@@ -171,8 +175,8 @@ fun SignUpGoalScreen(
 //
 fun handleUiStatus(
     status: SignUpUiStatus,
-    navController: NavController,
     context: Context,
+    onSignUpSuccess: () -> Unit,
 ) {
     when (status) {
         is SignUpUiStatus.Error -> {
@@ -182,13 +186,8 @@ fun handleUiStatus(
             Toast.makeText(context, status.message, Toast.LENGTH_SHORT).show()
         }
         is SignUpUiStatus.Success -> {
-            Toast.makeText(context, "done", Toast.LENGTH_SHORT).show()
-            // We nagivate to "main_flow"
-            navController.navigate(MainRoutes.MAIN_ROUTE) {
-                popUpTo(AuthRoutes.AUTH_ROUTE) {
-                    inclusive = true
-                }
-            }
+            Toast.makeText(context, "Has creado tu cuenta con exito!", Toast.LENGTH_SHORT).show()
+            onSignUpSuccess()
         }
         else -> {}
     }
@@ -231,12 +230,13 @@ fun CarouselCard(
     item: List<ApproachData>,
     pagerState: PagerState,
 ) {
-    Column(
-    ) {
+    Column{
         HorizontalPager(
             state = pagerState,
             contentPadding = PaddingValues(horizontal = 30.dp),
-            modifier = Modifier.height(478.dp),
+            modifier = Modifier
+                .height(478.dp)
+            ,
             verticalAlignment = Alignment.CenterVertically,
         ) { page ->
             Box(

@@ -56,21 +56,25 @@ import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 import com.uca.polifitnessapp.ui.auth.signup.viewmodel.SignUpGoalViewModel
+import com.uca.polifitnessapp.ui.auth.signup.viewmodel.TextFieldState
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun SignUpScreen(
-    navController: NavController,
     viewModel: SignUpGoalViewModel,
+    onLoginOption: () -> Unit,
+    onSignUpSuccess: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 colorResource(id = R.color.white)
             )
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             .padding(25.dp, 0.dp, 25.dp, 0.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -81,7 +85,8 @@ fun SignUpScreen(
                 Alignment.CenterHorizontally,
             ),
             viewModel,
-            navController
+            onLoginOption,
+            onSignUpSuccess
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -92,26 +97,13 @@ fun SignUpScreen(
 fun SignUpView(
     modifier: Modifier,
     viewModel: SignUpGoalViewModel,
-    navController: NavController
+    onLoginOption: () -> Unit,
+    onSignUpSuccess: () -> Unit
 ) {
 
     // --
     // View model variables
     // --
-
-    val username: String by viewModel.username.observeAsState(initial = "")
-    val lastname: String by viewModel.lastname.observeAsState(initial = "")
-    val email: String by viewModel.email.observeAsState(initial = "")
-    val password: String by viewModel.password.observeAsState(initial = "")
-
-    val checkbox: Boolean by viewModel.checkBox.observeAsState(initial = false)
-
-    val coroutineScope = rememberCoroutineScope()
-
-    val isWrongInputName: Boolean by viewModel.isValidUsername.observeAsState(initial = false)
-    val isWrongInputLastName: Boolean by viewModel.isValidLastname.observeAsState(initial = false)
-    val isWrongInputEmail: Boolean by viewModel.isValidEmail.observeAsState(initial = false)
-    val isWrongInputPassword: Boolean by viewModel.isValidPassword.observeAsState(initial = false)
 
     val signUpEnable: Boolean by viewModel.isSignUpButton1.observeAsState(initial = false)
 
@@ -128,42 +120,35 @@ fun SignUpView(
 
         NameField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            username,
-            isWrongInputName,
+            viewModel.username
         ) {
             viewModel.onUsernameChange(it)
         }
 
-
         LastNameField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            lastname,
-            isWrongInputLastName,
+            viewModel.lastname
         ) {
             viewModel.onLastnameChange(it)
         }
 
-
         EmailField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            email,
-            isWrongInputEmail
+            viewModel.email
         ) {
             viewModel.onEmailChange(it)
         }
 
-
         PasswordField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            password,
-            isWrongInputPassword
+            viewModel.password
         ) {
             viewModel.onPasswordChange(it)
         }
 
         TermsAndConditionText(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            checkbox,
+            viewModel.checkBox,
         ) {
             viewModel.onCheckboxChanged(it)
         }
@@ -172,19 +157,15 @@ fun SignUpView(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             signUpEnable
         ) {
-            coroutineScope.launch {
-                // We set the dat  -> name, lastname, email, password
-                navController.navigate(AuthRoutes.PERSONAL_INFO_SCREEN)
-            }
+            // We set the dat  -> name, lastname, email, password
+            onSignUpSuccess()
         }
 
         LogInOption(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            navController
+            onLoginOption
         )
-
     }
-
 }
 
 
@@ -224,12 +205,11 @@ fun SignUpHeaderText(
 @Composable
 fun NameField(
     modifier: Modifier,
-    name: String,
-    isWrongInput: Boolean,
+    name: TextFieldState,
     onTextFieldChanged: (String) -> Unit
 ) {
     TextField(
-        value = name,
+        value = name.value,
         onValueChange = {
             onTextFieldChanged(it)
         },
@@ -250,11 +230,11 @@ fun NameField(
             )
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        isError = isWrongInput,
+        isError = name.error.isNotEmpty(),
         supportingText = {
-            if (isWrongInput) {
+            if (name.error.isNotEmpty()) {
                 Text(
-                    text = "Ingresa un nombre válido",
+                    text = name.error,
                     color = Color.Red,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
@@ -262,7 +242,7 @@ fun NameField(
             }
         },
         trailingIcon = {
-            if (isWrongInput) {
+            if (name.error.isNotEmpty()) {
                 Icon(
                     imageVector = Icons.Filled.Error,
                     contentDescription = "Error Icon"
@@ -278,7 +258,6 @@ fun NameField(
             containerColor = Color(0xFFD7E2FF)
         )
     )
-
 }
 
 
@@ -286,15 +265,14 @@ fun NameField(
 @Composable
 fun LastNameField(
     modifier: Modifier,
-    lastname: String,
-    isWrongInput: Boolean,
+    lastname: TextFieldState,
     onTextFieldChanged: (String) -> Unit
-
 ) {
-
     TextField(
-        value = lastname,
-        onValueChange = { onTextFieldChanged(it) },
+        value = lastname.value,
+        onValueChange = {
+            onTextFieldChanged(it)
+        },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
             Icon(
@@ -312,11 +290,11 @@ fun LastNameField(
             )
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        isError = isWrongInput,
+        isError = lastname.error.isNotEmpty(),
         supportingText = {
-            if (isWrongInput) {
+            if (lastname.error.isNotEmpty()) {
                 Text(
-                    text = "Ingresa un apellido válido",
+                    text = lastname.error,
                     color = Color.Red,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
@@ -324,7 +302,7 @@ fun LastNameField(
             }
         },
         trailingIcon = {
-            if (isWrongInput) {
+            if (lastname.error.isNotEmpty()) {
                 Icon(
                     imageVector = Icons.Filled.Error,
                     contentDescription = "Error Icon"
@@ -349,13 +327,11 @@ fun LastNameField(
 @Composable
 fun EmailField(
     modifier: Modifier,
-    email: String,
-    isWrongInput: Boolean,
+    email: TextFieldState,
     onTextFieldChanged: (String) -> Unit
 ) {
-
     TextField(
-        value = email,
+        value = email.value,
         onValueChange = { onTextFieldChanged(it) },
         shape = MaterialTheme.shapes.small,
         leadingIcon = {
@@ -374,11 +350,11 @@ fun EmailField(
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        isError = isWrongInput,
+        isError = email.error.isNotEmpty(),
         supportingText = {
-            if (isWrongInput) {
+            if (email.error.isNotEmpty()) {
                 Text(
-                    text = "Formato incorrecto (example@gmail.com)",
+                    text = email.error,
                     color = Color.Red,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
@@ -386,14 +362,13 @@ fun EmailField(
             }
         },
         trailingIcon = {
-            if (isWrongInput) {
+            if (email.error.isNotEmpty()) {
                 Icon(
                     imageVector = Icons.Filled.Error,
                     contentDescription = "Error Icon"
                 )
             }
         },
-
         modifier = modifier
             .width(315.dp),
         singleLine = true,
@@ -403,7 +378,6 @@ fun EmailField(
             containerColor = Color(0xFFD7E2FF)
         )
     )
-
 }
 
 
@@ -411,8 +385,7 @@ fun EmailField(
 @Composable
 fun PasswordField(
     modifier: Modifier,
-    password: String,
-    isWrongInput: Boolean,
+    password: TextFieldState,
     onTextSelected: (String) -> Unit
 ) {
     val passwordVisible = remember {
@@ -420,7 +393,7 @@ fun PasswordField(
     }
 
     TextField(
-        value = password,
+        value = password.value,
         onValueChange = {
             onTextSelected(it)
         },
@@ -441,7 +414,7 @@ fun PasswordField(
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        isError = isWrongInput,
+        isError = password.error.isNotEmpty(),
         trailingIcon = {
             val iconImage = if (passwordVisible.value) {
                 Icons.Outlined.Visibility
@@ -458,9 +431,9 @@ fun PasswordField(
             }
         },
         supportingText = {
-            if (isWrongInput) {
+            if (password.error.isNotEmpty()) {
                 Text(
-                    text = "La contraseña debe de tener entre 8 y 32 chars, y al menos 1 M, 1 m y 1 #",
+                    text = password.error,
                     color = Color.Red,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
@@ -479,10 +452,7 @@ fun PasswordField(
             containerColor = Color(0xFFD7E2FF)
 
         ),
-
-
-        )
-
+    )
 }
 
 
@@ -545,7 +515,7 @@ fun TermsAndConditionText(
             text = "Si continúa navegando, consideramos que acepta nuestra Politica de Privacidad y Terminos de Uso.",
             fontSize = 12.sp,
             color = Color(0xFF565E71),
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Normal
         )
     }
 }
@@ -553,12 +523,9 @@ fun TermsAndConditionText(
 @Composable
 fun LogInOption(
     modifier: Modifier,
-    navController: NavController
+    onLoginOption: () -> Unit
 ) {
-
-
     Spacer(modifier = Modifier.padding(2.dp))
-
 
     Row(modifier = modifier.padding(2.dp)) {
         Text(
@@ -572,7 +539,7 @@ fun LogInOption(
             color = Color(0xFF034189),
             modifier = modifier.clickable {
                 // Navigate lo Log In
-                navController.navigate(AuthRoutes.LOGIN_SCREEN)
+                onLoginOption()
             }
         )
     }

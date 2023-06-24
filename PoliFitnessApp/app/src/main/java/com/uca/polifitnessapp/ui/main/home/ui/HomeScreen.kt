@@ -235,7 +235,10 @@ fun IMC_card(
             Box(
                 contentAlignment = Alignment.Center,
             ) {
-                Image(painterResource(id = R.drawable.imc_card_background), contentDescription = "")
+                Image(
+                    painterResource(id = R.drawable.imc_card_background),
+                    contentDescription = ""
+                )
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically,

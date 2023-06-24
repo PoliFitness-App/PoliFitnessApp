@@ -41,7 +41,18 @@ fun NavGraphBuilder.loginGraph(
             LoginScreen(
                 viewModel = loginViewModel,
                 userViewModel = userViewModel,
-                navController = navController
+                onLoginSuccess = {
+                    navController.popBackStack()
+                    navController.navigate(MainRoutes.MAIN_ROUTE){
+                        popUpTo(AuthRoutes.AUTH_ROUTE){
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToSignUp = {
+                    navController.popBackStack()
+                    navController.navigate(AuthRoutes.SIGN_UP_SCREEN)
+                }
             )
         }
     }
