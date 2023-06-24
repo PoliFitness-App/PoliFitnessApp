@@ -1,4 +1,4 @@
-@file:OptIn(FlowPreview::class)
+@file:OptIn(FlowPreview::class, ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
 
 package com.uca.polifitnessapp.ui.main.routines.ui
 
@@ -10,16 +10,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -28,6 +37,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +62,8 @@ import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.ui.main.routines.viewmodel.RoutinesViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 // Main Screen for Routines
 @Composable
@@ -60,6 +72,16 @@ fun RoutinesListScreen(
     userViewModel: UserViewModel,
     onNavigateToRoutine: (String) -> Unit
 ) {
+
+    // Fetch user from the userId
+    LaunchedEffect(Unit) {
+        try {
+            userViewModel.getUserInfo()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,123 +99,160 @@ fun RoutinesListScreen(
 }
 
 // Routine list component
+@ExperimentalMaterialApi
 @Composable
 fun RoutinesList(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
     onNavigateToRoutine: (String) -> Unit
 ) {
-    // States for news list
-    var selectedIndex by remember { mutableStateOf(0) }
-    val onItemClick = { index: Int ->
-        selectedIndex = index
-    }
 
     // Scroll state
-    val scrollState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberLazyGridState(0)
 
     // Initialize states for filters
     val category: String by viewModel.category.observeAsState(initial = "%")
+    val approach = userViewModel.user.approach
     val level: String by viewModel.level.observeAsState(initial = "%")
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
 
     // Filter's for news list
     // Filter by level
-    // TODO obtener el approach del usuario e insertarlo
-    val routinesByFilters2 = remember(key1 = category, key2 = level){
+
+    val routinesByFilters2 = remember(key1 = category, key2 = level) {
         viewModel.getRoutinesByApproachAndCategoryAndLevel(
-            "%", category, level
+            approach, category, level
         )
     }
     val routinesByFilters = routinesByFilters2.collectAsLazyPagingItems()
 
     // Recommended routines list
 
-    LazyColumn(
-        state = scrollState,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
-        modifier = Modifier
+    val refreshScope = rememberCoroutineScope()
+    fun refresh() = refreshScope.launch {
+        viewModel.onLoadingChange(true)
+        delay(1000)
+        routinesByFilters.refresh()
+        viewModel.onLoadingChange(false)
+    }
+
+    val ptrState =
+        rememberPullRefreshState(isLoading, ::refresh) // 1
+
+    // ---
+    // Filter
+    // ---
+
+    HeaderSectionFilter(
+        viewModel = viewModel
+    )
+
+    // ---
+    //Routines section, with pull to refresh
+    // ---
+    Box(
+        Modifier
             .fillMaxSize()
-            .padding(0.dp, 0.dp, 0.dp, 64.dp)
+            .pullRefresh(ptrState),
     ) {
-        item {
-            // Tittle
-            Text(
-                modifier = Modifier
-                    .padding(16.dp, 8.dp, 16.dp, 8.dp),
-                text = "Rutinas",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineSmall
-            )
-        }
 
-        // ---
-        // Filter
-        // ---
-        item {
-            FilterItem(
-                "Filtrar por nivel",
-                items = listOf(
-                    "Todos",
-                    "Fácil",
-                    "Medio",
-                    "Difícil",
-                    "Muy difícil"
-                )
-            ) {
-                viewModel.onLevelChange(it)
-            }
-            FilterItem(
-                "Filtrar por categoria",
-                items = listOf(
-                    "Todos",
-                    "Tren superior",
-                    "Tren inferior",
-                    "Cuerpo completo"
-                ),
-            ) {
-                viewModel.onCategoryChange(it)
-            }
-        }
+        /*
+         * Lazy Vertical Grid
+         */
+        LazyVerticalGrid(
+            state = scrollState,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(0.dp, 0.dp, 0.dp, 64.dp),
+            columns = GridCells.Adaptive(minSize = 300.dp),
+        ) {
+            // List of recommended routines
+            items(count = routinesByFilters.itemCount) { index ->
+                val item = routinesByFilters[index]
 
-        // List of recomended routines
-        items(count = routinesByFilters.itemCount) { index ->
-            val item = routinesByFilters[index]
-
-            if (item != null) {
-                // Filter item
-                RoutineItem(
-                    routine = item
-                ) { routineId ->
-                    onNavigateToRoutine(routineId)
+                if (item != null) {
+                    // Filter item
+                    RoutineItem(
+                        routine = item
+                    ) { routineId ->
+                        onNavigateToRoutine(routineId)
+                    }
                 }
             }
         }
-    }
 
-    // Save scroll state
-    /*
-    * LaunchedEffect(scrollState) {
-        snapshotFlow {
-            scrollState.firstVisibleItemIndex
-        }
-            .debounce(500L)
-            .collectLatest { index ->
-                println("Scroll index: $index")
-                if (index == 0 && viewModel.scrollState.value != 0) {
-                    scrollState.animateScrollToItem(viewModel.scrollState.value)
-                }
-                viewModel.onScrollChange(index)
-            }
+        /*
+        * Refresh indicator
+        */
+        PullRefreshIndicator(
+            refreshing = isLoading,
+            state = ptrState,
+            Modifier.align(Alignment.TopCenter),
+            scale = true,
+        )
     }
-    * */
 }
 
-// ----
-// New Item
-// ------
 
+/**
+ * @Composable Header section filter
+ * @Description: Header section with routines filter
+ *
+ * @param: viewModel: RoutinesViewModel
+ **/
+
+@Composable
+fun HeaderSectionFilter(
+    viewModel: RoutinesViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp, 8.dp, 0.dp, 0.dp),
+        // Center items horizontally in the column
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(16.dp, 8.dp, 16.dp, 8.dp),
+            text = "Rutinas",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineSmall
+        )
+        FilterItem(
+            "Filtrar por nivel",
+            items = listOf(
+                "Todos",
+                "Fácil",
+                "Medio",
+                "Difícil",
+                "Muy difícil"
+            )
+        ) {
+            viewModel.onLevelChange(it)
+        }
+        FilterItem(
+            "Filtrar por categoria",
+            items = listOf(
+                "Todos",
+                "Tren superior",
+                "Tren inferior",
+                "Cuerpo completo"
+            ),
+        ) {
+            viewModel.onCategoryChange(it)
+        }
+    }
+}
+
+/**
+ * @Composable Routine Item
+ * @Description: Routine item component
+ *
+ * @param: viewModel: RoutinesViewModel
+ * @param: onClick: (String) -> Unit , function to navigate to routine detail
+ **/
 
 @Composable
 fun RoutineItem(
@@ -205,7 +264,7 @@ fun RoutineItem(
         elevation = CardDefaults.elevatedCardElevation(8.dp),
         modifier = Modifier
             .padding(16.dp)
-            .width(500.dp)
+            .width(300.dp)
             .height(155.dp),
         // Card colors
         colors = CardDefaults.cardColors(
@@ -283,11 +342,12 @@ fun RoutineItem(
                 // Image
                 Image(
                     painter = painterResource(
-                        when(routine.category){
+                        when (routine.category) {
                             stringResource(R.string.full_body_category) -> R.drawable.fullbody_approach
                             stringResource(R.string.upper_body_category) -> R.drawable.upper_body_approach
                             stringResource(R.string.lower_boddy_category) -> R.drawable.lower_body_approach
-                            else -> R.drawable.fullbody_approach}
+                            else -> R.drawable.fullbody_approach
+                        }
                     ),
                     contentDescription = "Routines Image",
                     modifier = Modifier
@@ -300,9 +360,14 @@ fun RoutineItem(
     }
 }
 
-// ----
-// New Item
-// ------
+/**
+ * @Composable Filter item
+ * @Description: Filter button component
+ *
+ * @param: text: String, text to show in the filter
+ * @param: items: List<String>, list of items to show in the dropdown menu
+ * @param: onClick: (String) -> Unit , function to select a filter
+ **/
 
 @Composable
 fun FilterItem(

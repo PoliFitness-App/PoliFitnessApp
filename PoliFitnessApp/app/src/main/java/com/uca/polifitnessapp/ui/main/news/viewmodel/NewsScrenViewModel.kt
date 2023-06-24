@@ -97,16 +97,10 @@ class NewsScreenViewModel(
         selectedIndex.value = index
     }
 
-    // ---
-    // On scroll state change
-    // ---
-    fun onScrollChange(int: Int) {
-        scrollState.value = int
-    }
 
-    // ---
-    // Loading functions
-    // ---
+    fun onLoadingChange(isLoading: Boolean) {
+        _isLoading.value = isLoading
+    }
 
     // ---
     // Companion object

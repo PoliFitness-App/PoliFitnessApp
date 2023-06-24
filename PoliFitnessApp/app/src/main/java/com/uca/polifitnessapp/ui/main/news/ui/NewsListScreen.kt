@@ -67,6 +67,7 @@ import com.uca.polifitnessapp.data.db.models.NoticeModel
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsScreenViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
@@ -275,14 +276,26 @@ fun NewsList(
         }
         val news = news2.collectAsLazyPagingItems()
 
+        val scrollState = rememberLazyGridState(0)
+
+        // ---
+        // Pull to refresh config
+        // ---
+
+        val refreshScope = rememberCoroutineScope()
+        fun refresh() = refreshScope.launch {
+            viewModel.onLoadingChange(true)
+            delay(1000)
+            news.refresh()
+            viewModel.onLoadingChange(false)
+        }
+
+        val ptrState=
+            rememberPullRefreshState(isLoading, ::refresh)
+
         // ---
         // Vertical Grid
         // ---
-        val scrollState = rememberLazyGridState(0)
-
-        val ptrState=
-            rememberPullRefreshState(isLoading, {news.refresh()}) // 1
-
         Box(
             Modifier
                 .fillMaxSize()
@@ -383,7 +396,7 @@ fun NewsList(
             /*
             * Refresh indicator
              */
-            PullRefreshIndicator(refreshing = isLoading, state = ptrState, Modifier.align(Alignment.TopCenter)) // 2
+            PullRefreshIndicator(refreshing = isLoading, state = ptrState, Modifier.align(Alignment.TopCenter))
         }
     }
 }
