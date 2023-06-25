@@ -18,10 +18,11 @@ import com.uca.polifitnessapp.ui.main.news.ui.NewsListScreen
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsItemViewModel
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsScreenViewModel
 import com.uca.polifitnessapp.ui.extras.ui.privacyPoliticsScreen
-import com.uca.polifitnessapp.ui.main.routines.data.RoutinesViewModel
+import com.uca.polifitnessapp.ui.main.routines.viewmodel.RoutinesViewModel
 import com.uca.polifitnessapp.ui.main.routines.ui.RoutineItemScreen
 import com.uca.polifitnessapp.ui.main.routines.ui.RoutinesListScreen
 import com.uca.polifitnessapp.ui.main.routines.viewmodel.RoutineItemViewModel
+import com.uca.polifitnessapp.ui.user.ui.EditApproachScreen
 import com.uca.polifitnessapp.ui.user.ui.EditProfileScreen
 import com.uca.polifitnessapp.ui.user.ui.ProfileScreen
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
@@ -124,6 +125,13 @@ fun NavGraphBuilder.mainGraph(
             },
             onNavigateToContactUs = {
                 navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+            },
+            onLogout = {
+                navController.navigate(LoginRoutes.LOGIN_ROUTE) {
+                    popUpTo(MainRoutes.MAIN_ROUTE) {
+                        inclusive = true
+                    }
+                }
             }
         )
     }
@@ -155,9 +163,28 @@ fun NavGraphBuilder.mainGraph(
                 it,
                 onBackPress = {
                     navController.popBackStack()
+                },
+                onNavigate = {
+                    navController.navigate(MainRoutes.MAIN_EDIT_APPROACH)
                 }
             )
         }
+    }
+
+    composable(
+        MainRoutes.MAIN_EDIT_APPROACH
+    ){
+        EditApproachScreen(
+            editProfileViewModel,
+            userViewModel,
+            onUpdateSuccess = {
+                navController.navigate(ButtomNavItems.Profile.rute){
+                    popUpTo(MainRoutes.MAIN_ROUTE){
+                        inclusive = true
+                    }
+                }
+            },
+        )
     }
 
     // ---
@@ -241,4 +268,5 @@ object MainRoutes {
     const val MAIN_CALCULATOR_SCREEN = "calculator_screen"
     const val MAIN_CONTACT_INFO = "contact_screen"
     const val MAIN_TERMS_AND_CONDITIONS = "terms_and_conditions_screen"
+    const val MAIN_EDIT_APPROACH = "edit_approach_screen"
 }

@@ -1,63 +1,53 @@
-@file:OptIn(FlowPreview::class)
+@file:OptIn(FlowPreview::class, ExperimentalMaterialApi::class)
 
 package com.uca.polifitnessapp.ui.main.news.ui
 
-import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.NoticeModel
-import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsScreenViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // -----
@@ -133,7 +123,7 @@ fun HeaderSection(
     ) {
         // Tittle
         Text(
-            text = "Noticas Polideportivo UCA",
+            text = stringResource(R.string.news_title_screen),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
@@ -184,7 +174,7 @@ fun FilterItem(
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.elevatedCardElevation(12.dp),
         modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp, 8.dp, 16.dp, 8.dp)
             .width(105.dp)
             .height(96.dp),
         // Card colors
@@ -250,7 +240,6 @@ fun NewsList(
         HeaderSection(
             viewModel
         )
-        val coroutineScope = rememberCoroutineScope()
         // ---
         // Category
         // ---
@@ -265,13 +254,34 @@ fun NewsList(
         }
         val news = news2.collectAsLazyPagingItems()
 
+        val scrollState = rememberLazyGridState(0)
+
+        // ---
+        // Pull to refresh config
+        // ---
+
+        val refreshScope = rememberCoroutineScope()
+        fun refresh() = refreshScope.launch {
+            viewModel.onLoadingChange(true)
+            delay(1000)
+            news.refresh()
+            viewModel.onLoadingChange(false)
+        }
+
+        val ptrState=
+            rememberPullRefreshState(isLoading, ::refresh)
+
         // ---
         // Vertical Grid
         // ---
-        val scrollState = rememberLazyGridState(0)
-        if (isLoading) {
-            LoadingScreen()
-        } else {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .pullRefresh(ptrState)
+        ){
+            /*
+            * Laz vertical grid
+             */
             LazyVerticalGrid(
                 state = scrollState,
                 verticalArrangement = Arrangement.Top,
@@ -280,13 +290,72 @@ fun NewsList(
                     .padding(0.dp, 0.dp, 0.dp, 64.dp),
                 columns = GridCells.Adaptive(minSize = 350.dp),
             ) {
-                news.apply {
-                    when {
-                        loadState.refresh is LoadState.Loading -> println("Se esta recargando")
-                        loadState.append is LoadState.Loading -> println("Estoy cargando en append")
-                        loadState.append is LoadState.Error -> println(" Estoy en error")
+                val loadState = news.loadState.mediator
+
+                /*
+                // Loading
+                item {
+                    if (loadState?.refresh == LoadState.Loading) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+                    if (loadState?.append == LoadState.Loading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+
+                    if (loadState?.refresh is LoadState.Error || loadState?.append is LoadState.Error) {
+                        val isPaginatingError =
+                            (loadState.append is LoadState.Error) || news.itemCount > 1
+                        val error = if (loadState.append is LoadState.Error)
+                            (loadState.append as LoadState.Error).error
+                        else
+                            (loadState.refresh as LoadState.Error).error
+
+                        val modifier = if (isPaginatingError) {
+                            Modifier.padding(8.dp)
+                        } else {
+                            Modifier.fillMaxSize()
+                        }
+                        Column(
+                            modifier = modifier,
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(64.dp),
+                                imageVector = Icons.Rounded.Warning, contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
+                            )
+
+                            Text(
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.scrim,
+                                style = MaterialTheme.typography.labelLarge,
+                                textAlign = TextAlign.Center,
+                                text = "No se pudo cargar la información, revisa tu conexión a internet",
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .width(250.dp),
+                            )
+                        }
                     }
                 }
+                 */
+
                 items(
                     news.itemCount,
                     key = { index -> news[index]?.noticeId ?: index }
@@ -302,24 +371,11 @@ fun NewsList(
                     }
                 }
             }
+            /*
+            * Refresh indicator
+             */
+            PullRefreshIndicator(refreshing = isLoading, state = ptrState, Modifier.align(Alignment.TopCenter))
         }
-
-        // Save scroll state
-        /*
-        * LaunchedEffect(scrollState) {
-            snapshotFlow {
-                scrollState.firstVisibleItemIndex
-            }
-                .debounce(500L)
-                .collectLatest { index ->
-                    if (index == 0 && viewModel.scrollState.value != 0) {
-                        scrollState.animateScrollToItem(viewModel.scrollState.value)
-                    }
-                    viewModel.onScrollChange(index)
-                }
-        }
-        * */
-
     }
 }
 
@@ -373,10 +429,10 @@ fun NewItem(
                 text = new.title,
                 fontWeight = FontWeight.Normal,
                 color = MaterialTheme.colorScheme.scrim,
+                style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.Start),
-                style = MaterialTheme.typography.bodySmall
             )
             // Description
             val description = if (new.description.length > 40) {
@@ -386,18 +442,20 @@ fun NewItem(
             }
             Text(
                 text = description,
-                fontWeight = FontWeight.ExtraLight,
+                fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.scrim,
+                style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .padding(8.dp, 0.dp, 8.dp, 8.dp)
                     .align(Alignment.Start),
-                style = MaterialTheme.typography.labelSmall
             )
+
+            Spacer(modifier = Modifier.weight(1f))
 
             // Category
             Text(
                 text = new.category,
-                fontWeight = FontWeight.ExtraLight,
+                fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier
                     .padding(0.dp, 16.dp, 8.dp, 8.dp)
@@ -406,14 +464,4 @@ fun NewItem(
             )
         }
     }
-}
-
-// ----
-// Preview
-// ------
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewNewsListScreen() {
-    //NewsListScreen()
 }

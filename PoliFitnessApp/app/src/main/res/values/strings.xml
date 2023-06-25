@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PoliFitnessApp</string>
+    <string name="app_name">CentroDeportivoApp</string>
     <string name="description">Description</string>
     <string name="title_error_card">Oh no!</string>
     <string name="button_text_error_card">Intentar de nuevo</string>
@@ -21,5 +21,15 @@
     <string name="full_body_category">Cuerpo completo</string>
     <string name="upper_body_category">Tren superior</string>
     <string name="lower_boddy_category">Tren inferior</string>
+    <string name="privacy_policy_title">Política de privacidad</string>
+    <string name="arrow_icon_title">Arrow icon</string>
+    <string name="logout_title">Cerrar sesión</string>
+    <string name="contact_us_title">Contáctanos</string>
+    <string name="other_title">Otros</string>
+    <string name="icc_title">ICC (Indice cintura - cadera)</string>
+    <string name="imc_title">IMC (Indice de masa corporal)</string>
+    <string name="button_edit_title">Editar</string>
+    <string name="place_title">Centro Deportivo UCA</string>
+    <string name="news_title_screen">Noticas Polideportivo UCA</string>
 
 </resources>

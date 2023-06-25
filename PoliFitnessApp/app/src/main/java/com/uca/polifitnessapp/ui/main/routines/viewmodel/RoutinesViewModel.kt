@@ -1,6 +1,7 @@
-package com.uca.polifitnessapp.ui.main.routines.data
+package com.uca.polifitnessapp.ui.main.routines.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -9,7 +10,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.ExperimentalPagingApi
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.repositories.RoutineRepository
-import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsScreenViewModel
 
 class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel() {
 
@@ -21,9 +21,12 @@ class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel()
 
     var category = MutableLiveData("%")
     var level = MutableLiveData("%")
-    var approach = MutableLiveData("%")
     // Scroll state
     var scrollState = mutableStateOf(0)
+
+    // Loading
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
 
     // ---
     // Routines functions
@@ -75,18 +78,24 @@ class RoutinesViewModel(private val repository: RoutineRepository) : ViewModel()
         }
     }
 
-    // ---
-    // On scroll state change
-    // ---
-    fun onScrollChange(int: Int) {
-        scrollState.value = int
+    fun onLoadingChange(isLoading: Boolean) {
+        _isLoading.value = isLoading
     }
 
     // Get Routines by query
     // Routines by level and category and approach
     @OptIn(ExperimentalPagingApi::class)
-    fun getRoutinesByApproachAndCategoryAndLevel(query: String, query2: String, query3: String) =
-        repository.getRoutinesPageByApproachAndCategoryAndLevel(20, query, query2, query3)
+    fun getRoutinesByApproachAndCategoryAndLevel(
+        query: String,
+        query2: String,
+        query3: String
+    ) =
+        repository.getRoutinesPageByApproachAndCategoryAndLevel(
+            20,
+            query,
+            query2,
+            query3
+        )
 
     // Creating factory for this viewmodel
     companion object {

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +29,9 @@ import com.uca.polifitnessapp.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun AnimatedSplashScreen(navController: NavHostController) {
-
+fun AnimatedSplashScreen(
+    onNavigate: () -> Unit,
+) {
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -46,9 +48,8 @@ fun AnimatedSplashScreen(navController: NavHostController) {
 
     LaunchedEffect(key1 = true){
         startAnimation = true
-        delay(4000)
-        navController.popBackStack()
-        navController.navigate("onboard_screen")
+        delay(2000)
+        onNavigate()
     }
 
     Splash(alpha = alphaAnim.value)
@@ -62,8 +63,8 @@ fun Splash(alpha: Float){
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
-        Icon(
-            painter = painterResource(id = R.drawable.uca_logo) ,
+        Image(
+            painter = painterResource(id = R.drawable.uca_logo_icon),
             modifier = Modifier
                 .width(150.dp)
                 .height(100.dp)

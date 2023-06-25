@@ -12,6 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +28,9 @@ import com.uca.polifitnessapp.ui.auth.onBoard.data.OnboardData
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainFunction(navController: NavController) {
+fun MainFunction(
+    onNavigateToAuth: () -> Unit
+) {
     //  Create a List of items ( on board screens)
     val items = arrayListOf<OnboardData>()
 
@@ -87,7 +90,7 @@ fun MainFunction(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White),
-        navController = navController
+        onNavigateToAuth
     )
 }
 
@@ -96,64 +99,62 @@ fun OnBoardingPager(
     item: List<OnboardData>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
-    navController: NavController
+    onNavigateToAuth: () -> Unit
 ) {
     // Screen
-    Box(modifier = modifier) {
-        // Colum
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            // Horizonal Pager
-            HorizontalPager(
-                state = pagerState,
+    Box(
+        modifier = modifier
+    ) {
+        // Horizonal Pager
+        HorizontalPager(
+            state = pagerState,
+            contentPadding = PaddingValues(0.dp),
+            verticalAlignment = Alignment.Top,
+            userScrollEnabled = true,
+            modifier = Modifier
+                .fillMaxSize()
+        ) { page ->
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top,
                 modifier = Modifier
-                    .fillMaxWidth()
-            ) { page ->
-                Column(
+                    .fillMaxSize(),
+            ) {
+                //Image
+                Image(
+                    painterResource(id = item[page].image),
+                    contentDescription = "Onboard Image",
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    //Image
-                    Image(
-                        painterResource(id = item[page].image),
-                        contentDescription = "Onboard Image",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
+                        .fillMaxWidth()
+                )
+                //Tittle
+                Text(
+                    text = item[page].tittle,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(32.dp, 0.dp, 32.dp, 0.dp)
+                )
 
-                    Spacer(modifier = Modifier.padding(16.dp))
-                    //Tittle
-                    Text(
-                        text = item[page].tittle,
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(32.dp, 0.dp, 48.dp, 0.dp)
-                    )
-
-                    Spacer(modifier = Modifier.padding(16.dp))
-                    //Description
-                    Text(
-                        text = item[page].desc,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Light,
-                        modifier = Modifier.padding(32.dp, 0.dp, 48.dp, 0.dp),
-                    )
-
-                    Spacer(modifier = Modifier.padding(16.dp))
-
-                    // Next page button
-                    NextPageButton(
-                        modifier = Modifier.align(Alignment.End),
-                        page=page,
-                        item = item,
-                        pagerState = pagerState,
-                        navController = navController
-                    )
-                }
+                Spacer(modifier = Modifier.padding(8.dp))
+                //Description
+                Text(
+                    text = item[page].desc,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier
+                        .height(100.dp)
+                        .padding(32.dp, 0.dp, 48.dp, 0.dp),
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                // Next page button
+                NextPageButton(
+                    modifier = Modifier.align(Alignment.End),
+                    page = page,
+                    item = item,
+                    pagerState = pagerState,
+                    onNavigateToAuth
+                )
             }
         }
     }
@@ -162,10 +163,10 @@ fun OnBoardingPager(
 @Composable
 fun NextPageButton(
     modifier: Modifier = Modifier,
-    page:Int,
+    page: Int,
     item: List<OnboardData>,
     pagerState: PagerState,
-    navController: NavController
+    onNavigateToAuth: () -> Unit
 ) {
     // coroutineScope
     val coroutineScope = rememberCoroutineScope()
@@ -175,29 +176,29 @@ fun NextPageButton(
         onClick = {
             coroutineScope.launch {
                 if (pagerState.currentPage == item.size - 1) {
-                    navController.popBackStack()
-                    navController.navigate("login_screen")
+                    // Navigate to Auth screen
+                    onNavigateToAuth()
                 } else {
                     // Call scroll to on pagerState
                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }
             }
         },
-        modifier = modifier
-            .padding(32.dp)
-            .height(60.dp)
-            .width(60.dp),
         contentColor = Color.Transparent,
         containerColor = Color.Transparent,
         shape = RoundedCornerShape(60.dp),
-        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
+        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+        modifier = modifier
+            .height(80.dp)
+            .width(80.dp)
+            .padding(0.dp, 0.dp, 32.dp, 32.dp)
     ) {
         // Next page button image
         Image(
             painterResource(id = item[page].button),
             modifier = Modifier
                 .fillMaxSize(),
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.FillHeight,
             contentDescription = "Next page"
         )
     }

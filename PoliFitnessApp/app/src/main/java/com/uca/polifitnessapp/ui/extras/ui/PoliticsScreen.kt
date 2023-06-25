@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
+import com.uca.polifitnessapp.ui.theme.md_theme_light_scrim
 
 @Composable
 fun privacyPoliticsScreen(
@@ -116,9 +117,9 @@ fun politicsDescription() {
         text = "Última actualización: 20 de junio de 2023\n" +
                 "\nEsta Política de privacidad describe Nuestras políticas y procedimientos sobre la recopilación, el uso y la divulgación de Su información cuando utiliza el Servicio y le informa sobre Sus derechos de privacidad y cómo la ley lo protege.\n" +
                 "\nUsamos sus datos personales para proporcionar y mejorar el Servicio. Al usar el Servicio, acepta la recopilación y el uso de información de acuerdo con esta Política de privacidad. Esta Política de Privacidad ha sido creada con la ayuda del Generador de Políticas de Privacidad .",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -147,9 +148,9 @@ fun interpretation() {
         .fillMaxWidth()
         .padding(35.dp, 0.dp),
         text = "\nLas palabras cuya letra inicial está en mayúscula tienen significados definidos bajo las siguientes condiciones. Las siguientes definiciones tendrán el mismo significado independientemente de que aparezcan en singular o en plural.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -177,9 +178,9 @@ fun definition() {
                 "\n•\tProveedor de servicios significa cualquier persona física o jurídica que procesa los datos en nombre de la Compañía. Se refiere a empresas de terceros o personas empleadas por la Empresa para facilitar el Servicio, proporcionar el Servicio en nombre de la Empresa, realizar servicios relacionados con el Servicio o ayudar a la Empresa a analizar cómo se utiliza el Servicio.\n" +
                 "\n•\tLos Datos de uso se refieren a los datos recopilados automáticamente, ya sea generados por el uso del Servicio o por la propia infraestructura del Servicio (por ejemplo, la duración de una visita a la página).\n" +
                 "\n•\tUsted se refiere a la persona que accede o utiliza el Servicio, o la empresa u otra entidad legal en nombre de la cual dicha persona accede o utiliza el Servicio, según corresponda.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -215,9 +216,9 @@ fun personalInformation() {
                 "    • Edad\n" +
                 "    • Peso\n" +
                 "    • Diámetro de cintura",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -236,9 +237,9 @@ fun ussageData() {
         .padding(35.dp, 0.dp),
         text = "\nLos Datos de uso se recopilan automáticamente cuando se utiliza el Servicio.\n" +
                 "\nLos datos de uso pueden incluir información como la dirección del protocolo de Internet de su dispositivo (por ejemplo, la dirección IP); Cuando accede al Servicio a través de un dispositivo móvil, podemos recopilar cierta información automáticamente, que incluye, entre otros, el tipo de dispositivo móvil que utiliza, la identificación única de su dispositivo móvil, la dirección IP de su dispositivo móvil, su sistema operativo, el tipo de navegador de Internet móvil que utiliza, identificadores únicos de dispositivos y otros datos de diagnóstico.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -270,9 +271,9 @@ fun ussagePersonalData() {
                 "\n•\tCon socios comerciales: Podemos compartir Su información con Nuestros socios comerciales para ofrecerle ciertos productos, servicios o promociones.\n" +
                 "\n•\tCon otros usuarios: cuando comparte información personal o interactúa en las áreas públicas con otros usuarios, dicha información puede ser vista por todos los usuarios y puede distribuirse públicamente al exterior.\n" +
                 "\n•\tCon su consentimiento: podemos divulgar su información personal para cualquier otro propósito con su consentimiento.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -291,9 +292,9 @@ fun personalDataRetention() {
         .padding(35.dp, 0.dp),
         text = "\nLa aplicación conservará sus Datos personales solo durante el tiempo que sea necesario para los fines establecidos en esta Política de privacidad. Conservaremos y utilizaremos sus datos personales en la medida necesaria para cumplir con nuestras obligaciones legales (por ejemplo, si estamos obligados a conservar sus datos para cumplir con las leyes aplicables), resolver disputas y hacer cumplir nuestros acuerdos y políticas legales.\n" +
                 "\nLa aplicación también conservará los Datos de uso para fines de análisis interno. Los Datos de uso generalmente se retienen por un período de tiempo más corto, excepto cuando estos datos se utilizan para fortalecer la seguridad o mejorar la funcionalidad de Nuestro Servicio, o cuando estamos legalmente obligados a retener estos datos por períodos de tiempo más largos.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -314,9 +315,9 @@ fun deletePersonalData() {
                 "\nNuestro Servicio puede darle la capacidad de eliminar cierta información sobre Usted dentro del Servicio.\n" +
                 "\nPuede actualizar, modificar o eliminar su información en cualquier momento iniciando sesión en su cuenta, si tiene una, y visitando la sección de configuración de la cuenta que le permite administrar su información personal. También puede comunicarse con nosotros para solicitar acceso, corregir o eliminar cualquier información personal que nos haya proporcionado.\n" +
                 "\nSin embargo, tenga en cuenta que es posible que necesitemos conservar cierta información cuando tengamos una obligación legal o una base legal para hacerlo.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -345,9 +346,9 @@ fun lawEnforcement() {
         .fillMaxWidth()
         .padding(35.dp, 0.dp),
         text = "En determinadas circunstancias, es posible que se le solicite a la Compañía que divulgue sus Datos personales si así lo exige la ley o en respuesta a solicitudes válidas de las autoridades públicas (por ejemplo, un tribunal o una agencia gubernamental).",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -370,9 +371,9 @@ fun otherRequirements() {
                 "\n•\tPrevenir o investigar posibles irregularidades en relación con el Servicio\n" +
                 "\n•\tProteger la seguridad personal de los Usuarios del Servicio o del público\n" +
                 "\n•\tProtéjase contra la responsabilidad legal",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -393,9 +394,9 @@ fun personalDataSecurity() {
         .fillMaxWidth()
         .padding(35.dp, 0.dp),
         text = "La seguridad de sus datos personales es importante para nosotros, pero recuerde que ningún método de transmisión por Internet o método de almacenamiento electrónico es 100 % seguro. Si bien nos esforzamos por utilizar medios comercialmente aceptables para proteger sus datos personales, no podemos garantizar su seguridad absoluta.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -418,9 +419,9 @@ fun politicsChange() {
         text = "Es posible que actualicemos nuestra Política de privacidad de vez en cuando. Le notificaremos cualquier cambio publicando la nueva Política de privacidad en esta página.\n" +
                 "\nLe informaremos por correo electrónico y/o un aviso destacado en Nuestro Servicio, antes de que el cambio entre en vigencia y actualizaremos la fecha de \"Última actualización\" en la parte superior de esta Política de privacidad.\n" +
                 "\nSe le recomienda revisar esta Política de Privacidad periódicamente para cualquier cambio. Los cambios a esta Política de privacidad son efectivos cuando se publiquen.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 
@@ -443,9 +444,9 @@ fun contactUs() {
         text = "Si tiene alguna pregunta sobre esta Política de privacidad, puede contactarnos:\n" +
                 "\n•\tPor correo electrónico: politnessuca@gmail.com\n" +
                 "\n•\tAl visitar esta página en nuestro sitio web: https://www.deportivouca.tech",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
+        color = md_theme_light_scrim
     )
 }
 

@@ -7,6 +7,7 @@ package com.uca.polifitnessapp.ui.auth.login.ui
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -71,20 +72,23 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     viewModel: LoginViewModel,
     userViewModel: UserViewModel,
-    navController: NavHostController
+    onLoginSuccess: () -> Unit,
+    onNavigateToSignUp: () -> Unit,
 ) {
     Column(
         Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         LoginView(
             Modifier.align(Alignment.CenterHorizontally),
             viewModel,
             userViewModel,
-            navController
+            onLoginSuccess,
+            onNavigateToSignUp
         )
     }
 
@@ -94,7 +98,8 @@ fun LoginView(
     modifier: Modifier,
     viewModel: LoginViewModel,
     userViewModel: UserViewModel,
-    navController: NavHostController
+    onLoginSuccess: () -> Unit,
+    onNavigateToSignUp: () -> Unit,
 ) {
 
     // State variables
@@ -146,14 +151,7 @@ fun LoginView(
                 // using the repository.whoami that returns that information
 
                 userViewModel.getUser()
-
-                // we nagivate to "main_flow"
-                navController.navigate(MainRoutes.MAIN_ROUTE) {
-                    // we delete the login route from the backstack
-                    popUpTo(AuthRoutes.AUTH_ROUTE) {
-                        inclusive = true
-                    }
-                }
+                onLoginSuccess()
             }
             else -> {}
         }
@@ -195,8 +193,10 @@ fun LoginView(
             }
             Spacer(modifier = Modifier.padding(8.dp))
 
+            /*
             ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
             Spacer(modifier = Modifier.padding(8.dp))
+             */
 
             LoginButton(
                 Modifier.align(Alignment.CenterHorizontally),
@@ -211,15 +211,13 @@ fun LoginView(
                 }
             }
 
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(8.dp))
 
             // Sign un option
             SignUpOption(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                navController
+                onNavigateToSignUp
             )
-
-
         }
     }
 }
@@ -236,7 +234,7 @@ fun LoginView(
 fun HeaderImage(modifier: Modifier) {
     Text(
         text = "Hey!",
-        fontSize = 16.sp,
+        fontSize = 14.sp,
         modifier = modifier.padding(bottom = 8.dp)
     )
     Text(
@@ -246,12 +244,11 @@ fun HeaderImage(modifier: Modifier) {
         modifier = modifier.padding(bottom = 16.dp)
     )
     Image(
-        painter = painterResource(id = R.drawable.login),
+        painter = painterResource(id = R.drawable.image_login_screen),
         contentDescription = "Header",
         modifier = modifier
             .width(190.dp)
-            .height(220.dp),
-        contentScale = androidx.compose.ui.layout.ContentScale.Fit
+            .height(220.dp)
     )
 }
 
@@ -454,11 +451,8 @@ fun LoginButton(
 @Composable
 fun SignUpOption(
     modifier: Modifier,
-    navController: NavController
+    onNavigateToSignUp: () -> Unit
 ) {
-
-    Spacer(modifier = Modifier.padding(8.dp))
-
     Row(modifier = modifier.padding(4.dp)) {
         Text(
             text = "¿Aún no tienes una cuenta? ",
@@ -470,12 +464,15 @@ fun SignUpOption(
             fontWeight = FontWeight.Bold,
             color = Color(0xFF034189),
             modifier = modifier.clickable {
-            navController.navigate(AuthRoutes.SIGN_UP_SCREEN)
+                onNavigateToSignUp()
             }
         )
     }
 
-    Spacer(modifier = Modifier.padding(10.dp))
+    Spacer(
+        modifier =
+        Modifier.padding(10.dp)
+    )
 }
 
 
