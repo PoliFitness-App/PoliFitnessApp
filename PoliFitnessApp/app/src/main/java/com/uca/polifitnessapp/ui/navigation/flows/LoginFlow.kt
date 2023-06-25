@@ -31,7 +31,10 @@ fun NavGraphBuilder.loginGraph(
         // --
         composable(LoginRoutes.LOGIN_SPLASH_SCREEN) {
             AnimatedSplashScreen(
-                navController = navController
+                onNavigate = {
+                    navController.popBackStack()
+                    navController.navigate(LoginRoutes.LOGIN_SCREEN)
+                }
             )
         }
         // --

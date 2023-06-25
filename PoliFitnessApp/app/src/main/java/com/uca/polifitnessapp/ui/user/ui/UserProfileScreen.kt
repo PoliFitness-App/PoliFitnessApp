@@ -1,6 +1,7 @@
 package com.uca.polifitnessapp.ui.user.ui
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,8 +40,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.R
 import com.uca.polifitnessapp.data.db.models.UserModel
+import com.uca.polifitnessapp.ui.auth.login.state.UserState
 import com.uca.polifitnessapp.ui.navigation.flows.AuthRoutes
 import com.uca.polifitnessapp.ui.navigation.flows.MainRoutes
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
@@ -66,6 +70,7 @@ fun ProfileScreen(
     onNavigateToEditProfile: (String) -> Unit,
     onNavigateToTermsAndConditions: () -> Unit,
     onNavigateToContactUs: () -> Unit,
+    onLogout: () -> Unit
 ) {
     // Fetch user from the userId
     LaunchedEffect(userId) {
@@ -96,7 +101,8 @@ fun ProfileScreen(
         UserInfo(user)
         ContactCard(
             onNavigateToTermsAndConditions,
-            onNavigateToContactUs
+            onNavigateToContactUs,
+            onLogout
         )
 
         Spacer(modifier = Modifier.height(60.dp))
@@ -443,7 +449,12 @@ fun UserInfo(
 fun ContactCard(
     onNavigateToTermsAndConditions: () -> Unit,
     onNavigateToContactUs: () -> Unit,
+    onLogout: () -> Unit
 ) {
+    // Application Instance
+    val app: PoliFitnessApplication = LocalContext.current.applicationContext as PoliFitnessApplication
+    val context = LocalContext.current
+
     ElevatedCard(
         modifier = Modifier
             .width(350.dp)
@@ -458,7 +469,6 @@ fun ContactCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp)
-
         ) {
             Text(
                 text = stringResource(R.string.other_title),
@@ -540,8 +550,15 @@ fun ContactCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        //TODO:
-
+                        onLogout()
+                        // Logout
+                        // We update the user state
+                        app.saveUserState(UserState.LOGGED_OUT)
+                        // We update the token
+                        app.saveAuthToken(token = "")
+                        // Then
+                        // information about the state
+                        Toast.makeText(context, "Ha cerrado su sesión", Toast.LENGTH_SHORT).show()
                     }
             ) {
                 Icon(

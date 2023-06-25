@@ -30,7 +30,7 @@ fun MainScalfold() {
 
     val navController = rememberNavController()
     val navBackStackEntry = navController.currentBackStackEntryAsState()
-    val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
+    val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
 
     // Bottom bar state
     when (navBackStackEntry.value?.destination?.route) {

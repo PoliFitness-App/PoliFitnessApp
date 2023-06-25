@@ -35,6 +35,9 @@ class CredentialsRepository(
     // Function DAO to get a user by id
     suspend fun getUserById(id: String): UserModel? = userDao.getUserById(id)
 
+    // Function DAO to delete a user
+    suspend fun logout(id: String) = userDao.deleteUser(id)
+
     // ---
     // API functions
     // ---

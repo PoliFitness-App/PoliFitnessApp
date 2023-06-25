@@ -85,7 +85,7 @@ fun CalculatorScreen() {
         Spacer(modifier = Modifier.height(15.dp))
         HeaderText(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(0.dp,16.dp,0.dp,16.dp)
                 .align(Alignment.Start)
         )
 

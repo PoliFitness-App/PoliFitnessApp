@@ -76,7 +76,22 @@ class UserViewModel(
 
     fun logout() {
         viewModelScope.launch {
-
+            try {
+                // Call repository function
+                repository.logout(user._id)
+                user = UserModel(
+                    "",
+                    "",
+                    "",
+                    0F,
+                    0F,
+                    0F,
+                    0F,
+                    ""
+                )
+            } catch (e: Exception) {
+                println(e)
+            }
         }
     }
 

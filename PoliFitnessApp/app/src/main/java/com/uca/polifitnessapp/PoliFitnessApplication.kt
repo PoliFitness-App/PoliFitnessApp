@@ -9,6 +9,7 @@ import com.uca.polifitnessapp.network.retrofit.RetrofitInstance
 import com.uca.polifitnessapp.repositories.CredentialsRepository
 import com.uca.polifitnessapp.repositories.NoticeRepository
 import com.uca.polifitnessapp.repositories.RoutineRepository
+import com.uca.polifitnessapp.ui.auth.login.state.UserState
 
 class PoliFitnessApplication: Application(){
 
@@ -39,7 +40,7 @@ class PoliFitnessApplication: Application(){
     // User
     // ---
     fun getToken(): String = prefs.getString(USER_TOKEN, "")!!
-    fun getUserState(): Boolean = prefs.getBoolean(USER_STATE, false)
+    fun getUserState(): String = prefs.getString(USER_STATE, UserState.NEW_USER)!!
 
     // ---
     // Functions
@@ -53,9 +54,9 @@ class PoliFitnessApplication: Application(){
         retrofitInstance.setToken(getToken())
     }
     // Fun save user state
-    fun saveUserState(state: Boolean) {
+    fun saveUserState(state: String) {
         val editor = prefs.edit()
-        editor.putBoolean(USER_STATE, state)
+        editor.putString(USER_STATE, state)
         editor.apply()
     }
 

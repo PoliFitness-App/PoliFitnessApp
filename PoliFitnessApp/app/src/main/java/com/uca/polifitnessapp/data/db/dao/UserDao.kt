@@ -17,6 +17,10 @@ interface UserDao {
     @Query("SELECT * FROM user_table")
     suspend fun getAllUsers(): List<UserModel>
 
+    // Funcion para eliminar un usuario
+    @Query("DELETE FROM user_table WHERE _id = :id")
+    suspend fun deleteUser(id: String)
+
     //Funcion para insertar un usuario
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserModel)

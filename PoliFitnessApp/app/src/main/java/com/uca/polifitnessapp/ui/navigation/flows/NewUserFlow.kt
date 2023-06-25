@@ -28,12 +28,15 @@ fun NavGraphBuilder.authGraph(
     loginViewModel: LoginViewModel
 ) {
     navigation(
-        startDestination = AuthRoutes.ONBOARD_SCREEN,
+        startDestination = AuthRoutes.SPLASH_SCREEN,
         route = AuthRoutes.AUTH_ROUTE
     ) {
         composable(AuthRoutes.SPLASH_SCREEN) {
             AnimatedSplashScreen(
-                navController = navController
+                onNavigate = {
+                    navController.popBackStack()
+                    navController.navigate(AuthRoutes.ONBOARD_SCREEN)
+                }
             )
         }
         composable(AuthRoutes.ONBOARD_SCREEN) {

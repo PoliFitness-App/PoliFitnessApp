@@ -65,14 +65,21 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-// Main Screen for Routines
+/**
+ * @Composable Routines list screen
+ * @Description: Routines list screen, with the list of routines and filters
+ *
+ * @param: viewModel: RoutinesViewModel
+ * @param: userViewModel: UserViewModel
+ * @param: onNavigateToRoutine: (String) -> Unit , function to navigate to routine detail
+ **/
+
 @Composable
 fun RoutinesListScreen(
     viewModel: RoutinesViewModel,
     userViewModel: UserViewModel,
     onNavigateToRoutine: (String) -> Unit
 ) {
-
     // Fetch user from the userId
     LaunchedEffect(Unit) {
         try {
@@ -98,7 +105,137 @@ fun RoutinesListScreen(
     }
 }
 
-// Routine list component
+
+/**
+ * @Composable Header section filter
+ * @Description: Header section with routines filter
+ *
+ * @param: viewModel: RoutinesViewModel
+ **/
+
+@Composable
+fun HeaderSectionFilter(
+    viewModel: RoutinesViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp, 8.dp, 0.dp, 0.dp),
+        // Center items horizontally in the column
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(16.dp, 8.dp, 16.dp, 8.dp),
+            text = "Rutinas",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineSmall
+        )
+        FilterItem(
+            "Filtrar por nivel",
+            items = listOf(
+                "Todos",
+                "Fácil",
+                "Medio",
+                "Difícil",
+                "Muy difícil"
+            )
+        ) {
+            viewModel.onLevelChange(it)
+        }
+        FilterItem(
+            "Filtrar por categoria",
+            items = listOf(
+                "Todos",
+                "Tren superior",
+                "Tren inferior",
+                "Cuerpo completo"
+            ),
+        ) {
+            viewModel.onCategoryChange(it)
+        }
+    }
+}
+
+/**
+ * @Composable Routines list section
+ * @Description: Routines list
+ *
+ * @param: viewModel: RoutinesViewModel
+ * @param: userViewModel: UserViewModel
+ * @param: onNavigateToRoutine: (String) -> Unit , function to navigate to routine detail
+ **/
+
+/**
+ * @Composable Filter item
+ * @Description: Filter button component
+ *
+ * @param: text: String, text to show in the filter
+ * @param: items: List<String>, list of items to show in the dropdown menu
+ * @param: onClick: (String) -> Unit , function to select a filter
+ **/
+
+@Composable
+fun FilterItem(
+    text: String,
+    items: List<String>,
+    onClick: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Row(
+        modifier = Modifier
+            .padding(16.dp, 0.dp, 16.dp, 0.dp)
+            .width(200.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Title
+        Text(
+            text = text,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+        )
+        // Icon button for filter
+        IconButton(
+            onClick = { expanded = true }
+        ) {
+            Icon(
+                painterResource(id = R.drawable.filter_icon),
+                contentDescription = "Filter",
+                tint = Color.Black
+            )
+        }
+
+        // DoropDownMenu when icon button is clicked
+        DropdownMenu(
+            modifier = Modifier
+                .wrapContentSize(Alignment.TopEnd)
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .animateContentSize(),
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            properties = PopupProperties(clippingEnabled = false),
+            offset = DpOffset(x = 100.dp, y = 0.dp),
+        ) {
+            items.forEach { label ->
+                DropdownMenuItem(
+                    onClick = {
+                        expanded = false
+                        // On Category change
+                        onClick(label)
+                    }
+                ) {
+                    Text(
+                        text = label,
+                        color = Color.Black,
+                        fontSize = 14.sp,
+                    )
+                }
+            }
+        }
+    }
+}
+
 @ExperimentalMaterialApi
 @Composable
 fun RoutinesList(
@@ -194,57 +331,6 @@ fun RoutinesList(
     }
 }
 
-
-/**
- * @Composable Header section filter
- * @Description: Header section with routines filter
- *
- * @param: viewModel: RoutinesViewModel
- **/
-
-@Composable
-fun HeaderSectionFilter(
-    viewModel: RoutinesViewModel
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 8.dp, 0.dp, 0.dp),
-        // Center items horizontally in the column
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(16.dp, 8.dp, 16.dp, 8.dp),
-            text = "Rutinas",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineSmall
-        )
-        FilterItem(
-            "Filtrar por nivel",
-            items = listOf(
-                "Todos",
-                "Fácil",
-                "Medio",
-                "Difícil",
-                "Muy difícil"
-            )
-        ) {
-            viewModel.onLevelChange(it)
-        }
-        FilterItem(
-            "Filtrar por categoria",
-            items = listOf(
-                "Todos",
-                "Tren superior",
-                "Tren inferior",
-                "Cuerpo completo"
-            ),
-        ) {
-            viewModel.onCategoryChange(it)
-        }
-    }
-}
 
 /**
  * @Composable Routine Item
@@ -355,76 +441,6 @@ fun RoutineItem(
                         .height(124.dp),
                     contentScale = ContentScale.Crop
                 )
-            }
-        }
-    }
-}
-
-/**
- * @Composable Filter item
- * @Description: Filter button component
- *
- * @param: text: String, text to show in the filter
- * @param: items: List<String>, list of items to show in the dropdown menu
- * @param: onClick: (String) -> Unit , function to select a filter
- **/
-
-@Composable
-fun FilterItem(
-    text: String,
-    items: List<String>,
-    onClick: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier
-            .padding(16.dp, 0.dp, 16.dp, 0.dp)
-            .width(200.dp),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Title
-        Text(
-            text = text,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-        )
-        // Icon button for filter
-        IconButton(
-            onClick = { expanded = true }
-        ) {
-            Icon(
-                painterResource(id = R.drawable.filter_icon),
-                contentDescription = "Filter",
-                tint = Color.Black
-            )
-        }
-
-        // DoropDownMenu when icon button is clicked
-        DropdownMenu(
-            modifier = Modifier
-                .wrapContentSize(Alignment.TopEnd)
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .animateContentSize(),
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            properties = PopupProperties(clippingEnabled = false),
-            offset = DpOffset(x = 100.dp, y = 0.dp),
-        ) {
-            items.forEach { label ->
-                DropdownMenuItem(
-                    onClick = {
-                        expanded = false
-                        // On Category change
-                        onClick(label)
-                    }
-                ) {
-                    Text(
-                        text = label,
-                        color = Color.Black,
-                        fontSize = 14.sp,
-                    )
-                }
             }
         }
     }

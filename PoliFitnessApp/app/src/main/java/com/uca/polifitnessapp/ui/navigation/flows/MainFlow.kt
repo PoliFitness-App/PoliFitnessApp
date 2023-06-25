@@ -124,6 +124,13 @@ fun NavGraphBuilder.mainGraph(
             },
             onNavigateToContactUs = {
                 navController.navigate(MainRoutes.MAIN_CONTACT_INFO)
+            },
+            onLogout = {
+                navController.navigate(LoginRoutes.LOGIN_ROUTE) {
+                    popUpTo(MainRoutes.MAIN_ROUTE) {
+                        inclusive = true
+                    }
+                }
             }
         )
     }

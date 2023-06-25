@@ -29,8 +29,9 @@ import com.uca.polifitnessapp.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun AnimatedSplashScreen(navController: NavHostController) {
-
+fun AnimatedSplashScreen(
+    onNavigate: () -> Unit,
+) {
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -48,8 +49,7 @@ fun AnimatedSplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = true){
         startAnimation = true
         delay(2000)
-        navController.popBackStack()
-        navController.navigate("onboard_screen")
+        onNavigate()
     }
 
     Splash(alpha = alphaAnim.value)
