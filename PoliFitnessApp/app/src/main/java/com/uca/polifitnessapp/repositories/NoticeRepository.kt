@@ -29,7 +29,7 @@ class NoticeRepository(
             }
         } catch (_: IOException) {
         }
-        return emptyList()
+        return noticeDao.getNews(count)
     }
 
 

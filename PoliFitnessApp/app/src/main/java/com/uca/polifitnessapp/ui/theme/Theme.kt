@@ -38,7 +38,6 @@ private val LightColors = lightColorScheme(
     scrim = md_theme_light_scrim,
 )
 
-
 private val DarkColors = darkColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
