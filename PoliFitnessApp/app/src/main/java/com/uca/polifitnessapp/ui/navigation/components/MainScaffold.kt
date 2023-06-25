@@ -69,6 +69,10 @@ fun MainScalfold() {
             bottomBarState.value = false
         }
 
+        MainRoutes.MAIN_EDIT_APPROACH ->{
+            bottomBarState.value = false
+        }
+
         // Edit profile
         "edit_profile_screen/{userId}" -> {
             bottomBarState.value = false

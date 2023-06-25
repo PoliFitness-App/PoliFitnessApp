@@ -13,6 +13,7 @@ import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.data.db.models.UserModel
 import com.uca.polifitnessapp.network.ApiResponse
 import com.uca.polifitnessapp.repositories.CredentialsRepository
+import com.uca.polifitnessapp.ui.auth.signup.viewmodel.TextFieldState
 import com.uca.polifitnessapp.ui.user.status.EditProfileUiStatus
 import kotlinx.coroutines.launch
 
@@ -24,43 +25,30 @@ class EditProfileViewModel(
     // Text fields variables
     // --
 
-    // weight
-    var weight = MutableLiveData("")
+    var weight by mutableStateOf(TextFieldState())
+        private set
 
     // height
-    var height = MutableLiveData("")
+    var height by mutableStateOf(TextFieldState())
+        private set
 
     // waistP
-    var waistP = MutableLiveData("")
+    var waistP by mutableStateOf(TextFieldState())
+        private set
 
     // hipP
-    var hipP = MutableLiveData("")
+    var hipP by mutableStateOf(TextFieldState())
+        private set
+
+    // Approach
+    var approach by mutableStateOf(TextFieldState())
+        private set
 
     var weightUnitState by mutableStateOf("KG")
 
     // ---
     // States
     // ---
-
-    // Weight?
-    private val _isValidWeight = MutableLiveData(false)
-    val isValidWeight: MutableLiveData<Boolean>
-        get() = _isValidWeight
-
-    // Height?
-    private val _isValidHeight = MutableLiveData(false)
-    val isValidHeight: MutableLiveData<Boolean>
-        get() = _isValidHeight
-
-    // WaistP?
-    private val _isValidWaistP = MutableLiveData(false)
-    val isValidWaistP: MutableLiveData<Boolean>
-        get() = _isValidWaistP
-
-    // HipP?
-    private val _isValidHipP = MutableLiveData(false)
-    val isValidHipP: MutableLiveData<Boolean>
-        get() = _isValidHipP
 
     // Is button enable?
     private val _isEnabled = MutableLiveData(false)
@@ -76,30 +64,100 @@ class EditProfileViewModel(
     // We set the functions
     // ---
 
-    // On Field Change
-    fun onFieldChange(weightU: String, heightU: String, waistPU: String, hipPU: String) {
-        // verify if the data is valid
-        // if the data is valid
+    fun onWeightChange(weightU: String) {
+        // If the weight is empty, it returns an error
+        val error = isValidWeight(weightU)
 
-        // we set the data
-        weight.value = weightU.trim()
-        height.value = heightU.trim()
-        waistP.value = waistPU.trim()
-        hipP.value = hipPU.trim()
+        // If the weight is not empty, it updates the email variable
+        weight = weight.copy(
+            value = weightU,
+            error = error
+        )
+    }
 
-        // we set the state of the button
-        _isEnabled.value = validateData()
+    private fun isValidWeight(weight: String): String =
+        if (weight.isNotEmpty() && weight.length > 1) "" else "Por favor, ingrese un peso válido (kg/lb)"
+
+    // On height change function -> Updates the height variable
+    fun onHeightChange(heightU: String) {
+        // If the weight is empty, it returns an error
+        val error = isValidHeight(heightU)
+
+        // If the weight is not empty, it updates the email variable
+        height = height.copy(
+            value = heightU,
+            error = error
+        )
+    }
+
+    // Valid Height
+    private fun isValidHeight(value: String): String =
+        if (value.isNotEmpty() && value.length > 1) "" else "Por favor, ingrese una altura válida (mts)"
+
+    // On waistP change function -> Updates the waistP variable
+    fun onWaistPChange(waistPU: String) {
+        // If the weight is empty, it returns an error
+        val error = isValidWaistP(waistPU)
+
+        // If the weight is not empty, it updates the email variable
+        waistP = waistP.copy(
+            value = waistPU,
+            error = error
+        )
+    }
+
+    // Valid waistP
+    private fun isValidWaistP(waist: String): String =
+        if (waist.isNotEmpty() && waist.length > 1) "" else "Por favor, ingrese un valor valido (cm)"
+
+    // On hipP change function -> Updates the hipP variable
+    fun onHipPChange(hipPU: String) {
+        // If the weight is empty, it returns an error
+        val error = isValidHipP(hipPU)
+
+        // If the weight is not empty, it updates the email variable
+        hipP = waistP.copy(
+            value = hipPU,
+            error = error
+        )
+
+        _isEnabled.value =
+            isValidWeight(weight.value).isEmpty() &&
+                    isValidHeight(height.value).isEmpty() &&
+                    isValidWaistP(waistP.value).isEmpty() &&
+                    isValidHipP(hipP.value).isEmpty()
+    }
+
+    private fun isValidHipP(hip: String): String =
+        if (hip.isNotEmpty() && hip.length > 1) "" else "Por favor, ingrese un valor valido (cm)"
+
+    fun onApproachChange(approachU: String) {
+        // If the approach is not empty, it updates the approach variable
+        approach = approach.copy(
+            value = approachU
+        )
     }
 
     // On Update
     fun onUpdate(user: UserModel) {
 
-        // we set the data
-        user.weight = weight.value!!.toFloat()
-        user.height = height.value!!.toFloat()
-        user.waistP = waistP.value!!.toFloat()
-        user.hipP = hipP.value!!.toFloat()
+        val weightU = if (weightUnitState == "KG") {
+            weight.value.toFloat()
+        } else {
+            weight.value.toFloat() / 2.20462f
+        }
 
+        val imc = weightU / (height.value.toFloat() * height.value.toFloat())
+        val icc = waistP.value.toFloat() / hipP.value.toFloat()
+
+        // we set the data
+        user.weight = weight.value.toFloat()
+        user.height = height.value.toFloat()
+        user.waistP = waistP.value.toFloat()
+        user.hipP = hipP.value.toFloat()
+        user.approach = approach.value
+        user.imc = imc
+        user.icc = icc
         // we update the data
         updateData(user)
     }
@@ -118,28 +176,17 @@ class EditProfileViewModel(
         }
     }
 
-    private fun validateData(): Boolean {
-        when {
-            weight.value.toString().isEmpty() -> return false
-            height.value.toString().isEmpty() -> return false
-            waistP.value.toString().isEmpty() -> return false
-            hipP.value.toString().isEmpty() -> return false
-        }
-        return true
-    }
-
-
     // ---
     // We set the auxiliary functions
     // ---
 
     // Clear data function
     fun clearData() {
-        // We clear the data
-        weight.value = ""
-        height.value = ""
-        waistP.value = ""
-        hipP.value = ""
+        weight = weight.copy(value = "", error = "")
+        height = height.copy(value = "", error = "")
+        waistP = waistP.copy(value = "", error = "")
+        hipP = hipP.copy(value = "", error = "")
+        approach = approach.copy(value = "", error = "")
     }
 
     // Clear status function
@@ -168,5 +215,4 @@ class EditProfileViewModel(
             }
         }
     }
-
 }

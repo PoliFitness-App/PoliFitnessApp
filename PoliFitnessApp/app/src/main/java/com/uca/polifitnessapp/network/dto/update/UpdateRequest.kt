@@ -5,5 +5,8 @@ data class UpdateRequest(
     val height: Float,
     val waistP: Float,
     val hipP: Float,
-    val _id: String
+    val _id: String,
+    val approach: String,
+    val icc: Float,
+    val imc: Float,
 )

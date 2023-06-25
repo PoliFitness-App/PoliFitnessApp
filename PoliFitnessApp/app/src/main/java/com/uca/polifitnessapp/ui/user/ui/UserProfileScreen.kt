@@ -162,6 +162,7 @@ fun UserCard(
         }
         Spacer(modifier = Modifier.width(20.dp))
 
+        Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {
                 onNavigateToEditProfile(user._id)

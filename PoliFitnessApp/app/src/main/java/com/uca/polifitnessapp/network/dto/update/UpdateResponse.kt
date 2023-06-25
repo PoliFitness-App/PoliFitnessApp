@@ -8,5 +8,8 @@ data class UpdateResponse (
     @SerializedName("height") val height: Float,
     @SerializedName("waistP") val waistP: Float,
     @SerializedName("hipP") val hipP: Float,
+    @SerializedName("approach") val approach: String,
+    @SerializedName("icc") val icc: Float,
+    @SerializedName("imc") val imc: Float,
     @SerializedName("message") val message: String,
 )

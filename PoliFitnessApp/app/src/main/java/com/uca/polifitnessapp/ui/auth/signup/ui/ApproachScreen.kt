@@ -105,7 +105,6 @@ fun SignUpGoalScreen(
     viewModel: SignUpGoalViewModel,
     onSignUpSuccess: () -> Unit,
 ) {
-
     // ---
     // Variables
     // ---

@@ -147,7 +147,10 @@ class CredentialsRepository(
                         user.height,
                         user.waistP,
                         user.hipP,
-                        user._id
+                        user._id,
+                        user.approach,
+                        user.icc,
+                        user.imc,
                     )
                 )
             // we update the fields of the user
@@ -155,6 +158,9 @@ class CredentialsRepository(
             user.weight = response.weight
             user.waistP = response.waistP
             user.hipP = response.hipP
+            user.imc = response.imc
+            user.icc = response.icc
+            user.approach = response.approach
             // we update the user in the database
             updateUserDAO(user)
             // we return the response

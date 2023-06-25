@@ -45,11 +45,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uca.polifitnessapp.R
+import com.uca.polifitnessapp.ui.auth.signup.ui.TextFieldIcon
 import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.user.viewmodel.EditProfileViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
@@ -61,6 +63,7 @@ fun EditProfileScreen(
     viewModel: EditProfileViewModel,
     userId: String,
     onBackPress: () -> Unit,
+    onNavigate: () -> Unit
 ) {
     LaunchedEffect(userId) {
         userViewModel.fetchUserById(userId)
@@ -72,11 +75,12 @@ fun EditProfileScreen(
             .background(
                 colorResource(id = R.color.white)
             )
-            .padding(25.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(30.dp, 0.dp, 30.dp, 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
         BackButton(
             modifier = Modifier
                 .align(Alignment.Start),
@@ -85,11 +89,12 @@ fun EditProfileScreen(
         HeaderImage()
         EditProfileText()
         Spacer(modifier = Modifier.height(10.dp))
-        combine(
+        TextFieldSection(
             viewModel,
-            userViewModel
+            userViewModel,
+            onNavigate
         )
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
     }
 }
 
@@ -152,362 +157,116 @@ fun EditProfileText() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun WeightField(
-    modifier: Modifier,
-    weightVM: String,
-    isValidWeight: Boolean,
-    onTextFieldChanged: (String) -> Unit
-) {
-    TextField(
-        value = weightVM,
-        onValueChange = {
-            onTextFieldChanged(it)
-        },
-        isError = isValidWeight,
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.MonitorWeight,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Peso",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(260.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-        )
-    )
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun heightField(
-    modifier: Modifier,
-    heightVM: String,
-    isValidHeight: Boolean,
-    onTextFieldChanged: (String) -> Unit
-) {
-    TextField(
-        value = heightVM,
-        onValueChange = {
-            onTextFieldChanged(it)
-        },
-        isError = isValidHeight,
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Height,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Altura",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(260.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-        )
-    )
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun waistField(
-    modifier: Modifier,
-    waistP: String,
-    isValidWaist: Boolean,
-    onTextFieldChanged: (String) -> Unit
-) {
-    TextField(
-        value = waistP,
-        onValueChange = {
-            onTextFieldChanged(it)
-        },
-        isError = isValidWaist,
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Straighten,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Perimetro de cintura",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(260.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-        )
-    )
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun hipField(
-    modifier: Modifier,
-    hipP: String,
-    isValidHip: Boolean,
-    onTextFieldChanged: (String) -> Unit
-) {
-    TextField(
-        value = hipP,
-        onValueChange = {
-            onTextFieldChanged(it)
-        },
-        isError = isValidHip,
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Straighten,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Perimetro de cadera",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier
-            .width(260.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-
-        )
-    )
-
-}
-
-@Composable
-fun kgicon(
-    unit: String,
-    onClick: () -> Unit
-) {
-    ElevatedCard(
-        modifier = Modifier
-            .height(74.dp)
-            .size(80.dp)
-            .padding(10.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(text = unit, color = Color.White)
-        }
-
-    }
-}
-
-@Composable
-fun cmicon() {
-    ElevatedCard(
-        modifier = Modifier
-            .height(74.dp)
-            .size(80.dp)
-            .padding(10.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF034189))
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(text = "CM", color = Color.White)
-        }
-    }
-}
-
 @Composable()
-fun combine(
+fun TextFieldSection(
     viewModel: EditProfileViewModel,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    onNavigate: () -> Unit
 ) {
 
-    // Set the variable to remember the state of the text's field
-    // weight, height, waistP and hipP
-    val weight: String by viewModel.weight.observeAsState(initial = "")
-    val height: String by viewModel.height.observeAsState(initial = "")
-    val waistP: String by viewModel.waistP.observeAsState(initial = "")
-    val hipP: String by viewModel.hipP.observeAsState(initial = "")
-
-    // Set the variable to remember the state
-    // isValidWeight, isValidHeight, isValidWaistP and isValidHipP
-    val isValidWeight by viewModel.isValidWeight.observeAsState(initial = false)
-    val isValidHeight by viewModel.isValidHeight.observeAsState(initial = false)
-    val isValidWaistP by viewModel.isValidWaistP.observeAsState(initial = false)
-    val isValidHipP by viewModel.isValidHipP.observeAsState(initial = false)
     val isValidForm by viewModel.isEnabled.observeAsState(initial = false)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+        // ---
+        // WeightField
+        // ---
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.MonitorWeight,
+            state = viewModel.weight,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = viewModel.weightUnitState,
+            labelText = "Peso",
+            onValueChange = viewModel::onWeightChange
         ) {
-
-            WeightField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                weight,
-                isValidWeight
-            ) {
-                viewModel.onFieldChange(it, height, waistP, hipP)
-            }
-
-            kgicon(viewModel.weightUnitState){
-                viewModel.changeUnit()
-            }
-
+            viewModel.changeUnit()
         }
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+        // ---
+        // HeightField
+        // ---
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.Height,
+            state = viewModel.height,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = "M",
+            labelText = "Altura",
+            onValueChange = viewModel::onHeightChange
         ) {
-
-            heightField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                height,
-                isValidHeight
-            ) {
-                viewModel.onFieldChange(weight, it, waistP, hipP)
-            }
-            cmicon()
-
         }
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+        // ---
+        // WaistField
+        // ---
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.Straighten,
+            state = viewModel.waistP,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number,
+            iconText = "CM",
+            labelText = "Perimetro de cintura",
+            onValueChange = viewModel::onWaistPChange
         ) {
-
-            waistField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                waistP,
-                isValidWaistP
-            ) {
-                viewModel.onFieldChange(weight, height, it, hipP)
-            }
-            cmicon()
-
         }
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+        // ---
+        // HipField
+        // ---
+
+        TextFieldIcon(
+            Modifier,
+            icon = Icons.Outlined.Straighten,
+            state = viewModel.hipP,
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Number,
+            iconText = "CM",
+            labelText = "Perimetro de cadera",
+            onValueChange = viewModel::onHipPChange
         ) {
-
-            hipField(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                hipP,
-                isValidHipP
-            ) {
-                viewModel.onFieldChange(weight, height, waistP, it)
-            }
-            cmicon()
-
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+        Spacer(modifier = Modifier.height(15.dp))
+        // ---
+        // Button
+        // ---
+        SaveButton(
+            modifier = Modifier.align(
+                Alignment.CenterHorizontally
+            ),
+            isValidForm
         ) {
-
-            SaveButton(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically),
-                isValidForm
-            ) {
-                viewModel.onUpdate(userViewModel.user)
-                viewModel.clearData()
-                viewModel.clearStatus()
-            }
+            onNavigate()
         }
     }
-
 }
-
 
 @Composable
 fun SaveButton(
     modifier: Modifier,
-    isValidForm: Boolean,
+    isEnabled: Boolean,
     onClick: () -> Unit
 ) {
     Button(
-        onClick = {
-            onClick()
-        },
-        enabled = isValidForm,
+        onClick = { onClick() },
         shape = RoundedCornerShape(10.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 20.dp,
             pressedElevation = 10.dp,
             disabledElevation = 0.dp
         ),
+        enabled = isEnabled,
         modifier = modifier
-            .width(330.dp)
+            .width(315.dp)
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF034189)
@@ -515,12 +274,10 @@ fun SaveButton(
     )
     {
         Text(
-            text = "Guardar",
+            text = "Siguiente",
             fontSize = 16.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
         )
     }
 }
-
-
