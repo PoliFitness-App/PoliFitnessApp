@@ -39,7 +39,7 @@ class RoutineRepository(
             }
         } catch (_: IOException) {
         }
-        return emptyList()
+        return routineDao.getRoutines(count)
     }
 
     suspend fun getRoutineById(routineId: String) = routineDao.getRoutineById(routineId)
