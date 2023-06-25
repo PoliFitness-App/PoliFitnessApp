@@ -39,7 +39,9 @@ class PoliFitnessApplication: Application(){
     // ---
     // User
     // ---
+
     fun getToken(): String = prefs.getString(USER_TOKEN, "")!!
+    fun getTokenRetrofit(): String = retrofitInstance.getToken()
     fun getUserState(): String = prefs.getString(USER_STATE, UserState.NEW_USER)!!
 
     // ---
@@ -51,7 +53,11 @@ class PoliFitnessApplication: Application(){
         val editor = prefs.edit()
         editor.putString(USER_TOKEN, token)
         editor.apply()
-        retrofitInstance.setToken(token)
+        retrofitInstance.setToken(getToken())
+    }
+
+    fun setRetrofitToken(){
+        retrofitInstance.setToken(getToken())
     }
     // Fun save user state
     fun saveUserState(state: String) {

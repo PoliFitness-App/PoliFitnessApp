@@ -163,7 +163,6 @@ class EditProfileViewModel(
     }
 
     private fun updateData(user: UserModel) {
-        println(user)
         // we update the data
         viewModelScope.launch {
             _status.postValue(

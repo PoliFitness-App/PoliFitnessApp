@@ -96,8 +96,15 @@ fun NavigationHost(navController: NavHostController) {
     // First thing to do is to get the user info, we use launched effect to do this
     // This will be executed only once when the app is launched
     LaunchedEffect(Unit) {
-        // get user info
-        userViewModel.getUserInfo()
+        try {
+            // set retrofit token
+            app.setRetrofitToken()
+            // get user info
+            userViewModel.getUserInfo()
+            userViewModel.getUser()
+        }catch (e: Exception) {
+            app.saveUserState(UserState.LOGGED_OUT)
+        }
     }
 
     NavHost(

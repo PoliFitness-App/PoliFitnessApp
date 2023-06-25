@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.uca.polifitnessapp.ui.extras.popupmessage.SheetContent
 import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.theme.md_theme_light_outline
+import com.uca.polifitnessapp.ui.theme.md_theme_light_scrim
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -111,47 +112,9 @@ fun ContactDescription() {
             .width(380.dp)
             .padding(20.dp, 0.dp),
         text = "Introduzca su dirección de correo electrónico y nos pondremos en contacto con usted si tiene algún problema.",
-        fontWeight = FontWeight(236),
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        color = md_theme_light_outline
-    )
-}
-
-@Composable
-fun EmailField() {
-    val textState = remember { mutableStateOf("") }
-
-    TextField(
-        value = textState.value,
-        onValueChange = { newText ->
-            textState.value = newText
-        },
-        shape = MaterialTheme.shapes.small,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.MailOutline,
-                contentDescription = "null",
-                tint = Color(0xFF565E71)
-            )
-        },
-        label = {
-            Text(
-                text = "Correo electrónico",
-                color = Color(0xFF565E71),
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            )
-        },
-
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        modifier = Modifier
-            .width(315.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color(0xFF565E71),
-            unfocusedBorderColor = Color.Transparent,
-            containerColor = Color(0xFFD7E2FF)
-        )
+        color = md_theme_light_scrim
     )
 }
 

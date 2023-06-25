@@ -49,6 +49,7 @@ fun EditApproachScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val scrollState = rememberScrollState()
+
     val app: PoliFitnessApplication = LocalContext.current.applicationContext as PoliFitnessApplication
 
     // ---
