@@ -155,9 +155,15 @@ class SignUpGoalViewModel(
     fun onSignUp() {
         // Gender
         val genderU: Boolean = gender.value == "Masculino"
-        val imc: Float =
-            weight.value.toFloat() / (height.value.toFloat() * height.value.toFloat())
-        val icc: Float = waistP.value.toFloat() / hipP.value.toFloat()
+
+        val weightU = if (weightUnitState == "KG") {
+            weight.value.toFloat()
+        } else {
+            weight.value.toFloat() / 2.20462f
+        }
+
+        val imc = weightU / (height.value.toFloat() * height.value.toFloat())
+        val icc = waistP.value.toFloat() / hipP.value.toFloat()
 
         // If the password is not empty, it calls the signup function
         signUp(

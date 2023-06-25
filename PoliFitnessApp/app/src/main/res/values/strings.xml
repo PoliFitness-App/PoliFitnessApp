@@ -31,5 +31,14 @@
     <string name="button_edit_title">Editar</string>
     <string name="place_title">Centro Deportivo UCA</string>
     <string name="news_title_screen">Noticas Polideportivo UCA</string>
+    <string name="under_weight_imc">Peso bajo</string>
+    <string name="normal_weight_imc">Peso normal</string>
+    <string name="high_weight_imc">Peso alto</string>
+    <string name="warning_weight_imc">Peso muy alto</string>
+    <string name="error_imc">No disponible</string>
+    <string name="no_risk_icc">Riesgo bajo</string>
+    <string name="risk_icc">Riesgo moderado</string>
+    <string name="high_risk_icc">Riesgo alto</string>
+    <string name="error_icc">No disponible</string>
 
 </resources>
