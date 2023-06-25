@@ -101,7 +101,7 @@ fun RoutineItemScreen(
             }
             item {
                 RoutineItemBox(
-                    routine = routine
+                    routine = routine.url
                 )
             }
             item {
@@ -227,7 +227,7 @@ fun RoutineTitle(){
 
 @Composable
 fun RoutineItemBox(
-    routine: RoutineModel,
+    routine: String,
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -241,7 +241,7 @@ fun RoutineItemBox(
             containerColor = Color.Black,
         ),
     ) {
-        CustomExoPlayer(url = "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4")
+        CustomExoPlayer(url = routine)
     }
 }
 
@@ -265,24 +265,29 @@ fun RoutineInfo(
                 .padding(0.dp, 16.dp, 0.dp, 0.dp)
         )
 
-        Chip(
-            onClick = { /*TODO*/ },
-            colors = ChipDefaults.chipColors(
-                backgroundColor = when (routine.level) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            ChipItem(
+                text = routine.level,
+                color = when (routine.level) {
                     stringResource(R.string.routine_level_easy) -> spotify_color
                     stringResource(R.string.routine_level_medium) -> md_theme_light_tertiary
                     stringResource(R.string.routine_level_hard) -> md_theme_light_error
                     stringResource(R.string.routine_level_very_hard) -> md_theme_light_error
                     else -> md_theme_light_error
-                },
-                contentColor = Color.White
-            ),
-        ) {
-            Text(
-                text = routine.level,
-                fontWeight = FontWeight.Light,
-                color = Color.White,
-                style = MaterialTheme.typography.labelLarge
+                }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            ChipItem(
+                text = routine.category,
+                color = md_theme_light_primary
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            ChipItem(
+                text = routine.approach,
+                color = md_theme_light_primary
             )
         }
 
@@ -302,6 +307,27 @@ fun RoutineInfo(
                 .padding(0.dp, 16.dp, 0.dp, 0.dp)
                 .width(325.dp),
             style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
+
+@Composable
+fun ChipItem(
+    text: String,
+    color: Color
+) {
+    Chip(
+        onClick = { /*TODO*/ },
+        colors = ChipDefaults.chipColors(
+            backgroundColor = color,
+            contentColor = Color.White
+        ),
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.Light,
+            color = Color.White,
+            style = MaterialTheme.typography.labelSmall
         )
     }
 }

@@ -37,6 +37,14 @@ import com.uca.polifitnessapp.ui.navigation.components.BackButton
 import com.uca.polifitnessapp.ui.navigation.components.LoadingScreen
 import com.uca.polifitnessapp.ui.main.news.viewmodel.NewsItemViewModel
 
+/**
+ * @Composable function to display the new item screen
+ * @description This screen displays the new item screen
+ *
+ * @param newsItemViewModel
+ * @param noticeId, to load the new item
+ * @param onBackPress, to navigate back
+ * */
 
 @Composable
 fun NewItemBox(
@@ -58,8 +66,7 @@ fun NewItemBox(
     // --
     if (newsItemViewModel.isLoading.value) {
         LoadingScreen()
-    }
-    else {
+    } else {
         // New item screen
         val new = newsItemViewModel.new
 
@@ -77,14 +84,21 @@ fun NewItemBox(
             BackButton(
                 modifier = Modifier
                     .align(Alignment.Start)
-                    .padding(8.dp,16.dp,8.dp,16.dp)
-                ,
+                    .padding(8.dp, 16.dp, 8.dp, 16.dp),
                 onBackPress
             )
             NewItemScreen(new)
         }
     }
 }
+
+
+/**
+ * @Composable New Item
+ * @description This is how the new item screen looks like
+ *
+ * @param new, to display the new item
+ * */
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -147,7 +161,6 @@ fun NewItemScreen(
                 text = stringResource(R.string.place_title),
                 icon = R.drawable.pin_new_screen
             )
-            Spacer(modifier = Modifier.weight(1f))
             // Category
             Text(
                 text = new.category,
@@ -162,6 +175,14 @@ fun NewItemScreen(
         }
     }
 }
+
+/**
+ * @Composable New Place
+ * @description This is part of the new item
+ *
+ * @param text to display the text
+ * @param icon to display the icon
+ * */
 
 @Composable
 fun NewPlace(
