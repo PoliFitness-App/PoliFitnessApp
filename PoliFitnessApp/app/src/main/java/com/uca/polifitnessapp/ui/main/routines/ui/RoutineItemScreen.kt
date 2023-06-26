@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
@@ -30,6 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.google.android.exoplayer2.ExoPlayer
@@ -89,6 +93,7 @@ fun RoutineItemScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
+            state = rememberLazyListState(),
             // Center items horizontally in the column
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -101,7 +106,8 @@ fun RoutineItemScreen(
             }
             item {
                 RoutineItemBox(
-                    routine = routine.url
+                    routine = routine.url,
+                    routineItemViewModel
                 )
             }
             item {
@@ -161,7 +167,7 @@ fun RoutineStepItem(
             // ---
             Text(
                 text = step.title,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Light,
                 color = md_theme_light_primary,
                 modifier = Modifier
                     .padding(8.dp, 0.dp, 8.dp, 0.dp)
@@ -228,6 +234,7 @@ fun RoutineTitle(){
 @Composable
 fun RoutineItemBox(
     routine: String,
+    routineItemViewModel: RoutineItemViewModel
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -241,7 +248,10 @@ fun RoutineItemBox(
             containerColor = Color.Black,
         ),
     ) {
-        CustomExoPlayer(url = routine)
+        CustomExoPlayer(
+            url = routine,
+            viewModel = routineItemViewModel
+        )
     }
 }
 
@@ -284,11 +294,6 @@ fun RoutineInfo(
                 text = routine.category,
                 color = md_theme_light_primary
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            ChipItem(
-                text = routine.approach,
-                color = md_theme_light_primary
-            )
         }
 
         Text(
@@ -327,32 +332,29 @@ fun ChipItem(
             text = text,
             fontWeight = FontWeight.Light,
             color = Color.White,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
 
 @Composable
 fun CustomExoPlayer(
-    url: String
+    url: String,
+    viewModel: RoutineItemViewModel
 ) {
     val context = LocalContext.current
+    val playerView = remember { StyledPlayerView(context) }
 
-    val exoPlayer = ExoPlayer.Builder(context).build()
-    val mediaItem = MediaItem.fromUri(Uri.parse(url))
-
-    exoPlayer.setMediaItem(mediaItem)
-
-    val playerView = StyledPlayerView(context)
-    playerView.player = exoPlayer
+    viewModel.initializePlayer(context, url)
 
     DisposableEffect(AndroidView(factory = { playerView })) {
-        exoPlayer.prepare()
+        playerView.player = viewModel.player
 
         // Start playing after the user has seen the preview
 
         onDispose {
-            exoPlayer.release()
+            viewModel.releasePlayer()
         }
     }
 }
+
