@@ -176,8 +176,7 @@ fun UserCard(
             modifier = Modifier
                 .width(100.dp)
                 .height(40.dp)
-                .padding(0.dp,8.dp,0.dp,0.dp)
-            ,
+                .padding(0.dp, 8.dp, 0.dp, 0.dp),
         ) {
             Text(
                 text = stringResource(R.string.button_edit_title),
@@ -364,7 +363,14 @@ fun UserInfo(
 
                 //
                 Text(
-                    text = "Normal",
+                    text =
+                        when {
+                            user.imc < 21 -> stringResource(R.string.under_weight_imc)
+                            user.imc in 21.0..32.9 -> stringResource(R.string.normal_weight_imc)
+                            user.imc in 33.0..38.9 -> stringResource(R.string.high_weight_imc)
+                            user.imc >= 39.0 -> stringResource(R.string.warning_weight_imc)
+                            else -> stringResource(R.string.error_imc)
+                        },
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -414,7 +420,21 @@ fun UserInfo(
 
                 //
                 Text(
-                    text = "Normal",
+                    text = if (user.gender) {
+                        when {
+                            user.icc < 0.95 -> stringResource(R.string.no_risk_icc)
+                            user.icc in 0.96 .. 0.99 -> stringResource(R.string.risk_icc)
+                            user.icc > 0.99 -> stringResource(R.string.high_risk_icc)
+                            else -> stringResource(R.string.error_icc)
+                        }
+                    } else {
+                        when {
+                            user.icc < 0.80 -> stringResource(R.string.no_risk_icc)
+                            user.icc in 0.81 .. 0.84 -> stringResource(R.string.risk_icc)
+                            user.icc > 0.85 -> stringResource(R.string.high_risk_icc)
+                            else -> stringResource(R.string.error_icc)
+                        }
+                    },
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
@@ -453,7 +473,8 @@ fun ContactCard(
     onLogout: () -> Unit
 ) {
     // Application Instance
-    val app: PoliFitnessApplication = LocalContext.current.applicationContext as PoliFitnessApplication
+    val app: PoliFitnessApplication =
+        LocalContext.current.applicationContext as PoliFitnessApplication
     val context = LocalContext.current
 
     ElevatedCard(
@@ -559,7 +580,9 @@ fun ContactCard(
                         app.saveAuthToken(token = "")
                         // Then
                         // information about the state
-                        Toast.makeText(context, "Ha cerrado su sesión", Toast.LENGTH_SHORT).show()
+                        Toast
+                            .makeText(context, "Ha cerrado su sesión", Toast.LENGTH_SHORT)
+                            .show()
                     }
             ) {
                 Icon(
