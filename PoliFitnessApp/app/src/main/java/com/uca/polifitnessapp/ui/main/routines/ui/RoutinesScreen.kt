@@ -439,7 +439,7 @@ fun RoutineItem(
                     modifier = Modifier
                         .width(82.dp)
                         .height(124.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Fit
                 )
             }
         }

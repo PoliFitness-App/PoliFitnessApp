@@ -1,5 +1,7 @@
 package com.uca.polifitnessapp.ui.main.routines.viewmodel
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import com.uca.polifitnessapp.PoliFitnessApplication
 import com.uca.polifitnessapp.data.db.models.routine.RoutineModel
 import com.uca.polifitnessapp.data.db.models.routine.StepModel
@@ -68,6 +72,25 @@ class RoutineItemViewModel(
     // ---
     // Loading functions
     // ---
+
+    private var exoPlayer: ExoPlayer? = null
+
+    val player: ExoPlayer?
+        get() = exoPlayer
+
+    fun initializePlayer(context: Context, url: String) {
+        if (exoPlayer == null) {
+            exoPlayer = ExoPlayer.Builder(context).build()
+            val mediaItem = MediaItem.fromUri(Uri.parse(url))
+            exoPlayer?.setMediaItem(mediaItem)
+            exoPlayer?.prepare()
+        }
+    }
+
+    fun releasePlayer() {
+        exoPlayer?.release()
+        exoPlayer = null
+    }
 
     private fun setLoading(loading: Boolean) {
         isLoading.value = loading

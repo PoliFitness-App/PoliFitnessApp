@@ -80,7 +80,11 @@ fun NavGraphBuilder.mainGraph(
                     navController.navigate("routine_info_screen/${routineId}")
                 },
                 onNavigateToProfile = {
-                    navController.navigate(ButtomNavItems.Profile.rute)
+                    navController.navigate(ButtomNavItems.Profile.rute){
+                        popUpTo(ButtomNavItems.Home.rute) {
+                            inclusive = true
+                        }
+                    }
                 },
                 userId = userViewModel.user._id ?: "",
             )
