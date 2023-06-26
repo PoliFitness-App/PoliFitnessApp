@@ -220,16 +220,6 @@ fun SendEmail() {
             )
         }
 
-        if (isBottomSheetVisible) {
-            LaunchedEffect(Unit) {
-                isBottomSheetVisible = true
-            }
-
-            SheetContent(
-
-            )
-        }
-
 
     }
 
