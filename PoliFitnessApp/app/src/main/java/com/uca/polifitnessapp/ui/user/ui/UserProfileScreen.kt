@@ -602,7 +602,7 @@ fun ContactCard(
                     textAlign = TextAlign.Center,
                 )
 
-                Spacer(modifier = Modifier.width(width = 80.dp))
+                Spacer(modifier = Modifier.width(width = 120.dp))
 
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),

@@ -1,6 +1,7 @@
 package com.uca.polifitnessapp.ui.auth.signup.ui
 
 import android.content.Context
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -50,6 +52,8 @@ import com.uca.polifitnessapp.ui.auth.signup.validation.SignUpUiStatus
 import com.uca.polifitnessapp.ui.auth.signup.viewmodel.SignUpGoalViewModel
 import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalConfiguration
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -87,6 +91,7 @@ fun MainFunction(
     CarouselCard(
         item = items,
         pagerState = pagerState,
+
     )
 
     // Current page
@@ -231,6 +236,7 @@ fun SignUpGoalText(
 fun CarouselCard(
     item: List<ApproachData>,
     pagerState: PagerState,
+
 ) {
     Column{
         HorizontalPager(
@@ -238,9 +244,11 @@ fun CarouselCard(
             contentPadding = PaddingValues(horizontal = 30.dp),
             modifier = Modifier
                 .height(478.dp)
+                .width(375.dp)
             ,
             verticalAlignment = Alignment.CenterVertically,
         ) { page ->
+
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(22.dp))
