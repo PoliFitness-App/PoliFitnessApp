@@ -50,6 +50,7 @@ import com.uca.polifitnessapp.ui.user.viewmodel.UserViewModel
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /**
  * @Composable User Profile Screen
@@ -126,7 +127,7 @@ fun UserCard(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .fillMaxWidth()
+            .width(300.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.profilepic),
@@ -354,7 +355,7 @@ fun UserInfo(
 
                 ) {
                 Text(
-                    text = user.imc.toString(),
+                    text = String.format(Locale.getDefault(), "%.2f", user.imc),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelSmall,
