@@ -17,6 +17,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,6 +28,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -104,7 +107,11 @@ fun Home(
         LaunchedEffect(lifecycle) {
             when (homeUiStatus) {
                 is HomeUiStatus.Error -> {
-                    Toast.makeText(context, "Se ha producido un error al intentar cargar las noticias y/o rutinas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Se ha producido un error al intentar cargar las noticias y/o rutinas",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is HomeUiStatus.ErrorWithMessage -> {
@@ -118,39 +125,52 @@ fun Home(
         }
     }
 
-    LazyColumn(
+    LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp, 8.dp, 8.dp, 8.dp)
-            .background(Color.White)
+            .background(Color.White),
+        columns = GridCells.Adaptive(350.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(25.dp))
-            HomeTitle()
-        }
-        item {
-            Spacer(modifier = Modifier.height(25.dp))
-            IMC_card(
-                imc = userViewModel.user.imc,
-            ) {
-                onNavigateToProfile()
+            Column() {
+                Spacer(modifier = Modifier.height(25.dp))
+                HomeTitle()
+                Spacer(modifier = Modifier.height(25.dp))
+                IMC_card(
+                    imc = userViewModel.user.imc,
+                ) {
+                    onNavigateToProfile()
+                }
+                Spacer(modifier = Modifier.height(25.dp))
+                SpotifyTitle()
+                Spacer(modifier = Modifier.height(25.dp))
+                SpotifyCard()
+                Spacer(modifier = Modifier.height(25.dp))
             }
-        }
-        item {
-            Spacer(modifier = Modifier.height(25.dp))
-            SpotifyTitle()
-            Spacer(modifier = Modifier.height(25.dp))
-            SpotifyCard()
         }
 
         item {
-            Spacer(modifier = Modifier.height(25.dp))
-            RoutinesTittle {
-                onRoutinesClick()
+            
+            Column() {
+                Spacer(modifier = Modifier.height(30.dp))
+                RoutinesTittle {
+                    onRoutinesClick()
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+
+                routines.forEach { routine ->
+                    RoutineItemHome(
+                        routine = routine
+                    ) { routineId ->
+                        onNavigateToRoutine(routineId)
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(15.dp))
         }
 
+
+        /*
         items(
             routines.size,
         ) { index ->
@@ -162,13 +182,29 @@ fun Home(
             }
         }
 
+         */
+
         item {
-            Spacer(modifier = Modifier.height(25.dp))
-            NewsTittle {
-                onNewsClick()
+
+            Column() {
+                Spacer(modifier = Modifier.height(25.dp))
+                NewsTittle {
+                    onNewsClick()
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+
+                news.forEach { item ->
+                    NewItem(
+                        new = item,
+                    ) { noticeId ->
+                        onNavigateToNews(noticeId)
+                    }
+                }
+                Spacer(modifier = Modifier.height(80.dp))
             }
-            Spacer(modifier = Modifier.height(10.dp))
         }
+
+        /*
 
         items(
             news.size,
@@ -176,7 +212,9 @@ fun Home(
                 news[index].noticeId
             }
         ) { index ->
+
             val item = news[index]
+
             // Filter item
             NewItem(
                 new = item,
@@ -185,10 +223,7 @@ fun Home(
             }
         }
 
-        item {
-            Spacer(modifier = Modifier.height(110.dp))
-        }
-
+         */
     }
 }
 
@@ -256,7 +291,7 @@ fun IMC_card(
                             modifier = Modifier
                                 .width(170.dp)
                                 .padding(start = 22.dp, top = 2.dp, end = 22.dp, bottom = 5.dp),
-                            text = when{
+                            text = when {
                                 imc < 21 -> "Tienes un peso bajo"
                                 imc in 21.0..32.9 -> "Tienes un peso normal"
                                 imc in 33.0..38.9 -> "Tienes un peso alto"
@@ -303,7 +338,7 @@ fun IMC_card(
                                 )
                             },
                     ) {
-                        RadialProgress(value = imc/100)
+                        RadialProgress(value = imc / 100)
                     }
                 }
             }

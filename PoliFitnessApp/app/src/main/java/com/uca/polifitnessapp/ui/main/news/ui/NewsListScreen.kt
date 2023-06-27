@@ -98,7 +98,7 @@ fun HeaderSection(
         ),
         FilterData(
             image = R.drawable.sports_soccer,
-            title = "Futbol"
+            title = "Fútbol"
         ),
         FilterData(
             image = R.drawable.sportssoccer,
@@ -394,7 +394,6 @@ fun NewItem(
         elevation = CardDefaults.elevatedCardElevation(12.dp),
         modifier = Modifier
             .padding(16.dp)
-            .width(350.dp)
             .height(285.dp)
             .clickable {
                 onClick(new.noticeId)

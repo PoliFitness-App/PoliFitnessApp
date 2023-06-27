@@ -70,7 +70,7 @@ class NewsScreenViewModel(
 
             1 -> {
                 // filter news by category "Futbol"
-                category.value = "Futbol"
+                category.value = "Fútbol"
             }
 
             2 -> {
