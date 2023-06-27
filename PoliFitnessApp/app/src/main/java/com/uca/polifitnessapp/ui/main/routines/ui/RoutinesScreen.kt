@@ -302,7 +302,7 @@ fun RoutinesList(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(0.dp, 0.dp, 0.dp, 64.dp),
-            columns = GridCells.Adaptive(minSize = 300.dp),
+            columns = GridCells.Adaptive(minSize = 350.dp),
         ) {
             // List of recommended routines
             items(count = routinesByFilters.itemCount) { index ->

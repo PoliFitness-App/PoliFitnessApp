@@ -151,7 +151,7 @@ class EditProfileViewModel(
         val icc = waistP.value.toFloat() / hipP.value.toFloat()
 
         // we set the data
-        user.weight = weight.value.toFloat()
+        user.weight = weightU
         user.height = height.value.toFloat()
         user.waistP = waistP.value.toFloat()
         user.hipP = hipP.value.toFloat()
